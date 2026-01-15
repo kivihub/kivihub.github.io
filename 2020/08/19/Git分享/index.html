@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Git原理及应用零、EDI应用"><meta property="og:type" content="blog"><meta property="og:title" content="Git分享"><meta property="og:url" content="https://kivihub.github.io/2020/08/19/Git%E5%88%86%E4%BA%AB/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="Git原理及应用零、EDI应用"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/Git%E5%88%86%E4%BA%AB/image-20200819113225012.png"><meta property="article:published_time" content="2020-08-19T01:00:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:22.803Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/Git%E5%88%86%E4%BA%AB/image-20200819113225012.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/08/19/Git%E5%88%86%E4%BA%AB/"},"headline":"Git分享","image":["https://kivihub.github.io/thumbnail/Git%E5%88%86%E4%BA%AB/image-20200819113225012.png"],"datePublished":"2020-08-19T01:00:00.000Z","dateModified":"2026-01-15T03:18:22.803Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"Git原理及应用零、EDI应用"}</script><link rel="canonical" href="https://kivihub.github.io/2020/08/19/Git%E5%88%86%E4%BA%AB/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-08-19T01:00:00.000Z" title="8/19/2020, 9:00:00 AM">2020-08-19</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Git/">Git</a></span><span class="level-item">20 分钟读完 (大约3007个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Git分享</h1><div class="content"><!-- date: 2020.08.19 09:00 -->
+<h1 id="Git原理及应用"><a href="#Git原理及应用" class="headerlink" title="Git原理及应用"></a>Git原理及应用</h1><h4 id="零、EDI应用"><a href="#零、EDI应用" class="headerlink" title="零、EDI应用"></a>零、EDI应用</h4><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200819113225012.png" alt="image-20200819113225012"></p>
+<span id="more"></span>
+
+<h4 id="一、-Git原理"><a href="#一、-Git原理" class="headerlink" title="一、 Git原理"></a>一、 Git原理</h4><h5 id="1-VCS对比"><a href="#1-VCS对比" class="headerlink" title="1. VCS对比"></a>1. VCS对比</h5><h6 id="1）没有VCS"><a href="#1）没有VCS" class="headerlink" title="1）没有VCS"></a>1）没有VCS</h6><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816162958788.png" alt="image-20200816162958788"></p>
+<h6 id="2）本地版本控制"><a href="#2）本地版本控制" class="headerlink" title="2）本地版本控制"></a>2）本地版本控制</h6><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816163315500.png" alt="image-20200816163315500"></p>
+<ol>
+<li>机制：通过数据库记录文件历次更新的差异，差异以补丁的形式记录对应文件修订前后的内容变化。</li>
+<li>不足：不支持多开发者协同工作。</li>
+<li>典型软件：rcs</li>
+</ol>
+<h6 id="3）集中版本控制"><a href="#3）集中版本控制" class="headerlink" title="3）集中版本控制"></a>3）集中版本控制</h6><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816163352003.png" alt="image-20200816163352003"></p>
+<ol>
+<li>机制：单一的集中管理的服务器保存所有文件的修订版本，协同工作的人们通过客户端连到该服务器，取出最新的文件或提交更新</li>
+<li>不足：中央服务器的单点故障可能导致数据丢失。</li>
+<li>典型软件：CVS，Subversion，Perforce等。</li>
+</ol>
+<h6 id="4）分布式版本控制"><a href="#4）分布式版本控制" class="headerlink" title="4）分布式版本控制"></a>4）分布式版本控制</h6><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816163416123.png" alt="image-20200816163416123"></p>
+<ol>
+<li>机制：每个客户端都拥有独立且完整的版本仓库，且客户端地位相等（类似P2P网络），它们之间可相互获取、推送更新。</li>
+<li>优点：1）消除集中版本控制系统的单点故障；2）协作开发时，允许单个客户端在本地版本仓库独立提交更新，并在合适时推送给其他客户端或某个约定为中央仓库的客户端。</li>
+<li>典型软件：Git，Mercurial，Bazaar，Darcs等。</li>
+</ol>
+<h5 id="2-Git的特性"><a href="#2-Git的特性" class="headerlink" title="2. Git的特性"></a>2. Git的特性</h5><h6 id="1）保存快照，而非差异"><a href="#1）保存快照，而非差异" class="headerlink" title="1）保存快照，而非差异"></a>1）保存快照，而非差异</h6><ol>
+<li>Git关心文件整体内容的变化，而大多数其他系统则关心文件内容的差异（svn基于增量）。</li>
+<li>此特性为多分支并行开发提供了支持。</li>
+</ol>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816164228680.png" alt="image-20200816164228680"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816164243328.png" alt="image-20200816164243328"></p>
+<h6 id="2）几乎所有操作都是本地操作"><a href="#2）几乎所有操作都是本地操作" class="headerlink" title="2）几乎所有操作都是本地操作"></a>2）几乎所有操作都是本地操作</h6><ol>
+<li>速度快</li>
+<li>客户端离线时也可进行更新操作</li>
+</ol>
+<h6 id="3）时刻保持数据完整性"><a href="#3）时刻保持数据完整性" class="headerlink" title="3）时刻保持数据完整性"></a>3）时刻保持数据完整性</h6><ol>
+<li>保存到Git之前，所有数据都要经过Hash运算，并将Hash值作为数据的唯一标识和索引，而非文件名。</li>
+<li>Git采用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SHA-1/1699692?fr=aladdin">SHA-1</a>算法来生成文件或整个目录的杂凑值，并作为唯一标识。该算法输出160bit哈希值，即40个16进制字符（0-9及a-f）。类似<code>24b9da6552252987aa493b52f8696cd6d3b00373</code>。</li>
+</ol>
+<h5 id="3-Git目录结构"><a href="#3-Git目录结构" class="headerlink" title="3. Git目录结构"></a>3. Git目录结构</h5><p>.git&#x2F;包含了以下目录和文件：</p>
+<ul>
+<li><del>branches&#x2F;：新版本不再使用</del></li>
+<li>description：仅供GitWeb程序使用</li>
+<li>config：当前项目的配置选项</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[core]</span></span><br><span class="line">        <span class="attr">repositoryformatversion</span> = <span class="string">0</span></span><br><span class="line">        <span class="attr">filemode</span> = <span class="string">true</span></span><br><span class="line">        <span class="attr">bare</span> = <span class="string">false</span></span><br><span class="line">        <span class="attr">logallrefupdates</span> = <span class="string">true</span></span><br><span class="line">        <span class="attr">ignorecase</span> = <span class="string">true</span></span><br><span class="line">        <span class="attr">precomposeunicode</span> = <span class="string">true</span></span><br><span class="line"><span class="attr">[remote</span> <span class="string">&quot;origin&quot;]</span></span><br><span class="line">        <span class="attr">url</span> = <span class="string">git@github.com:kivihub/java-fragment.git</span></span><br><span class="line">        <span class="attr">fetch</span> = <span class="string">+refs/heads/*:refs/remotes/origin/*</span></span><br><span class="line"><span class="attr">[branch</span> <span class="string">&quot;dev&quot;]</span></span><br><span class="line">        <span class="attr">remote</span> = <span class="string">origin</span></span><br><span class="line">        <span class="attr">merge</span> = <span class="string">refs/heads/dev</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>info&#x2F;exclude：不同于.gitignore文件，可配置本地的文件忽略模式，不会push到remote库而影响其他人。</p>
+</li>
+<li><p>hooks&#x2F;：目录存放钩子脚本，如校验commit msg，git-lfs</p>
+</li>
+<li><p>objects&#x2F;：目录存储所有数据内容，可细分为四大对象blob，tree，commit，tag</p>
+</li>
+<li><p>refs&#x2F;：目录存储指向数据的commit对象的指针</p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816170449543.png" alt="image-20200816170449543"></p>
+</li>
+<li><p>HEAD：文件内容为当前分支</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ref: refs/heads/dev</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>index：文件内容为暂存区的信息</li>
+</ul>
+<h5 id="4-工作区，暂存区和仓库的概念"><a href="#4-工作区，暂存区和仓库的概念" class="headerlink" title="4. 工作区，暂存区和仓库的概念"></a>4. 工作区，暂存区和仓库的概念</h5><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816164801158.png" alt="image-20200816164801158"></p>
+<h5 id="5-高级命令和低级命令"><a href="#5-高级命令和低级命令" class="headerlink" title="5. 高级命令和低级命令"></a>5. 高级命令和低级命令</h5><ol>
+<li>用户平时使用的Git命令一般为高层命令，如add、commit、checkout等；高层命令对用户友好，便于理解和操作。</li>
+<li>Git起初被设计为供VCS使用的工具集，这些工具也称为底层命令；底层命令一般不被用户直接使用，而是被shell或脚本调用。如cat-file</li>
+</ol>
+<h5 id="6-Git的四大对象：blob，tree，commit，tag"><a href="#6-Git的四大对象：blob，tree，commit，tag" class="headerlink" title="6. Git的四大对象：blob，tree，commit，tag"></a>6. Git的四大对象：blob，tree，commit，tag</h5><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816165839239.png" alt="image-20200816165839239"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816171309450.png" alt="image-20200816171309450"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816173027595.png" alt="image-20200816173027595"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim .git/refs/heads/dev</span><br><span class="line"></span><br><span class="line">// 文件内容</span><br><span class="line">b8942bbf8ff41d8670611a7c256e5663d973e28b</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816165934857.png" alt="image-20200816165934857"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816170909518.png" alt="image-20200816170909518"></p>
+<h5 id="7-基于内容存储和Hash碰撞"><a href="#7-基于内容存储和Hash碰撞" class="headerlink" title="7. 基于内容存储和Hash碰撞"></a>7. 基于内容存储和Hash碰撞</h5><ol>
+<li>依赖底层命令<code>git hash-object</code>命令，对文件内容增加头信息后计算hash值并返回，增加<code>-w</code>参数后在git仓库内创建blob对象（<strong>blob对象 &#x3D; 对象头 + 文件内容</strong>）。</li>
+<li>blob对象存储到git仓库目录（.git&#x2F;objects&#x2F;）时，依据40位（16进制字符）长度的hash串指定存储目录（hash串前2位）和命名文件（hash串后38位）。例如某blob对象的hash值为<code>62/0d4582bfbf773ef15f9b52ac434906a3cdf9c3</code>，那么它在git仓库中的路径为<code>.git/objects/62/0d4582bfbf773ef15f9b52ac434906a3cdf9c3</code>，blob对象采用zlib方式压缩后存储。</li>
+<li>Git内容寻址本质是：Git根据由文件内容（增加文件头）产生的Hash值来标识和索引文件。另外进行命令操作时没有必要写完整的hash串，只要输入的hash串长度是唯一可识别和索引的即可。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GitBlobSha1Util</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">digest</span><span class="params">(File file)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="keyword">return</span> digest((InputStream)(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(file)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">digest</span><span class="params">(InputStream in)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="type">byte</span>[] content = IOUtils.toByteArray(in);</span><br><span class="line">        <span class="keyword">return</span> digest(content);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">digest</span><span class="params">(<span class="type">byte</span>[] content)</span> &#123;</span><br><span class="line">        <span class="type">byte</span>[] header = (<span class="string">&quot;blob &quot;</span> + content.length + <span class="string">&quot;\u0000&quot;</span>).getBytes();</span><br><span class="line">        <span class="type">byte</span>[] sum = <span class="keyword">new</span> <span class="title class_">byte</span>[header.length + content.length];</span><br><span class="line">        System.arraycopy(header, <span class="number">0</span>, sum, <span class="number">0</span>, header.length);</span><br><span class="line">        System.arraycopy(content, <span class="number">0</span>, sum, header.length, content.length);</span><br><span class="line">        <span class="keyword">return</span> DigestUtils.sha1Hex(sum);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>Hash碰撞</li>
+</ol>
+<p>1）当出现冲突时，保留当前仓库已有的对象</p>
+<p>2）冲突场景</p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816172404502.png" alt="image-20200816172404502"></p>
+<p>3）解决方式</p>
+<ul>
+<li>commit冲突时，再次提交即可，其中包含时间戳；</li>
+<li>tree和blob冲突时，修改下文件内容即可，如增加空格，空行等；</li>
+</ul>
+<h5 id="8-三路合并（3-way-merge）"><a href="#8-三路合并（3-way-merge）" class="headerlink" title="8.三路合并（3-way merge）"></a>8.三路合并（<strong>3-way merge</strong>）</h5><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200817221051604.png" alt="image-20200817221051604"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818012810354.png" alt="image-20200818012810354"></p>
+<h5 id="9-Merge策略概览"><a href="#9-Merge策略概览" class="headerlink" title="9. Merge策略概览"></a>9. Merge策略概览</h5><p>1）<strong>resolve</strong>：用于合并两个分支（git merge branchA branchB），合并算法：三方合并。</p>
+<p>2）<strong>recursive</strong>（默认合并策略）：用于合并两个分支（git merge branchA branchB），合并算法：三方合并。</p>
+<p>当有多个共同祖先可用于三向合并时，它会创建一个共同祖先的合并树，并将其用作三向合并的参考树。</p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200817222355125.png" alt="image-20200817222355125"></p>
+<p>3）<strong>octopus</strong>：用于合并多个分支；</p>
+<p>4）<strong>ours</strong>：不限合并分支数量，但遇见冲突时始终使用自己的修改，忽略其他分支的修改；</p>
+<p>5）<strong>subtree</strong>：改进的recursive算法，考虑子树的匹配；</p>
+<h5 id="10-Diff算法概览"><a href="#10-Diff算法概览" class="headerlink" title="10. Diff算法概览"></a>10. Diff算法概览</h5><p>1）MyersDiff（默认算法）：Eugene W. Myers 在他1986年发表于”Algorithmica”的论文”An O(ND) Difference Algorithm and Its Variations”中描述了一种用于处理diff的基础贪婪算法. <a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/94453717866fb84ae45c8d34.html">论文连接</a></p>
+<p>寻找两个文件的最长公共子序列可转为一个同构问题：有向编辑图</p>
+<ul>
+<li><p>x轴走一步：删除一个字符</p>
+</li>
+<li><p>y轴走一步：增加一个字符</p>
+</li>
+<li><p>对角线走一步：无需编辑</p>
+</li>
+</ul>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816175042823.png" alt="image-20200816175042823"></p>
+<ol>
+<li>初始状态：abcabba</li>
+<li>x轴2步：cabba</li>
+<li>对角线一步：c abba</li>
+<li>y轴1步：cb abba</li>
+<li>对角线2步：cbab ba</li>
+<li>x轴1步：cbab a</li>
+<li>对角线1步：cbaba</li>
+<li>y轴1步：<code>cbabac</code></li>
+</ol>
+<p>2）HistogramDiff</p>
+<h5 id="11-配置SSH登陆"><a href="#11-配置SSH登陆" class="headerlink" title="11. 配置SSH登陆"></a>11. 配置SSH登陆</h5><p>1）减少密码过期带来的困扰</p>
+<p>2）多平台认证更方便：git.jd.com,coding.jd.com,github.com</p>
+<h5 id="12-配置sparse-checkout"><a href="#12-配置sparse-checkout" class="headerlink" title="12. 配置sparse checkout"></a>12. 配置sparse checkout</h5><p>1）配置.git&#x2F;config，core下增加<code>sparsecheckout = true</code></p>
+<p>2）配置.git&#x2F;info&#x2F;sparse-checkout</p>
+<h4 id="二、-Git命令一览"><a href="#二、-Git命令一览" class="headerlink" title="二、 Git命令一览"></a>二、 Git命令一览</h4><h5 id="1-常用命令及参数"><a href="#1-常用命令及参数" class="headerlink" title="1. 常用命令及参数"></a>1. 常用命令及参数</h5><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/u=3924317433,576360879&fm=26&gp=0.jpg" alt="img"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">git status        // 查看当前Git状态</span><br><span class="line">git log                // 查看日志</span><br><span class="line">git checkout    // 可用于1）检出分支；2）创建分支；3）检出文件；4）暂存区覆盖工作区；</span><br><span class="line">git stash            // 暂存工作区</span><br><span class="line">git pull            // 拉取远程分支并合并，等效于：git fetch + git merge</span><br><span class="line">git push            // 1）push内容到远程，2）删除分支，git push origin :dev</span><br><span class="line">git revert        // 生成撤销提交</span><br><span class="line">git reset            // 恢复工作区，暂存区，仓库到指定revision</span><br><span class="line">git rebase        // 变基</span><br><span class="line">git cherry-pick    // 挑拣</span><br><span class="line">git blame            // 查看文件中每行的提交信息</span><br><span class="line">git diff            </span><br><span class="line">git show            // 查看提交信息等</span><br><span class="line">git branch        </span><br><span class="line">git fiter-branch</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818195656363.png" alt="image-20200818195656363"><br><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818224909027.png" alt="image-20200818224909027"></p>
+<h5 id="2-特殊符号"><a href="#2-特殊符号" class="headerlink" title="2. 特殊符号"></a>2. 特殊符号</h5><p>1）引用符号</p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816173225787.png" alt="image-20200816173225787"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200816173201169.png" alt="image-20200816173201169"></p>
+<p>2）提交范围</p>
+<table>
+<thead>
+<tr>
+<th><strong>类别</strong></th>
+<th><strong>表示</strong></th>
+<th><strong>作用</strong></th>
+<th>数学概念</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>两点提交</td>
+<td>before..after</td>
+<td>隶属于after分支，但不隶属于before的提交</td>
+<td>差集 (after-before)</td>
+</tr>
+<tr>
+<td>三点提交</td>
+<td>before…after</td>
+<td>两分支中除去共同拥有的提交外的提交</td>
+<td>并集-交集 (before∪after - before∩after)</td>
+</tr>
+<tr>
+<td>取非</td>
+<td>^或–not</td>
+<td>不包含指定分支的所有提交</td>
+<td>差集</td>
+</tr>
+</tbody></table>
+<h5 id="3-使用场景"><a href="#3-使用场景" class="headerlink" title="3. 使用场景"></a>3. 使用场景</h5><h6 id="1）恢复到指定版本"><a href="#1）恢复到指定版本" class="headerlink" title="1）恢复到指定版本"></a>1）恢复到指定版本</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 事例：dev分支恢复到历史revision</span><br><span class="line">git reset --hard revision</span><br><span class="line">git reset --soft origin/dev</span><br><span class="line">git commit</span><br></pre></td></tr></table></figure>
+
+<h6 id="2）合并提交-拆分提交"><a href="#2）合并提交-拆分提交" class="headerlink" title="2）合并提交&#x2F;拆分提交"></a>2）合并提交&#x2F;拆分提交</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rebase -i revision</span><br></pre></td></tr></table></figure>
+
+<h6 id="3）删除误提交的大文件"><a href="#3）删除误提交的大文件" class="headerlink" title="3）删除误提交的大文件"></a>3）删除误提交的大文件</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git filter-branch</span><br></pre></td></tr></table></figure>
+
+<h6 id="4）暂存当前工作区"><a href="#4）暂存当前工作区" class="headerlink" title="4）暂存当前工作区"></a>4）暂存当前工作区</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git stash --all</span><br><span class="line">git stash pop/apply --index</span><br></pre></td></tr></table></figure>
+
+<h6 id="5）用其他分支的文件覆盖当前文件"><a href="#5）用其他分支的文件覆盖当前文件" class="headerlink" title="5）用其他分支的文件覆盖当前文件"></a>5）用其他分支的文件覆盖当前文件</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git chekout otherbranch path</span><br></pre></td></tr></table></figure>
+
+<h4 id="三、-Git规范"><a href="#三、-Git规范" class="headerlink" title="三、 Git规范"></a>三、 Git规范</h4><h5 id="1-提交流程规范"><a href="#1-提交流程规范" class="headerlink" title="1. 提交流程规范"></a>1. 提交流程规范</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit</span><br><span class="line">git pull</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-提交信息规范"><a href="#2-提交信息规范" class="headerlink" title="2. 提交信息规范"></a>2. 提交信息规范</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;: &lt;subject&gt;    // 类型及摘要：type由团队内部协定：如feature，refactor，fixbug等</span><br><span class="line">&lt;BLANK LINE&gt;        // 空行</span><br><span class="line">&lt;detail body&gt;        // 详细信息</span><br><span class="line">&lt;/detail body&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200817155327129.png" alt="image-20200817155327129"></p>
+<h5 id="3-提交粒度"><a href="#3-提交粒度" class="headerlink" title="3. 提交粒度"></a>3. 提交粒度</h5><p>粒度：一个工作一个提交</p>
+<p>优势：利于code review和回滚</p>
+<h5 id="4-pull-merge-vs-pull-rebase"><a href="#4-pull-merge-vs-pull-rebase" class="headerlink" title="4. pull merge vs pull rebase"></a>4. pull merge vs pull rebase</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull = git fetch + git merge</span><br><span class="line">git pull --rebase = git fetch + git rebase</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200817225002626.png" alt="image-20200817225002626"></p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200817225025973.png" alt="image-20200817225025973"></p>
+<p>优劣：</p>
+<p>1）rebase：提交历史呈线性，较merge整洁，便于代码review；</p>
+<p>2）merge：保存原始提交历史；</p>
+<h5 id="5-分支命名规范"><a href="#5-分支命名规范" class="headerlink" title="5. 分支命名规范"></a>5. 分支命名规范</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">feature/log -- 特性分支</span><br><span class="line">refactor/http -- 重构分支</span><br><span class="line">hotfix/fastjson -- fixbug分支</span><br><span class="line">wangqiwei -- 本地分支/临时分支</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-cherry-pick后小心revert"><a href="#6-cherry-pick后小心revert" class="headerlink" title="6. cherry-pick后小心revert"></a>6. cherry-pick后小心revert</h5><p>如以下情况会出现非预期结果</p>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20211021180444036.png" alt="image-20211021180444036"></p>
+<h4 id="四、-Git工作流"><a href="#四、-Git工作流" class="headerlink" title="四、 Git工作流"></a>四、 Git工作流</h4><p>三大工作流：</p>
+<h5 id="1-TBD：Trunk-based-development"><a href="#1-TBD：Trunk-based-development" class="headerlink" title="1. TBD：Trunk-based development"></a>1. TBD：Trunk-based development</h5><p>1）特点：</p>
+<ul>
+<li>TBD的特点是所有团队成员都在单个主干分支上进行开发。</li>
+<li>简单易操作，减少分支切换，流行于SVN（svn trunck &#x3D; git master）</li>
+</ul>
+<p>2）流程：</p>
+<ul>
+<li>当需要发布时，先考虑使用标签（<code>tag</code>）,即<code>tag</code>某个<code>commit</code>来作为发布的版本。</li>
+<li>如果仅仅依靠<code>tag</code>不能满足要求，则从主干分支创建发布分支。</li>
+<li><code>bug</code>修复在主干分支进行，再<code>cherry-pick</code>到发布分支</li>
+</ul>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818223844817.png" alt="image-20200818223844817"></p>
+<h5 id="2-Git-Flow"><a href="#2-Git-Flow" class="headerlink" title="2. Git Flow"></a>2. <a target="_blank" rel="noopener" href="https://nvie.com/posts/a-successful-git-branching-model/">Git Flow</a></h5><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/git-model@2x.png" alt="img"></p>
+<p>1）适合场景</p>
+<ul>
+<li>适合维护多个发布版本</li>
+<li>流程较其他工作流复杂</li>
+</ul>
+<p>2）分支描述</p>
+<ul>
+<li><p>长期分支</p>
+<ul>
+<li>develop：开发分支，稳定后可并入master；</li>
+<li>master：HEAD总处于可发布态；每个版本对应一个tag；</li>
+</ul>
+</li>
+<li><p>辅助分支</p>
+<ul>
+<li><p>feature</p>
+<ul>
+<li>通常是本地分支，合并回develop后删除；</li>
+<li>may from <code>develop</code></li>
+<li>must merge back to <code>develop</code><ul>
+<li>(develop)：git merge –no-ff，体现出特性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>release</p>
+<ul>
+<li>合并回master和develop后删除；</li>
+<li>may from <code>develop</code></li>
+<li>must merge back to <code>develop</code> and <code>master</code><ul>
+<li>(master)：git merge –no-ff，体现出特性</li>
+<li>(devlop)：git merge –no-ff，体现出特性</li>
+</ul>
+</li>
+<li>迁出分支后，首先修改为新版本号；</li>
+</ul>
+</li>
+<li><p>hotfix</p>
+<ul>
+<li>May from master</li>
+<li>Must merge back to <code>develop</code> and <code>master</code><ul>
+<li>(master)：git merge –no-ff，体现出特性</li>
+<li>(devlop)：git merge –no-ff，体现出特性（当release分支存在时优先合并进release分支，由release分支合并进develop）</li>
+</ul>
+</li>
+<li>迁出分支后，首先修改为新版本号；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818224410127.png" alt="image-20200818224410127"></p>
+<h5 id="3-GitHub-Flow"><a href="#3-GitHub-Flow" class="headerlink" title="3. GitHub Flow"></a>3. GitHub Flow</h5><p>1）特点：</p>
+<ul>
+<li>简单实用</li>
+</ul>
+<p>2）流程</p>
+<ul>
+<li><code>master</code>分支中也是代表着稳定的代码。该分支已经或即将被部署在生产环境</li>
+<li>当需要进行任何修改时，总是从<code>master</code>分支创建新分支。完成之后通过<code>pull request</code>和相关的代码审查来合并回<code>master</code>分支</li>
+<li>hotfix, feature分支都遵循上面的准则；</li>
+</ul>
+<p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818223940393.png" alt="image-20200818223940393"></p>
+<h5 id="4-对比"><a href="#4-对比" class="headerlink" title="4. 对比"></a>4. 对比</h5><p><img src="/2020/08/19/Git%E5%88%86%E4%BA%AB/pic/image-20200818224114950.png" alt="来源https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;9Ey04P5Xv4W95N2FEioZ1g"></p>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">git工作流</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/08/16/synchronized/"><span class="level-item">synchronized</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#Git原理及应用"><span class="level-left"><span class="level-item">Git原理及应用</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#零、EDI应用"><span class="level-left"><span class="level-item">零、EDI应用</span></span></a></li><li><a class="level is-mobile" href="#一、-Git原理"><span class="level-left"><span class="level-item">一、 Git原理</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-VCS对比"><span class="level-left"><span class="level-item">1. VCS对比</span></span></a></li><li><a class="level is-mobile" href="#2-Git的特性"><span class="level-left"><span class="level-item">2. Git的特性</span></span></a></li><li><a class="level is-mobile" href="#3-Git目录结构"><span class="level-left"><span class="level-item">3. Git目录结构</span></span></a></li><li><a class="level is-mobile" href="#4-工作区，暂存区和仓库的概念"><span class="level-left"><span class="level-item">4. 工作区，暂存区和仓库的概念</span></span></a></li><li><a class="level is-mobile" href="#5-高级命令和低级命令"><span class="level-left"><span class="level-item">5. 高级命令和低级命令</span></span></a></li><li><a class="level is-mobile" href="#6-Git的四大对象：blob，tree，commit，tag"><span class="level-left"><span class="level-item">6. Git的四大对象：blob，tree，commit，tag</span></span></a></li><li><a class="level is-mobile" href="#7-基于内容存储和Hash碰撞"><span class="level-left"><span class="level-item">7. 基于内容存储和Hash碰撞</span></span></a></li><li><a class="level is-mobile" href="#8-三路合并（3-way-merge）"><span class="level-left"><span class="level-item">8.三路合并（3-way merge）</span></span></a></li><li><a class="level is-mobile" href="#9-Merge策略概览"><span class="level-left"><span class="level-item">9. Merge策略概览</span></span></a></li><li><a class="level is-mobile" href="#10-Diff算法概览"><span class="level-left"><span class="level-item">10. Diff算法概览</span></span></a></li><li><a class="level is-mobile" href="#11-配置SSH登陆"><span class="level-left"><span class="level-item">11. 配置SSH登陆</span></span></a></li><li><a class="level is-mobile" href="#12-配置sparse-checkout"><span class="level-left"><span class="level-item">12. 配置sparse checkout</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、-Git命令一览"><span class="level-left"><span class="level-item">二、 Git命令一览</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-常用命令及参数"><span class="level-left"><span class="level-item">1. 常用命令及参数</span></span></a></li><li><a class="level is-mobile" href="#2-特殊符号"><span class="level-left"><span class="level-item">2. 特殊符号</span></span></a></li><li><a class="level is-mobile" href="#3-使用场景"><span class="level-left"><span class="level-item">3. 使用场景</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、-Git规范"><span class="level-left"><span class="level-item">三、 Git规范</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-提交流程规范"><span class="level-left"><span class="level-item">1. 提交流程规范</span></span></a></li><li><a class="level is-mobile" href="#2-提交信息规范"><span class="level-left"><span class="level-item">2. 提交信息规范</span></span></a></li><li><a class="level is-mobile" href="#3-提交粒度"><span class="level-left"><span class="level-item">3. 提交粒度</span></span></a></li><li><a class="level is-mobile" href="#4-pull-merge-vs-pull-rebase"><span class="level-left"><span class="level-item">4. pull merge vs pull rebase</span></span></a></li><li><a class="level is-mobile" href="#5-分支命名规范"><span class="level-left"><span class="level-item">5. 分支命名规范</span></span></a></li><li><a class="level is-mobile" href="#6-cherry-pick后小心revert"><span class="level-left"><span class="level-item">6. cherry-pick后小心revert</span></span></a></li></ul></li><li><a class="level is-mobile" href="#四、-Git工作流"><span class="level-left"><span class="level-item">四、 Git工作流</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-TBD：Trunk-based-development"><span class="level-left"><span class="level-item">1. TBD：Trunk-based development</span></span></a></li><li><a class="level is-mobile" href="#2-Git-Flow"><span class="level-left"><span class="level-item">2. Git Flow</span></span></a></li><li><a class="level is-mobile" href="#3-GitHub-Flow"><span class="level-left"><span class="level-item">3. GitHub Flow</span></span></a></li><li><a class="level is-mobile" href="#4-对比"><span class="level-left"><span class="level-item">4. 对比</span></span></a></li></ul></li></ul></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

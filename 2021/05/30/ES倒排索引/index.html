@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、倒排索引倒排索引概念倒排索引是适用于全文检索的一种索引结构，ES使用的正是这种结构。把一段需要建立倒排索引的文本（document）进行分词，然后建立词（term）到文本（document）的一对多的映射关系。这种由document内容反向索引documentId的映射结构，称为反向索引。"><meta property="og:type" content="blog"><meta property="og:title" content="ES倒排索引"><meta property="og:url" content="https://kivihub.github.io/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、倒排索引倒排索引概念倒排索引是适用于全文检索的一种索引结构，ES使用的正是这种结构。把一段需要建立倒排索引的文本（document）进行分词，然后建立词（term）到文本（document）的一对多的映射关系。这种由document内容反向索引documentId的映射结构，称为反向索引。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/image-20210531224654129.png"><meta property="article:published_time" content="2021-05-30T08:18:47.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:23.580Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/image-20210531224654129.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/"},"headline":"ES倒排索引","image":["https://kivihub.github.io/thumbnail/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/image-20210531224654129.png"],"datePublished":"2021-05-30T08:18:47.000Z","dateModified":"2026-01-15T03:18:23.580Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、倒排索引倒排索引概念倒排索引是适用于全文检索的一种索引结构，ES使用的正是这种结构。把一段需要建立倒排索引的文本（document）进行分词，然后建立词（term）到文本（document）的一对多的映射关系。这种由document内容反向索引documentId的映射结构，称为反向索引。"}</script><link rel="canonical" href="https://kivihub.github.io/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-30T08:18:47.000Z" title="5/30/2021, 4:18:47 PM">2021-05-30</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">分布式中间件</a><span> / </span><a class="link-muted" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch/">Elasticsearch</a></span><span class="level-item">4 分钟读完 (大约567个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">ES倒排索引</h1><div class="content"><h4 id="一、倒排索引"><a href="#一、倒排索引" class="headerlink" title="一、倒排索引"></a>一、倒排索引</h4><h4 id="倒排索引概念"><a href="#倒排索引概念" class="headerlink" title="倒排索引概念"></a>倒排索引概念</h4><p>倒排索引是适用于全文检索的一种索引结构，ES使用的正是这种结构。把一段需要建立倒排索引的文本（document）进行分词，然后建立词（term）到文本（document）的一对多的映射关系。这种由document内容反向索引documentId的映射结构，称为反向索引。</p>
+<span id="more"></span>
+
+<p>与反向索引相对的是正向索引，其会根据docuemntId去索引文本内容。</p>
+<h4 id="书籍类比"><a href="#书籍类比" class="headerlink" title="书籍类比"></a>书籍类比</h4><blockquote>
+<p>书籍每页的内容可看作document，页码可看作documentId，关键字可看作term。</p>
+</blockquote>
+<p>正排索引相当于书籍的目录，我们可以根据页码索引到文章：</p>
+<p><img src="/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/pic/image-20210531224654129.png" alt="image-20210531224654129"></p>
+<p>倒排索引则相当于书籍后面的关键字索引，我们可以根据关键字索引到包含其的文档的页码。</p>
+<p><img src="/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/pic/image-20210531224640698.png" alt="image-20210531224640698"></p>
+<h4 id="二、ES倒排索引结构"><a href="#二、ES倒排索引结构" class="headerlink" title="二、ES倒排索引结构"></a>二、ES倒排索引结构</h4><blockquote>
+<p>ES的倒排索引是Index内document的field级别的(<a target="_blank" rel="noopener" href="https://codingexplained.com/coding/elasticsearch/understanding-the-inverted-index-in-elasticsearch">参考</a>)。即，每个Index下document中需要建立索引的field，都会建立一个单独的倒排索引结构。</p>
+</blockquote>
+<p>ES是Lucene的封装，底层用的是lucene存储结构，<a target="_blank" rel="noopener" href="https://lucene.apache.org/core/3_0_3/fileformats.html#Positions">lucene存储结构链接</a>，其所有文件类型如下：</p>
+<p><img src="/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/pic/image-20210531234248786.png" alt="image-20210531234248786"></p>
+<p>从其文档可看出，Lucene把term位置，出现频率，term字典单独存储，然后在term字典里隐式的指向了频率文件，位置文件的位置。</p>
+<p>下面图片（<a target="_blank" rel="noopener" href="https://ningg.top/elastic-series-03-elastic-lucene-data-structure/">图片来源</a>）与Lucene文件的对应关系：</p>
+<p>1）Posting List对应<code>.prx</code>文件；</p>
+<p>2）Term Dictionary对应<code>.tis</code>文件</p>
+<p>3）Term Index对应<code>.tii</code>文件</p>
+<p><img src="/2021/05/30/ES%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95/pic/lucene-index-details.png" alt="img"></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/inverted-index.html">ES官方文档 —— 倒排索引</a></li>
+<li><a target="_blank" rel="noopener" href="https://lucene.apache.org/core/3_0_3/fileformats.html">Lucene官方文档——倒排索引文件格式</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/7727686/whats-the-difference-between-an-inverted-index-and-a-plain-old-index">stackoverflow - whats-the-difference-between-an-inverted-index-and-a-plain-old-index</a></li>
+<li><a target="_blank" rel="noopener" href="https://codingexplained.com/coding/elasticsearch/understanding-the-inverted-index-in-elasticsearch">https://codingexplained.com/coding/elasticsearch/understanding-the-inverted-index-in-elasticsearch</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/06/01/ES%E7%9A%84%E4%B9%90%E8%A7%82%E9%94%81/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">ES的乐观锁</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/05/30/%E5%85%B3%E4%BA%8EDubbo%E7%9A%84%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/"><span class="level-item">关于Dubbo的重试机制</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、倒排索引"><span class="level-left"><span class="level-item">一、倒排索引</span></span></a></li><li><a class="level is-mobile" href="#倒排索引概念"><span class="level-left"><span class="level-item">倒排索引概念</span></span></a></li><li><a class="level is-mobile" href="#书籍类比"><span class="level-left"><span class="level-item">书籍类比</span></span></a></li><li><a class="level is-mobile" href="#二、ES倒排索引结构"><span class="level-left"><span class="level-item">二、ES倒排索引结构</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

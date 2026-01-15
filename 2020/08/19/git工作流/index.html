@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、TBD：Trunk-based development1. 特点"><meta property="og:type" content="blog"><meta property="og:title" content="git工作流"><meta property="og:url" content="https://kivihub.github.io/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、TBD：Trunk-based development1. 特点"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/git%E5%B7%A5%E4%BD%9C%E6%B5%81/link.png"><meta property="article:published_time" content="2020-08-19T03:08:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:22.732Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/git%E5%B7%A5%E4%BD%9C%E6%B5%81/link.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/"},"headline":"git工作流","image":["https://kivihub.github.io/thumbnail/git%E5%B7%A5%E4%BD%9C%E6%B5%81/link.png"],"datePublished":"2020-08-19T03:08:00.000Z","dateModified":"2026-01-15T03:18:22.732Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、TBD：Trunk-based development1. 特点"}</script><link rel="canonical" href="https://kivihub.github.io/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-08-19T03:08:00.000Z" title="8/19/2020, 11:08:00 AM">2020-08-19</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Git/">Git</a></span><span class="level-item">4 分钟读完 (大约594个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">git工作流</h1><div class="content"><!-- date: 2020.08.19 11:08 -->
+<h4 id="一、TBD：Trunk-based-development"><a href="#一、TBD：Trunk-based-development" class="headerlink" title="一、TBD：Trunk-based development"></a>一、TBD：Trunk-based development</h4><h5 id="1-特点"><a href="#1-特点" class="headerlink" title="1. 特点"></a>1. 特点</h5><span id="more"></span>
+<ul>
+<li>TBD的特点是所有团队成员都在单个主干分支上进行开发。</li>
+<li>简单易操作，减少分支切换，流行于SVN（svn trunck &#x3D; git master）</li>
+</ul>
+<h5 id="2-流程"><a href="#2-流程" class="headerlink" title="2. 流程"></a>2. 流程</h5><p><img src="/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/pic/link.png" alt="img"></p>
+<ul>
+<li>当需要发布时，先考虑使用标签（<code>tag</code>）,即<code>tag</code>某个<code>commit</code>来作为发布的版本。</li>
+<li>如果仅仅依靠<code>tag</code>不能满足要求，则从主干分支创建发布分支。</li>
+<li><code>bug</code>修复在主干分支进行，再<code>cherry-pick</code>到发布分支</li>
+</ul>
+<p><img src="/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/pic/1240-20210115033950235.png" alt="TBD"></p>
+<h4 id="二、Git-Flow"><a href="#二、Git-Flow" class="headerlink" title="二、Git Flow"></a>二、<a target="_blank" rel="noopener" href="https://nvie.com/posts/a-successful-git-branching-model/">Git Flow</a></h4><h5 id="1-适合场景"><a href="#1-适合场景" class="headerlink" title="1. 适合场景"></a>1. 适合场景</h5><ul>
+<li>适合维护多个发布版本</li>
+<li>流程较其他工作流复杂</li>
+</ul>
+<h5 id="2-分支描述"><a href="#2-分支描述" class="headerlink" title="2. 分支描述"></a>2. 分支描述</h5><p>1）长期分支</p>
+<ul>
+<li>develop：开发分支，稳定后可并入master；</li>
+<li>master：HEAD总处于可发布态；每个版本对应一个tag；</li>
+</ul>
+<p>2）辅助分支</p>
+<h5 id="feature"><a href="#feature" class="headerlink" title="feature"></a>feature</h5><ul>
+<li><p>通常是本地分支，合并回develop后删除；</p>
+</li>
+<li><p>may from <code>develop</code></p>
+</li>
+<li><p>must merge back to <code>develop</code></p>
+<pre><code>* (develop)：git merge --no-ff，体现出特性
+</code></pre>
+</li>
+</ul>
+<h5 id="release"><a href="#release" class="headerlink" title="release"></a>release</h5><ul>
+<li><p>合并回master和develop后删除；</p>
+</li>
+<li><p>may from <code>develop</code></p>
+</li>
+<li><p>must merge back to <code>develop</code> and <code>master</code></p>
+<pre><code>* (master)：git merge --no-ff，体现出特性
+* (devlop)：git merge --no-ff，体现出特性
+</code></pre>
+</li>
+<li><p>迁出分支后，首先修改为新版本号；</p>
+</li>
+</ul>
+<h5 id="hotfix"><a href="#hotfix" class="headerlink" title="hotfix"></a>hotfix</h5><ul>
+<li><p>May from master</p>
+</li>
+<li><p>Must merge back to <code>develop</code> and <code>master</code></p>
+<pre><code>* (master)：git merge --no-ff，体现出特性
+* (devlop)：git merge --no-ff，体现出特性（当release分支存在时优先合并进release分支，由release分支合并进develop）
+</code></pre>
+</li>
+<li><p>迁出分支后，首先修改为新版本号；<br><img src="/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/pic/1240-20210115033950520.png" alt="git flow"></p>
+</li>
+</ul>
+<h4 id="三、GitHub-Flow"><a href="#三、GitHub-Flow" class="headerlink" title="三、GitHub Flow"></a>三、GitHub Flow</h4><p>1）特点：</p>
+<ul>
+<li>简单实用</li>
+</ul>
+<p>2）流程</p>
+<ul>
+<li><code>master</code>分支中也是代表着稳定的代码。该分支已经或即将被部署在生产环境</li>
+<li>当需要进行任何修改时，总是从<code>master</code>分支创建新分支。完成之后通过<code>pull request</code>和相关的代码审查来合并回<code>master</code>分支</li>
+<li>hotfix, feature分支都遵循上面的准则；<br><img src="/2020/08/19/git%E5%B7%A5%E4%BD%9C%E6%B5%81/pic/1240-20210115033950453-0653190.png" alt="github flow"></li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://www.atlassian.com/git/tutorials/comparing-workflows">工作流对比</a></li>
+<li><a target="_blank" rel="noopener" href="https://nvie.com/posts/a-successful-git-branching-model/">一个成功的GIT分支模型-GITFLOW</a></li>
+<li><a target="_blank" rel="noopener" href="https://paulhammant.com/2013/04/05/what-is-trunk-based-development/">TBD介绍</a></li>
+<li>TBD和GitFlow对比<ol>
+<li><a target="_blank" rel="noopener" href="https://www.toptal.com/software/trunk-based-development-git-flow">https://www.toptal.com/software/trunk-based-development-git-flow</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.devbridge.com/articles/branching-strategies-git-flow-vs-trunk-based-development/">https://www.devbridge.com/articles/branching-strategies-git-flow-vs-trunk-based-development/</a></li>
+</ol>
+</li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/08/20/%E8%BF%94%E5%9B%9E%E5%80%BC%E9%87%8C%E8%97%8F%E7%9D%80%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">返回值里藏着异常信息</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/08/19/Git%E5%88%86%E4%BA%AB/"><span class="level-item">Git分享</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、TBD：Trunk-based-development"><span class="level-left"><span class="level-item">一、TBD：Trunk-based development</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-特点"><span class="level-left"><span class="level-item">1. 特点</span></span></a></li><li><a class="level is-mobile" href="#2-流程"><span class="level-left"><span class="level-item">2. 流程</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、Git-Flow"><span class="level-left"><span class="level-item">二、Git Flow</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-适合场景"><span class="level-left"><span class="level-item">1. 适合场景</span></span></a></li><li><a class="level is-mobile" href="#2-分支描述"><span class="level-left"><span class="level-item">2. 分支描述</span></span></a></li><li><a class="level is-mobile" href="#feature"><span class="level-left"><span class="level-item">feature</span></span></a></li><li><a class="level is-mobile" href="#release"><span class="level-left"><span class="level-item">release</span></span></a></li><li><a class="level is-mobile" href="#hotfix"><span class="level-left"><span class="level-item">hotfix</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、GitHub-Flow"><span class="level-left"><span class="level-item">三、GitHub Flow</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

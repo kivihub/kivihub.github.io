@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、ES索引分片设置原则 存储的数据如果是持续增长的，需要周期建索引进行水平拆分（按小时，按日，按月等），来保证以下的分片原则。  1）副本分片用于保证安全，至少设置为1。副本约多，越影响写入性能。"><meta property="og:type" content="blog"><meta property="og:title" content="ES索引分片数设置原则"><meta property="og:url" content="https://kivihub.github.io/2021/05/19/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、ES索引分片设置原则 存储的数据如果是持续增长的，需要周期建索引进行水平拆分（按小时，按日，按月等），来保证以下的分片原则。  1）副本分片用于保证安全，至少设置为1。副本约多，越影响写入性能。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/image-20210519163138634.png"><meta property="article:published_time" content="2021-05-19T09:25:03.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:23.741Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/image-20210519163138634.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2021/05/19/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/"},"headline":"ES索引分片数设置原则","image":["https://kivihub.github.io/thumbnail/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/image-20210519163138634.png"],"datePublished":"2021-05-19T09:25:03.000Z","dateModified":"2026-01-15T03:18:23.741Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、ES索引分片设置原则 存储的数据如果是持续增长的，需要周期建索引进行水平拆分（按小时，按日，按月等），来保证以下的分片原则。  1）副本分片用于保证安全，至少设置为1。副本约多，越影响写入性能。"}</script><link rel="canonical" href="https://kivihub.github.io/2021/05/19/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-19T09:25:03.000Z" title="5/19/2021, 5:25:03 PM">2021-05-19</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">分布式中间件</a><span> / </span><a class="link-muted" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch/">Elasticsearch</a></span><span class="level-item">6 分钟读完 (大约952个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">ES索引分片数设置原则</h1><div class="content"><h3 id="一、ES索引分片设置原则"><a href="#一、ES索引分片设置原则" class="headerlink" title="一、ES索引分片设置原则"></a>一、ES索引分片设置原则</h3><blockquote>
+<p>存储的数据如果是持续增长的，需要周期建索引进行水平拆分（按小时，按日，按月等），来保证以下的分片原则。</p>
+</blockquote>
+<p>1）副本分片用于保证安全，至少设置为1。副本约多，越影响写入性能。</p>
+<span id="more"></span>
+
+<p>2）分片总数（主分片 + 副本分片）最好是集群节点数量的倍数，保证可以均匀分配，避免数据倾斜。</p>
+<p>3）每个分片大小最好处于10G-65G间。</p>
+<p>4）单数据节点上，每GB堆内存不能超过20个分片。</p>
+<h3 id="二、线上实战"><a href="#二、线上实战" class="headerlink" title="二、线上实战"></a>二、线上实战</h3><p>假设我目前有个日志存储的场景如下：</p>
+<p><img src="/2021/05/19/ES%E7%B4%A2%E5%BC%95%E5%88%86%E7%89%87%E6%95%B0%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99/pic/image-20210519163138634.png" alt="image-20210519163138634"></p>
+<blockquote>
+<p> ES集群信息：</p>
+<ul>
+<li><p>ES有9个数据节点，单数据节点规格为16核64G 7000GB</p>
+</li>
+<li><p>含协调节点和主节点</p>
+</li>
+</ul>
+</blockquote>
+<h5 id="1）确认索引创建周期"><a href="#1）确认索引创建周期" class="headerlink" title="1）确认索引创建周期"></a>1）确认索引创建周期</h5><p>从管理维度上考虑，选择“按日”新建索引，格式类似“my_log_yyyy-MM-dd”</p>
+<h5 id="2）确认索引的数据量"><a href="#2）确认索引的数据量" class="headerlink" title="2）确认索引的数据量"></a>2）确认索引的数据量</h5><p>ø 如果ES中已存在数据，观察ES每日索引的大小，<code>GET _cat/indices</code>。</p>
+<p>ø 如果还未有数据，则根据每日的日志条数和平均日志大小，评估索引数据量。</p>
+<p>Note：根据观察MQ的日流量和ES的索引值，发现ES是MQ的80%大小（具体比例跟索引mapping中字段类型有关，请就地勘测）。</p>
+<table>
+<thead>
+<tr>
+<th>MQ生产流量</th>
+<th>ES索引大小（不含副本）</th>
+<th>比例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>732.145GB</td>
+<td>581.9GB</td>
+<td>79.5%</td>
+</tr>
+<tr>
+<td>2.964TB</td>
+<td>2.25TB</td>
+<td>75.9%</td>
+</tr>
+<tr>
+<td>3.07TB</td>
+<td>2.3TB</td>
+<td>74.9%</td>
+</tr>
+</tbody></table>
+<p>假设，当前每日索引存储（不含副本）需要800GB。</p>
+<h5 id="3）计算索引分片数"><a href="#3）计算索引分片数" class="headerlink" title="3）计算索引分片数"></a>3）计算索引分片数</h5><ul>
+<li><p>根据每GB堆内存不超过20个分片，假设当前堆内存设置为31G</p>
+<ul>
+<li>单节点最大支持：<code>31 * 20 = 620</code>分片</li>
+<li>按单分片50G，则磁盘相应大小为<code>620 * 50G  = 31T</code>，考虑80%负载，磁盘需要38.75T</li>
+<li>以上结论可知当，单分片为50G，磁盘空间小于38.75T时，肯定符合每GB堆内存不超过20个分片</li>
+</ul>
+</li>
+<li><p>按单分片为50GB，则每日索引不含副本共需要<code>800G/50G = 16</code>个分片</p>
+</li>
+<li><p>索引副本数设置为1，则每日索引含副本共需要<code>16 * 2 = 32</code>个分片</p>
+</li>
+<li><p>由以上得出的分片数，再考虑分片需要为数据节点数量的整数倍（9的倍数），最终设置日索引分片为18，副本为1</p>
+</li>
+</ul>
+<h5 id="4）推算索引保留时间"><a href="#4）推算索引保留时间" class="headerlink" title="4）推算索引保留时间"></a>4）推算索引保留时间</h5><p>粗略估算如下：</p>
+<ul>
+<li>饱和存储：<code>7000G * 9个数据节点 / (800G * 2) = 39.375天</code></li>
+<li>80%存储：<code>39.375 * 80% = 31.5天</code></li>
+<li>58%存储：<code>39.375 *  58.8% = 23.2天</code></li>
+</ul>
+<h3 id="三、磁盘容量评估"><a href="#三、磁盘容量评估" class="headerlink" title="三、磁盘容量评估"></a>三、磁盘容量评估</h3><blockquote>
+<p>参考阿里云：<a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/72660.html">https://help.aliyun.com/document_detail/72660.html</a></p>
+<ul>
+<li>副本数量：至少1个副本。</li>
+<li>索引开销：通常比源数据大10%（<code>_all</code>参数等未计算）。</li>
+<li>操作系统预留：默认操作系统会保留5%的文件系统供您处理关键流程、系统恢复以及磁盘碎片等。</li>
+<li>Elasticsearch内部开销：段合并、日志等内部操作，预留20%。</li>
+<li>安全阈值：通常至少预留15%的安全阈值。</li>
+</ul>
+<p>根据以上因素得到：最小磁盘总大小 &#x3D; 源数据大小 * 3.4。计算方式如下。</p>
+<p>磁盘总大小 &#x3D; 源数据 <em>（1 + 副本数量）</em> 索引开销 &#x2F;（1 - Linux预留空间）&#x2F;（1 - Elasticsearch开销）&#x2F;（1 - 安全阈值）</p>
+<p>&#x3D; 源数据 <em>（1 + 副本数量）</em> 1.7</p>
+<p>&#x3D; 源数据 * 3.4</p>
+</blockquote>
+<h3 id="参考"><a href="#参考" class="headerlink" title="# 参考"></a># 参考</h3><ol>
+<li><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/size-your-shards.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/size-your-shards.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/72660.html">ES规格容量评估</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/6.5/heap-size.html">ES6.5 堆内存设置</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f9d4c88367d3">ES堆内存该设置多大</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/05/20/MQ%E7%A7%AF%E5%8E%8B2%E4%BA%BF%E4%BA%86/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">MQ积压2亿了</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/05/15/Dubbo%E6%9C%8D%E5%8A%A1%E5%8F%91%E5%B8%83%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><span class="level-item">Dubbo服务发布源码分析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、ES索引分片设置原则"><span class="level-left"><span class="level-item">一、ES索引分片设置原则</span></span></a></li><li><a class="level is-mobile" href="#二、线上实战"><span class="level-left"><span class="level-item">二、线上实战</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）确认索引创建周期"><span class="level-left"><span class="level-item">1）确认索引创建周期</span></span></a></li><li><a class="level is-mobile" href="#2）确认索引的数据量"><span class="level-left"><span class="level-item">2）确认索引的数据量</span></span></a></li><li><a class="level is-mobile" href="#3）计算索引分片数"><span class="level-left"><span class="level-item">3）计算索引分片数</span></span></a></li><li><a class="level is-mobile" href="#4）推算索引保留时间"><span class="level-left"><span class="level-item">4）推算索引保留时间</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、磁盘容量评估"><span class="level-left"><span class="level-item">三、磁盘容量评估</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item"># 参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、前置问题 什么是索引？"><meta property="og:type" content="blog"><meta property="og:title" content="MySql和B+树"><meta property="og:url" content="https://kivihub.github.io/2020/05/14/MySql%E5%92%8CB+%E6%A0%91/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、前置问题 什么是索引？"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2020-05-13T16:14:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:17.650Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/05/14/MySql%E5%92%8CB+%E6%A0%91/"},"headline":"MySql和B+树","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2020-05-13T16:14:00.000Z","dateModified":"2026-01-15T03:18:17.650Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、前置问题 什么是索引？"}</script><link rel="canonical" href="https://kivihub.github.io/2020/05/14/MySql%E5%92%8CB+%E6%A0%91/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-05-13T16:14:00.000Z" title="5/14/2020, 12:14:00 AM">2020-05-14</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Mysql/">Mysql</a></span><span class="level-item">17 分钟读完 (大约2523个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">MySql和B+树</h1><div class="content"><!-- date: 2020.05.14 00:14 -->
+<h4 id="一、前置问题"><a href="#一、前置问题" class="headerlink" title="一、前置问题"></a>一、前置问题</h4><ol>
+<li>什么是索引？</li>
+</ol>
+<span id="more"></span>
+<ol start="2">
+<li><p>为什么数据库要建索引？不建索引可以吗？索引是不是越多越好？</p>
+</li>
+<li><p>Mysql是通过索引从硬盘里找到对应的行记录吗？</p>
+</li>
+<li><p>有序树，平衡树，红黑树，B树和B+树的关系？</p>
+</li>
+<li><p>mysql为什么使用B+树实现索引结构？HashMap为什么使用红黑树？</p>
+</li>
+<li><p>mysql存储引擎索引的分裂方式是传统的中间分裂吗？</p>
+</li>
+<li><p>聚集索引和非聚集索引的区别？聚集索引的叶子节点一定包含了完整数据吗？</p>
+</li>
+<li><p>聚集索引是严格按照物理顺利存储的吗？</p>
+</li>
+<li><p>主键，联合主键的概念？主键可以有多个吗？主键和索引的关系？</p>
+</li>
+<li><p>联合索引和联合主键的关系？</p>
+</li>
+<li><p>为什么主键建议使用整形自增？</p>
+</li>
+<li><p>如果删除了所有索引，还能进行查询和删除操作吗，速度怎么样？</p>
+</li>
+<li><p>覆盖索引是什么？它解决了什么问题？</p>
+</li>
+<li><p>联合索引为什么遵循最左前缀原则？查询条件中的两个联合索引字段可以颠倒吗？</p>
+</li>
+<li><p>如何分析SQL语句是否使用了索引？什么是执行计划？</p>
+</li>
+</ol>
+<h4 id="二、数据库管理海量数据带来的挑战"><a href="#二、数据库管理海量数据带来的挑战" class="headerlink" title="二、数据库管理海量数据带来的挑战"></a>二、数据库管理海量数据带来的挑战</h4><p>数据库作为一个管理数据的一个软件，管理海量数据是必须满足的一个特性。海量的数据必然是持久化到主机磁盘上，数据库需要通过IO操作访问磁盘来实现数据的读写功能。此时面临的挑战是如何高性能的读取数据，其中的一个关键指标是减少IO次数。</p>
+<p><strong>为了减少IO和提高数据访问效率，需要依赖某种数据结构来对海量的数据建立一个地址表，这种数据结构被称为索引（index）。</strong></p>
+<p>目前主要有两个方案：1）Hash索引；2）B+树索引。本文讨论B+树索引。</p>
+<h4 id="三、海量的数据迫使数据库使用B-树索引"><a href="#三、海量的数据迫使数据库使用B-树索引" class="headerlink" title="三、海量的数据迫使数据库使用B+树索引"></a>三、海量的数据迫使数据库使用B+树索引</h4><blockquote>
+<p>数据库为了应对海量数据的索引需要解决几个痛点：</p>
+<p>1）通过索引快速查找数据；</p>
+<p>2）数据更新时易于索引维护；</p>
+<p>3）海量数据时IO次数较少；</p>
+<p>4）支持Range操作；</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>树的类型</th>
+<th>解决痛点</th>
+<th>缺陷</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>二叉查找树</td>
+<td>1）数据量小时可快速查找</td>
+<td>极端情况下可能成为一条链，导致查询的时间复杂度为O(n)</td>
+</tr>
+<tr>
+<td>平衡二叉树</td>
+<td>1）数据量小时可快速查找<br/>2）完全平衡的特性使其查询的时间复杂度可以稳定到O(logn)</td>
+<td>维护平衡的开销太大</td>
+</tr>
+<tr>
+<td>红黑树</td>
+<td>1）数据量小时可快速查找；<br/>2）非完全平衡的特性使查询时间复杂度接近O(log2n)；<br/>3）维护平衡的开销较小</td>
+<td>海量数据时，二叉树的高度太高，会增加IO次数</td>
+</tr>
+<tr>
+<td>B树（平衡多叉树，B指balance）</td>
+<td>1）海量数据时可快速查找；<br/>2）平衡特性使其查询的时间复杂度为O(logxn)；<br/> 3）维护平衡的开销较小；<br/>4）高扇出使其树的高度不高，一般在2-4层。</td>
+<td>非叶子节点包含完整数据，导致索引过大，内存每次IO加载的索引数量减少，从而引发多次IO</td>
+</tr>
+<tr>
+<td>B+树</td>
+<td>几乎解决了数据库的所有痛点，且支持range操作</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>从上图可知HashMap使用红黑树的原因主要有三点：</p>
+<p>1）其存储的数据量较小；</p>
+<p>2）需要符合快速查找；</p>
+<p>3）减小维护平衡的开销；</p>
+<p>4）不需要range操作；</p>
+<p>延伸一点：</p>
+<ol>
+<li><p>索引并不是越多越好，应该有个平衡，过多的索引必然会增大维护索引的开销，同时会导致磁盘IO的增加。</p>
+</li>
+<li><p>为了增加IO的效率，索引并不是定位到磁盘里的具体某一行，而是读取该行所在的页（页是mysql管理磁盘的最小单位）到内存，然后在内存里通过二分查找定位具体的记录（虽然记录间通过双向链表连接，但是PageDirectory里的Slot是按顺序排）。</p>
+</li>
+</ol>
+<h4 id="四、聚集索引和非聚集索引"><a href="#四、聚集索引和非聚集索引" class="headerlink" title="四、聚集索引和非聚集索引"></a>四、聚集索引和非聚集索引</h4><blockquote>
+<p>聚集或非聚集指的是索引和数据是否聚集</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>特性</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>聚集索引</td>
+<td>1）和数据聚集在一起的索引，其叶子节点保存的是完整数据。<br/>2）所以叶子节点的顺序是按照聚集索引来组织和排序的，但物理存储时不是严格按照物理顺序存储的（页之间，页内记录之间通过双向链表来连接）；<br/></td>
+<td>1）查询效率比非聚集索引高；<br/></td>
+<td>1）重建索引开销较大；</td>
+</tr>
+<tr>
+<td>非聚集索引</td>
+<td>1）索引的叶子节点不包含完整数据，代替的聚集索引的id；<br/>2）数据的物理存储与非聚集索引不相关；<br/>3）是对非聚集索引的补充，以应对其他查询需求；</td>
+<td>1）非聚集索引占用空间较小；<br/>2）重建索引开销较小；</td>
+<td>1）不考虑覆盖索引的情况时，查询效率较低（因为非聚集索引查询后，需再去查询聚集索引，即查找两棵树）</td>
+</tr>
+</tbody></table>
+<h4 id="五、主键和索引的关系"><a href="#五、主键和索引的关系" class="headerlink" title="五、主键和索引的关系"></a>五、主键和索引的关系</h4><blockquote>
+<p><strong>主键</strong>：指的是一个列或多列的组合，其值能唯一地标识表中的每一行，通过它可强制表的实体完整性。其中多列组合的主键称为<strong>联合主键</strong>；</p>
+<p>**简单来说，主键是数据库的表来标识每行记录的唯一性和完整性的一个或多个列的组合；**每张表最多只有一个主键。</p>
+</blockquote>
+<h5 id="1）主键和索引在概念是没有任何关系"><a href="#1）主键和索引在概念是没有任何关系" class="headerlink" title="1）主键和索引在概念是没有任何关系"></a>1）主键和索引在概念是没有任何关系</h5><p>由以上概念得知主键是数据库管理和组织表数据的一种逻辑上的概念；而索引是查找表数据的一种数据结构概念；两者在概念上没有关系；</p>
+<h5 id="2）InnoDB的聚集索引的三种来源"><a href="#2）InnoDB的聚集索引的三种来源" class="headerlink" title="2）InnoDB的聚集索引的三种来源"></a>2）InnoDB的聚集索引的三种来源</h5><h6 id="a-主键存在"><a href="#a-主键存在" class="headerlink" title="a. 主键存在"></a>a. 主键存在</h6><p>由于主键具有唯一性，所以InnoDb会在主键存在时优先使用主键创建索引，即主键索引，此时的主键索引也就是聚集索引。</p>
+<h6 id="b-主键不存在，但存在非空的唯一索引"><a href="#b-主键不存在，但存在非空的唯一索引" class="headerlink" title="b. 主键不存在，但存在非空的唯一索引"></a>b. 主键不存在，但存在非空的唯一索引</h6><h6 id="c-生成隐藏主键（整形递增）"><a href="#c-生成隐藏主键（整形递增）" class="headerlink" title="c. 生成隐藏主键（整形递增）"></a>c. 生成隐藏主键（整形递增）</h6><p>数据库如果没有指定主键和非空唯一索引，那么会生成一个隐藏列来作为索引列；所以即便没有声明主键和索引也可以进行查询和DML操作；</p>
+<h4 id="六、自增主键是一种InnoDb索引规范"><a href="#六、自增主键是一种InnoDb索引规范" class="headerlink" title="六、自增主键是一种InnoDb索引规范"></a>六、自增主键是一种InnoDb索引规范</h4><p>DBA们千万次叮咛我们使用整型自增主键主要基于以下事实：</p>
+<p>1）整型的比较比字符串要高效，提高查找索引树的速度；</p>
+<p>2）InnoDb的索引页的分裂会判断插入是否是随机的，如果是随机的会通过中间分裂；如果是有序的则为了保证页的满载（否则数据页中的数据始终为半页的负载），则会以插入记录作为分裂点；</p>
+<p>3）自增是使新增的记录都放到末尾，且以他作为分裂点，使得每页处于满载态；否则会频繁出现分裂，必然引起磁盘碎片和增大维护索引的开销；</p>
+<h4 id="七、联合索引和聚集索引关系"><a href="#七、联合索引和聚集索引关系" class="headerlink" title="七、联合索引和聚集索引关系"></a>七、联合索引和聚集索引关系</h4><ul>
+<li>联合索引是指该索引由多个字段组合而成，重点在多个字段组成索引；</li>
+<li>聚集索引指的是索引和数据聚合在一起，重点在数据和索引聚合；</li>
+</ul>
+<p>两个概念是不同维度的，相互正交；所以有些情况下他们是有重叠的。例如以下情况时联合索引就是聚集索引：<br>1）联合主键存在时，此时生成联合索引，也是聚集索引；</p>
+<p>2）主键不存在时，若有联合索引满足非空的条件，有可能被选择为聚集索引；</p>
+<h4 id="八、索引覆盖"><a href="#八、索引覆盖" class="headerlink" title="八、索引覆盖"></a>八、索引覆盖</h4><blockquote>
+<p>查找的数据就是索引字段，在非叶子节点就包含了要查询的列。</p>
+</blockquote>
+<p>例如有联合索引<em>idx_name_age</em>，那么SQL语句<em>select name from persion where name</em>就是一次索引覆盖的查询。</p>
+<h4 id="九、联合索引的最左前缀原则"><a href="#九、联合索引的最左前缀原则" class="headerlink" title="九、联合索引的最左前缀原则"></a>九、联合索引的最左前缀原则</h4><p>该原则基于一个事实是：联合索引是根据构成索引的列的先后顺序来排序的。</p>
+<p>例如：联合索引<em>idx_name_age_salary</em>，可类比为一个三位数字的排序：百位，十位，个位。</p>
+<h4 id="十、执行计划"><a href="#十、执行计划" class="headerlink" title="十、执行计划"></a>十、执行计划</h4><p>通过增加explain前缀可以查看mysql的执行计划，其中包含以下关键信息：<br>1）本次SQL的位置，是子查询还是主查询；</p>
+<p>2）复合查询的执行顺序；</p>
+<p>3）每次查询的访问类型或访问范围，全表，索引等；</p>
+<p>4）每个查询是是否使用了索引，使用的索引名称，及其判断条件；</p>
+<p>5）是否使用了fileSort；</p>
+<h4 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h4><ol>
+<li>MYSQL技术内幕 InnoDb存储引擎 第五章</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lice-blog/p/11569443.html">https://www.cnblogs.com/lice-blog/p/11569443.html</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/05/14/%E7%9C%8B%E6%BA%90%E7%A0%81%E7%9A%84%E5%A7%BF%E5%8A%BF/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">看源码的姿势</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/01/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/"><span class="level-item">CPU内存模型和LOCK指令</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、前置问题"><span class="level-left"><span class="level-item">一、前置问题</span></span></a></li><li><a class="level is-mobile" href="#二、数据库管理海量数据带来的挑战"><span class="level-left"><span class="level-item">二、数据库管理海量数据带来的挑战</span></span></a></li><li><a class="level is-mobile" href="#三、海量的数据迫使数据库使用B-树索引"><span class="level-left"><span class="level-item">三、海量的数据迫使数据库使用B+树索引</span></span></a></li><li><a class="level is-mobile" href="#四、聚集索引和非聚集索引"><span class="level-left"><span class="level-item">四、聚集索引和非聚集索引</span></span></a></li><li><a class="level is-mobile" href="#五、主键和索引的关系"><span class="level-left"><span class="level-item">五、主键和索引的关系</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）主键和索引在概念是没有任何关系"><span class="level-left"><span class="level-item">1）主键和索引在概念是没有任何关系</span></span></a></li><li><a class="level is-mobile" href="#2）InnoDB的聚集索引的三种来源"><span class="level-left"><span class="level-item">2）InnoDB的聚集索引的三种来源</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#a-主键存在"><span class="level-left"><span class="level-item">a. 主键存在</span></span></a></li><li><a class="level is-mobile" href="#b-主键不存在，但存在非空的唯一索引"><span class="level-left"><span class="level-item">b. 主键不存在，但存在非空的唯一索引</span></span></a></li><li><a class="level is-mobile" href="#c-生成隐藏主键（整形递增）"><span class="level-left"><span class="level-item">c. 生成隐藏主键（整形递增）</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#六、自增主键是一种InnoDb索引规范"><span class="level-left"><span class="level-item">六、自增主键是一种InnoDb索引规范</span></span></a></li><li><a class="level is-mobile" href="#七、联合索引和聚集索引关系"><span class="level-left"><span class="level-item">七、联合索引和聚集索引关系</span></span></a></li><li><a class="level is-mobile" href="#八、索引覆盖"><span class="level-left"><span class="level-item">八、索引覆盖</span></span></a></li><li><a class="level is-mobile" href="#九、联合索引的最左前缀原则"><span class="level-left"><span class="level-item">九、联合索引的最左前缀原则</span></span></a></li><li><a class="level is-mobile" href="#十、执行计划"><span class="level-left"><span class="level-item">十、执行计划</span></span></a></li><li><a class="level is-mobile" href="#参考资料："><span class="level-left"><span class="level-item">参考资料：</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

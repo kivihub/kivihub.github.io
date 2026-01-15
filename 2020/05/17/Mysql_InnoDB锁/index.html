@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Mysql有多种存储引擎，他们的锁机制也不尽相同。例如MyISAM不支持行锁只有表琐，所以本文主要讨论InnoDB引擎的锁机制。 一、前置问题"><meta property="og:type" content="blog"><meta property="og:title" content="Mysql_InnoDB锁"><meta property="og:url" content="https://kivihub.github.io/2020/05/17/Mysql_InnoDB%E9%94%81/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="Mysql有多种存储引擎，他们的锁机制也不尽相同。例如MyISAM不支持行锁只有表琐，所以本文主要讨论InnoDB引擎的锁机制。 一、前置问题"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2020-05-17T11:32:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:17.536Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/05/17/Mysql_InnoDB%E9%94%81/"},"headline":"Mysql_InnoDB锁","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2020-05-17T11:32:00.000Z","dateModified":"2026-01-15T03:18:17.536Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"Mysql有多种存储引擎，他们的锁机制也不尽相同。例如MyISAM不支持行锁只有表琐，所以本文主要讨论InnoDB引擎的锁机制。 一、前置问题"}</script><link rel="canonical" href="https://kivihub.github.io/2020/05/17/Mysql_InnoDB%E9%94%81/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-05-17T11:32:00.000Z" title="5/17/2020, 7:32:00 PM">2020-05-17</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Mysql/">Mysql</a></span><span class="level-item">8 分钟读完 (大约1243个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Mysql_InnoDB锁</h1><div class="content"><!-- date: 2020.05.17 19:32 -->
+<p>Mysql有多种存储引擎，他们的锁机制也不尽相同。例如MyISAM不支持行锁只有表琐，所以本文主要讨论InnoDB引擎的锁机制。</p>
+<h4 id="一、前置问题"><a href="#一、前置问题" class="headerlink" title="一、前置问题"></a>一、前置问题</h4><span id="more"></span>
+<ol>
+<li><p>为什么要有锁？锁对性能影响大吗？</p>
+</li>
+<li><p>锁有几种逻辑分类？</p>
+</li>
+<li><p>Innodb的锁是公平锁吗？</p>
+</li>
+<li><p>如何检测和避免死锁？Innodb会对死锁自动处理吗？</p>
+</li>
+<li><p>行锁是锁的什么？表琐是在哪一层实现的，服务器层还是存储引擎层？</p>
+</li>
+<li><p>表琐有几种？意向锁是什么？</p>
+</li>
+<li><p>mysql有锁升级吗？什么是锁升级？</p>
+</li>
+</ol>
+<h4 id="二、锁是维护数据一致性的必要条件"><a href="#二、锁是维护数据一致性的必要条件" class="headerlink" title="二、锁是维护数据一致性的必要条件"></a>二、锁是维护数据一致性的必要条件</h4><p>数据库在处理并发访问共享资源时，需要锁来保护资源数据的一致性。</p>
+<h4 id="三、锁分类"><a href="#三、锁分类" class="headerlink" title="三、锁分类"></a>三、锁分类</h4><h5 id="3-1-锁在层级上分为：1）服务器级别锁；2）存储引擎级别锁；"><a href="#3-1-锁在层级上分为：1）服务器级别锁；2）存储引擎级别锁；" class="headerlink" title="3.1 锁在层级上分为：1）服务器级别锁；2）存储引擎级别锁；"></a>3.1 锁在层级上分为：1）服务器级别锁；2）存储引擎级别锁；</h5><p>服务器锁：在mysql服务器层实现并发控制，会忽略存储引擎的锁；<br>存储引擎锁：在存储引擎层实现，锁的粒度一般比服务器层要更细；</p>
+<h5 id="3-2-锁从粒度上可分为：1）行锁；2）表琐；"><a href="#3-2-锁从粒度上可分为：1）行锁；2）表琐；" class="headerlink" title="3.2 锁从粒度上可分为：1）行锁；2）表琐；"></a>3.2 锁从粒度上可分为：1）行锁；2）表琐；</h5><p>两者都可以表现为共享性或排他性；</p>
+<h6 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h6><p>在存储引擎层实现;一般通过锁索引来实现；</p>
+<h6 id="表琐"><a href="#表琐" class="headerlink" title="表琐"></a>表琐</h6><p>1）Mysql服务器层；</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LOCK <span class="keyword">TABLE</span> t READ;</span><br><span class="line">LOCK <span class="keyword">TABLE</span> t WRITE;</span><br></pre></td></tr></table></figure>
+
+<p>2）InnoDB存储引擎也实现了一种表琐，意向锁（意向共享锁，意向排它锁）；</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id <span class="operator">&lt;</span> <span class="number">3</span> lock <span class="keyword">in</span> share mode;  <span class="operator">/</span><span class="operator">/</span> 表上加意向共享锁</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id <span class="operator">&lt;</span> <span class="number">3</span> lock <span class="keyword">for</span> <span class="keyword">update</span>;  <span class="operator">/</span><span class="operator">/</span> 表上加意向排它锁</span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;test&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">3</span>; <span class="operator">/</span><span class="operator">/</span> 表上加意向排它锁</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> t <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">3</span>;  <span class="operator">/</span><span class="operator">/</span> 表上加意向排它锁</span><br></pre></td></tr></table></figure>
+
+<p>意向锁是InnoDB在增加行锁时，同时在表上标记的一个信息。用于多个事务对表资源进行竞争获取锁时，避免去查看表中记录的行锁信息，提高了性能。<br>例如：事务A，执行语句<code>update t set name = &#39;test&#39; where id = 3;</code>时会加两把锁：<br>a. 在id&#x3D;3的索引上加行锁；<br>b. 在t表上增加意向排他锁：IX LOCK<br>此时，事务B要执行<code>LOCK TABLE t READ;</code>，需要在表上增加X锁。此时由于X,IX锁的不兼容，该事务被阻塞；</p>
+<h6 id="意向锁间兼容性"><a href="#意向锁间兼容性" class="headerlink" title="意向锁间兼容性"></a>意向锁间兼容性</h6><p>由于意向锁实际上是行锁的一种表级别的提示，他们都是要操作行，所以意向锁之间不会导致事务（在表级别）相互阻塞。如果是操作的相同行时通过行锁阻塞来实现并发控制。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>IX</th>
+<th>IS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IX</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+</tbody></table>
+<h6 id="读写表琐兼容性"><a href="#读写表琐兼容性" class="headerlink" title="读写表琐兼容性"></a>读写表琐兼容性</h6><table>
+<thead>
+<tr>
+<th></th>
+<th>X</th>
+<th>S</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>不兼容</td>
+<td>兼容</td>
+</tr>
+</tbody></table>
+<h6 id="意向锁和读写锁的兼容性"><a href="#意向锁和读写锁的兼容性" class="headerlink" title="意向锁和读写锁的兼容性"></a>意向锁和读写锁的兼容性</h6><table>
+<thead>
+<tr>
+<th></th>
+<th>X</th>
+<th>S</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IX</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>不兼容</td>
+<td>兼容</td>
+</tr>
+</tbody></table>
+<h5 id="3-3-锁在访问性上可分为：1）共享锁；2）排它锁"><a href="#3-3-锁在访问性上可分为：1）共享锁；2）排它锁" class="headerlink" title="3.3 锁在访问性上可分为：1）共享锁；2）排它锁"></a>3.3 锁在访问性上可分为：1）共享锁；2）排它锁</h5><p>共享锁：也称为读锁，多个用户可以获取某资源的共享锁，互不阻塞；<br>排它锁：也称为写锁，多个用户尝试去获取排他锁时，只有一个会成功，其他的被阻塞；</p>
+<h4 id="四、死锁"><a href="#四、死锁" class="headerlink" title="四、死锁"></a>四、死锁</h4><p>在InnoDb中两个或多个事务并发访问多个资源时，双发都请求对方占用的资源时，会发生死锁。</p>
+<h6 id="死锁原因"><a href="#死锁原因" class="headerlink" title="死锁原因"></a>死锁原因</h6><p>多个事务以不同的顺序去锁定资源时，就可能会发生死锁。</p>
+<h6 id="如何避免死锁"><a href="#如何避免死锁" class="headerlink" title="如何避免死锁"></a>如何避免死锁</h6><p>以相同的顺序去请求资源，并且可以设置等待超时时间避免一直等待下去；</p>
+<h6 id="如何解决死锁"><a href="#如何解决死锁" class="headerlink" title="如何解决死锁"></a>如何解决死锁</h6><p>InnoDB引擎检测到死锁时，强制回滚其中的一方事务，解锁争抢资源；</p>
+<h4 id="五、锁升级"><a href="#五、锁升级" class="headerlink" title="五、锁升级"></a>五、锁升级</h4><p>一般数据库把锁作为一种稀缺资源，当多个小粒度的锁开销较大时，会升级为一个粗粒度的锁来减小开销。类似java中的锁粗化；</p>
+<h4 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h4><p>1）Mysql中多个行锁升级为页锁，或页锁升级为表琐。<br>2）拿Java的锁粗化来举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomethingMethod</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span>(lock)&#123;</span><br><span class="line">        <span class="comment">//do some thing</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//这是还有一些代码，做其它不需要同步的工作，但能很快执行完毕</span></span><br><span class="line">    <span class="keyword">synchronized</span>(lock)&#123;</span><br><span class="line">        <span class="comment">//do other thing</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会被优化为以下形式；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomethingMethod</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">//进行锁粗化：整合成一次锁请求、同步、释放</span></span><br><span class="line">    <span class="keyword">synchronized</span>(lock)&#123;</span><br><span class="line">        <span class="comment">//do some thing</span></span><br><span class="line">        <span class="comment">//做其它不需要同步但能很快执行完的工作</span></span><br><span class="line">        <span class="comment">//do other thing</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="InnoDB没有锁升级"><a href="#InnoDB没有锁升级" class="headerlink" title="InnoDB没有锁升级"></a>InnoDB没有锁升级</h5><p>在InnoDB中锁通过位图实现，开销是一致的，无需升级。</p>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/05/19/while(true)%E5%92%8Cfor(;;)%E5%88%86%E6%9E%90/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">while(true)和for(;;)分析</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/14/%E7%9C%8B%E6%BA%90%E7%A0%81%E7%9A%84%E5%A7%BF%E5%8A%BF/"><span class="level-item">看源码的姿势</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、前置问题"><span class="level-left"><span class="level-item">一、前置问题</span></span></a></li><li><a class="level is-mobile" href="#二、锁是维护数据一致性的必要条件"><span class="level-left"><span class="level-item">二、锁是维护数据一致性的必要条件</span></span></a></li><li><a class="level is-mobile" href="#三、锁分类"><span class="level-left"><span class="level-item">三、锁分类</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-锁在层级上分为：1）服务器级别锁；2）存储引擎级别锁；"><span class="level-left"><span class="level-item">3.1 锁在层级上分为：1）服务器级别锁；2）存储引擎级别锁；</span></span></a></li><li><a class="level is-mobile" href="#3-2-锁从粒度上可分为：1）行锁；2）表琐；"><span class="level-left"><span class="level-item">3.2 锁从粒度上可分为：1）行锁；2）表琐；</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#行锁"><span class="level-left"><span class="level-item">行锁</span></span></a></li><li><a class="level is-mobile" href="#表琐"><span class="level-left"><span class="level-item">表琐</span></span></a></li><li><a class="level is-mobile" href="#意向锁间兼容性"><span class="level-left"><span class="level-item">意向锁间兼容性</span></span></a></li><li><a class="level is-mobile" href="#读写表琐兼容性"><span class="level-left"><span class="level-item">读写表琐兼容性</span></span></a></li><li><a class="level is-mobile" href="#意向锁和读写锁的兼容性"><span class="level-left"><span class="level-item">意向锁和读写锁的兼容性</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-3-锁在访问性上可分为：1）共享锁；2）排它锁"><span class="level-left"><span class="level-item">3.3 锁在访问性上可分为：1）共享锁；2）排它锁</span></span></a></li></ul></li><li><a class="level is-mobile" href="#四、死锁"><span class="level-left"><span class="level-item">四、死锁</span></span></a><ul class="menu-list"><ul class="menu-list"><li><a class="level is-mobile" href="#死锁原因"><span class="level-left"><span class="level-item">死锁原因</span></span></a></li><li><a class="level is-mobile" href="#如何避免死锁"><span class="level-left"><span class="level-item">如何避免死锁</span></span></a></li><li><a class="level is-mobile" href="#如何解决死锁"><span class="level-left"><span class="level-item">如何解决死锁</span></span></a></li></ul></ul></li><li><a class="level is-mobile" href="#五、锁升级"><span class="level-left"><span class="level-item">五、锁升级</span></span></a></li><li><a class="level is-mobile" href="#举个栗子"><span class="level-left"><span class="level-item">举个栗子</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#InnoDB没有锁升级"><span class="level-left"><span class="level-item">InnoDB没有锁升级</span></span></a></li></ul></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

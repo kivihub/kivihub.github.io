@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="MVCC是为了保证事务的非阻塞读，提高并发性的一种机制。目前有两种主流实现；  前置问题"><meta property="og:type" content="blog"><meta property="og:title" content="MVCC的InnoDB实现"><meta property="og:url" content="https://kivihub.github.io/2020/05/20/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="MVCC是为了保证事务的非阻塞读，提高并发性的一种机制。目前有两种主流实现；  前置问题"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/1240-20210115030059818.png"><meta property="article:published_time" content="2020-05-20T15:27:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:17.646Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/1240-20210115030059818.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/05/20/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/"},"headline":"MVCC的InnoDB实现","image":["https://kivihub.github.io/thumbnail/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/1240-20210115030059818.png"],"datePublished":"2020-05-20T15:27:00.000Z","dateModified":"2026-01-15T03:18:17.646Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"MVCC是为了保证事务的非阻塞读，提高并发性的一种机制。目前有两种主流实现；  前置问题"}</script><link rel="canonical" href="https://kivihub.github.io/2020/05/20/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-05-20T15:27:00.000Z" title="5/20/2020, 11:27:00 PM">2020-05-20</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Mysql/">Mysql</a></span><span class="level-item">5 分钟读完 (大约766个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">MVCC的InnoDB实现</h1><div class="content"><!-- date: 2020.05.20 23:27 -->
+
+<blockquote>
+<p>MVCC是为了保证事务的非阻塞读，提高并发性的一种机制。目前有两种主流实现；</p>
+</blockquote>
+<h4 id="前置问题"><a href="#前置问题" class="headerlink" title="前置问题"></a>前置问题</h4><span id="more"></span>
+
+<ol>
+<li><p>mysql的事务是一开始就生成事务ID吗？</p>
+</li>
+<li><p>read view是什么？</p>
+</li>
+<li><p>read view生成的时机？</p>
+</li>
+<li><p>read view如何实现隔离级别？</p>
+</li>
+<li><p>read view生成的时机？</p>
+</li>
+<li><p>read view和版本链的关系？</p>
+</li>
+<li><p>DML操作会生成事务快照吗？</p>
+</li>
+</ol>
+<h4 id="一、通过undo-log实现"><a href="#一、通过undo-log实现" class="headerlink" title="一、通过undo log实现"></a>一、通过undo log实现</h4><h5 id="1-版本链"><a href="#1-版本链" class="headerlink" title="1. 版本链"></a>1. 版本链</h5><p>事务针对记录的修改都会通过复制产生新的记录放到库表里，老的记录则放入undo log，并通过回滚指针关联。</p>
+<p><img src="/2020/05/20/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/pic/1240-20210115030059818.png" alt="undo log"></p>
+<h5 id="2-read-view和隔离级别"><a href="#2-read-view和隔离级别" class="headerlink" title="2. read view和隔离级别"></a>2. read view和隔离级别</h5><p>read view是事务实现隔离性时，用于判断记录可见性的事务集合。其格式为<code>[tx_min, tx_id, ...], tx_max</code>，</p>
+<ul>
+<li><p>括号内为数据库当前所有未提交事务的集合，<code>tx_min</code>是未提交事务中ID最小的事务；</p>
+</li>
+<li><p>括号外的<code>tx_max</code>是数据库当前已创建的最大事务ID；</p>
+<p><img src="/2020/05/20/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/pic/1240-20210115030059806.png" alt="事务可见性"></p>
+<p><img src="/2020/05/20/MVCC%E7%9A%84InnoDB%E5%AE%9E%E7%8E%B0/pic/1240-20210115030059866.png" alt="image.png"></p>
+</li>
+</ul>
+<p>假设记录的事务ID为tx_id，则可见性规则如下：<br>1）若<code>tx_id &lt; tx_min</code>，则当前记录时可见；<br>2）若<code>tx_id &gt; tx_max</code>，则当前记录时不见；<br>3）若<code>tx_id不在readview中</code>，则当前记录可见；<br>4）若<code>tx_id在readview中</code><br>    * 若tx_id是当前事务ID，则记录可见；<br>    * 若tx_id是当前事务ID，则记录不可见；</p>
+<blockquote>
+<p>Note：<br>1.当前事务ID会在事务执行DML操作时才会生成，查询操作不会生成；<br>2.读未提交只需读版本链里最新的记录即可，无需readview;<br>3.读已提交和可重复读会依赖readview来保证不同程度的一致性读，但他们生成readview的时机不同；<br>4.生成的readview是数据库级别的当前活跃事务的快照;<br>5.readview会在事务执行读取操作时生成，DML操作不会生成；</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>读未提交</th>
+<th>读已提交</th>
+<th>可重复读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否使用readview</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>生成readview时机</td>
+<td></td>
+<td>每次读取都生成</td>
+<td>事务第一次读取时生成</td>
+</tr>
+</tbody></table>
+<h5 id="3-mvcc操作步骤"><a href="#3-mvcc操作步骤" class="headerlink" title="3. mvcc操作步骤"></a>3. mvcc操作步骤</h5><p>假设有read view&#x3D;[tx_min, tx_id, …], tx_max。<br>1）如果记录的事务ID小于tx_min，则当前记录可见，返回当前记录；<br>2）如果记录的事务ID大于tx_max，则当前记录不可见；回滚指针回溯上一条记录，执行1）；<br>3）如果记录不在readview括号内，则记录可见，返回当前记录；<br>4）如果记录在readview括号内，有两种情况：</p>
+<ul>
+<li>若事务ID是当前事务ID，则当前记录可见，返回当前记录；</li>
+<li>若事务ID不是当前事务ID，则当前记录不可见；回滚指针回溯上一条记录，执行1）操作；</li>
+</ul>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/06/02/mvn_clean_deploy%E5%87%BA%E9%94%99/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">mvn_clean_deploy出错</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/20/Junit%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><span class="level-item">Junit源码分析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#前置问题"><span class="level-left"><span class="level-item">前置问题</span></span></a></li><li><a class="level is-mobile" href="#一、通过undo-log实现"><span class="level-left"><span class="level-item">一、通过undo log实现</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-版本链"><span class="level-left"><span class="level-item">1. 版本链</span></span></a></li><li><a class="level is-mobile" href="#2-read-view和隔离级别"><span class="level-left"><span class="level-item">2. read view和隔离级别</span></span></a></li><li><a class="level is-mobile" href="#3-mvcc操作步骤"><span class="level-left"><span class="level-item">3. mvcc操作步骤</span></span></a></li></ul></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

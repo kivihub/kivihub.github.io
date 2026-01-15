@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、应用与其依赖随着软件工程的发展，为了减小工程复杂度，分层和解耦越来越成为共识。应用也由庞大的单体应用进行了服务化拆分，单独拆分的微服务具备低复杂度、易升级、高伸缩性等优点。微服务间通过网络和其他微服务进行连接，组成了更大的逻辑应用。 为了减少代码重复和减小复杂度，在工程实践时应用代码往往也需要拆分（我们称之为功能模块），进行单独的版本控制和版本管理，原应用以依赖的形式的引入拆分的功能。这样的好"><meta property="og:type" content="blog"><meta property="og:title" content="版本管理"><meta property="og:url" content="https://kivihub.github.io/2022/01/23/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、应用与其依赖随着软件工程的发展，为了减小工程复杂度，分层和解耦越来越成为共识。应用也由庞大的单体应用进行了服务化拆分，单独拆分的微服务具备低复杂度、易升级、高伸缩性等优点。微服务间通过网络和其他微服务进行连接，组成了更大的逻辑应用。 为了减少代码重复和减小复杂度，在工程实践时应用代码往往也需要拆分（我们称之为功能模块），进行单独的版本控制和版本管理，原应用以依赖的形式的引入拆分的功能。这样的好"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/image-20220123211456606.png"><meta property="article:published_time" content="2022-01-23T12:23:03.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:25.739Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/image-20220123211456606.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2022/01/23/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/"},"headline":"版本管理","image":["https://kivihub.github.io/thumbnail/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/image-20220123211456606.png"],"datePublished":"2022-01-23T12:23:03.000Z","dateModified":"2026-01-15T03:18:25.739Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、应用与其依赖随着软件工程的发展，为了减小工程复杂度，分层和解耦越来越成为共识。应用也由庞大的单体应用进行了服务化拆分，单独拆分的微服务具备低复杂度、易升级、高伸缩性等优点。微服务间通过网络和其他微服务进行连接，组成了更大的逻辑应用。 为了减少代码重复和减小复杂度，在工程实践时应用代码往往也需要拆分（我们称之为功能模块），进行单独的版本控制和版本管理，原应用以依赖的形式的引入拆分的功能。这样的好"}</script><link rel="canonical" href="https://kivihub.github.io/2022/01/23/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-01-23T12:23:03.000Z" title="1/23/2022, 8:23:03 PM">2022-01-23</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a></span><span class="level-item">18 分钟读完 (大约2640个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">版本管理</h1><div class="content"><h4 id="一、应用与其依赖"><a href="#一、应用与其依赖" class="headerlink" title="一、应用与其依赖"></a>一、应用与其依赖</h4><p>随着软件工程的发展，为了减小工程复杂度，分层和解耦越来越成为共识。应用也由庞大的单体应用进行了服务化拆分，单独拆分的微服务具备低复杂度、易升级、高伸缩性等优点。微服务间通过网络和其他微服务进行连接，组成了更大的逻辑应用。</p>
+<p>为了减少代码重复和减小复杂度，在工程实践时应用代码往往也需要拆分（我们称之为功能模块），进行单独的版本控制和版本管理，原应用以依赖的形式的引入拆分的功能。这样的好处很多，如方便模块复用减少代码重复、功能模块仓库可以使用更简单的分支模型管理、功能模块的版本管理更容易。另外在面对应用定制部署时，只需要灵活组合功能模块即可，减小了复杂度。</p>
+<span id="more"></span>
+
+<p><img src="/2022/01/23/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/pic/image-20220123211456606.png" alt="image-20220123211456606"></p>
+<p>复杂度一直是软件工程的大敌，随着软件的迭代，运维的成本也会随之升高。控制住复杂度，能更好的响应需求，延长应用的腐化时间。把应用解构为多模块以依赖的形式引入，拆分前后应用在功能逻辑上仍是同构的，但大大削减了开发，管理，运维的复杂度。</p>
+<p><strong>此处我们可以把拆分后的功能模块称为模块工程，依赖模块仓库的应用称为聚合工程。</strong></p>
+<h4 id="二、版本管理目标"><a href="#二、版本管理目标" class="headerlink" title="二、版本管理目标"></a>二、版本管理目标</h4><p>版本管理的目标是保证应用稳定，通过版本划分应用功能代际，使其能平稳升级及安全回退。工程实践时：借助版本号对应用版本和应用模块（也就是应用依赖）进行管理，使应用提供的功能集与模块的版本号绑定。</p>
+<p><strong>版本号约定</strong></p>
+<p>[major version]：主版本号，重大版本升级时修改</p>
+<p>[minor version]：次版本号，小版本升级时修改</p>
+<p>[batch version]：修订版本号，FixBug时修改，一般只用于稳定版本。</p>
+<p>快照版本：</p>
+<p><strong>[major version].[minor version].0-SNAPSHOT</strong>，如1.1.0-SNAPSHOT</p>
+<p>稳定版本：</p>
+<p><strong>[major version].[minor version].[batch version]</strong>，如1.1.1</p>
+<h4 id="三、版本管理原则"><a href="#三、版本管理原则" class="headerlink" title="三、版本管理原则"></a>三、版本管理原则</h4><p>版本管理原则是为了实现版本管理目标，给予工程实践的一些操作指导原则，非绝对。</p>
+<p><strong>1、单体应用仓库拆分为按功能内聚的功能模块仓库</strong></p>
+<p>单体应用仓库模块复用难、多版本分支管理复杂、快速迭代难，实践时以功能簇为单位进行拆分，不同功能簇位于不同仓库。</p>
+<p>想象一下，一个迭代需求反映在模块仓库时就很少会出现交叉开发和交叉上线现象，在可以简化分支开发模型的同时，也可以简化模块版本规划。即便出现交叉开发和上线，那么并行度也很低，此时可通过版本占位和短期发布分支解决，如下图所示。</p>
+<p><img src="/2022/01/23/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/pic/image-20220124104943269.png" alt="image-20220124104943269"></p>
+<p><strong>2、功能模块仓库建议使用TBD工作流</strong></p>
+<p>随着GitFlow分支模型被炒的火热，好多团队也跟风的使用它作为工作流。在选择分支模型时，没有最好的，只有更合适的。</p>
+<p>每个分支模型都有其适用的场景，GitFlow和TBD对比而言，有以下几个差异：</p>
+<p>1）GitFlow分支类型多，目的是使开发距离主干（版本发布）更远。TBD分支则少的多，除主干分支外不会存在开发分支，开发距离主干（版本发布）更近。</p>
+<p>2）GitFlow比TBD有更加严格的流程，往往适用于团队规模大且新手多的情况（团队成员可信度低）。TBD则推崇一天至少一次的主干合并，快速迭代，适合团队规模小和团队成员经验丰富（团队成员可信度高）。</p>
+<p>3）GitFlow适合大型的，复杂的、开源的项目开发，而TBD则使用于小型的，低复杂度，公司内部的项目开发。</p>
+<p>4）GitFlow由流程驱动，TBD由Team驱动。</p>
+<p>在如上我们对单体应用进行拆分后，模块仓库的复杂度也线性下降。此时适用TBD特性，更简单的分支模型使规则更易于遵守，执行过程中噪点更少。</p>
+<p><strong>3、应用（即聚合工程）通过依赖方式引入和关联功能模块</strong></p>
+<p>应用代码拆分为多个模块仓库后，在组织应用功能时通过依赖方式引入模块功能。具体而言，Java工程实践时，把模块仓库的代码发布为Maven构件至Maven私服，应用通过pom.xml依赖对应构件的版本。</p>
+<p><strong>4、应用（即聚合工程）通过BOM统一约束第三方依赖</strong></p>
+<p>关于第三方依赖，使用Maven对Java工程进行管理时，最好使用一个BOM工程对他们进行版本约束。这样可以把第三方依赖收口到一处，将来面临依赖升级（如近期的log4j-core Bug升级）时，只需要修改一处即可。</p>
+<p>我们当然也需要对BOM工程也进行版本管理，这样才能实现多应用环境下的灰度升级。另外建议在BOM工程里增加CHANGELOG，用来说明依赖变更的原因，便于溯源。</p>
+<p><strong>5、不同环境或定制部署的应用通过不同聚合工程对模块功能不同版本的依赖实现</strong></p>
+<p>应用拆分后还带来一个好处，那就是简化了应用的差异化部署。在应用的不同聚合工程里差异化的声明模块版本就可以实现，避免了在单体仓库管理的复杂度。</p>
+<p><strong>6、线上应用依赖稳定（RELEASE）的功能模块版本，而非快照版本</strong></p>
+<p>线上环境的聚合工程一定要使用稳定版本，因为快照版本可能被复写，无法保证不同时间打的包是一致的。为此Maven的<code>release</code>插件的<code>prepare</code>MOJO可以对此进行检测，如下的第2步。命令<code>mvn release:prepare</code>。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://maven.apache.org/maven-release/maven-release-plugin/examples/prepare-release.html">release:prepare的步骤：</a></p>
+<ul>
+<li>Check that there are no uncommitted changes in the sources</li>
+<li>Check that there are no SNAPSHOT dependencies</li>
+<li>Change the version in the POMs from x-SNAPSHOT to a new version (you will be prompted for the versions to use)</li>
+<li>Transform the SCM information in the POM to include the final destination of the tag</li>
+<li>Run the project tests against the modified POMs to confirm everything is in working order</li>
+<li>Commit the modified POMs</li>
+<li>Tag the code in the SCM with a version name (this will be prompted for)</li>
+<li>Bump the version in the POMs to a new value y-SNAPSHOT (these values will also be prompted for)</li>
+<li>Commit the modified POMs</li>
+</ul>
+</blockquote>
+<p><strong>7、应用（即聚合工程）全量引入功能模块依赖及声明版本，也就是做到declared used dependency</strong></p>
+<p>使用Maven进行依赖管理时，建议全量的声明应用模块的版本，避免传递依赖。Maven进行依赖调停时，可能结果并不符合你的预期，如你的期望依赖版本可能被其他路径更短的间接错误依赖短路，或者被同深度的先声明的错误间接依赖短路。</p>
+<p>为此Maven的<code>dependency</code>插件的<code>analyze</code>MOJO可以分析pom.xml中<code>used and declared</code>、<code>used and undeclared</code>、<code>unused and declared</code>的依赖集。命令：<code>mvn dependency:analyze</code>。在使用时，我们需要关注undeclared的依赖，unused的不用关注，因为聚合工程里原则上没有java代码，所有的模块依赖都是unused，即便一个普通工程也有很多SPI等方式加载的依赖，在编译时是<code>unused</code>。</p>
+<p><strong>8、使用版本而不是分支进行版本管理</strong></p>
+<p>据观察，存在一些工程直接使用分支进行版本管理，即编译时指定分支，在该分支上进行代码全量编译和打包。这属于早期单体应用仓库统一管理代码的现象，此时即便模块有版本号，那么也相当于是快照版本，每次编译都是新的快照，这使得版本号失去了意义。</p>
+<p>应用拆分后，我们要严禁杜绝这种使用分支进行版本管理的方式。</p>
+<p><strong>9、模块功能版本变更时，仓库级整体变更</strong></p>
+<p>模块仓库包含了内聚的功能簇，也就是说模块仓库也可以聚合多个子模块。当个别模块应需求而改变时，此时建议仓库级别升级版本，而非单子模块升级。</p>
+<p>这样做的好处很多，如：</p>
+<p>1）管理简单，打标签无需加子模块前缀，在仓库里也容易定位变更位置。</p>
+<p>2）整体升级可避免同一功能簇版本参差现象，当功能簇的各个子模块版本一致时，我们就可以确定当前功能簇是稳态的，而不用去检查某个版本是否处于某个安全区间，如[1.2.0, 1.4.0)</p>
+<p><strong>10、代码仓库内各分支应该是同构的，即潜在可合并</strong></p>
+<p>无论采用那种分支模型进行开发，都避免不了同一时刻多分支并存的现象。我们原则上要求，一个仓库内的多个分支应该是同构的，他们最终将通过合并（merge或cherry-pick）方式趋同。</p>
+<p>如果两个分支处于异构态，无法进行合并那么可以认为是两个主体，应尽早拆分避免相互影响，减小复杂度。</p>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/01/24/Maven%E5%B1%9E%E6%80%A7%E6%9B%BF%E6%8D%A2/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Maven属性替换</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/01/22/Maven%E6%BA%90%E7%A0%81-%E4%B8%BB%E6%B5%81%E7%A8%8B/"><span class="level-item">Maven源码-主流程</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、应用与其依赖"><span class="level-left"><span class="level-item">一、应用与其依赖</span></span></a></li><li><a class="level is-mobile" href="#二、版本管理目标"><span class="level-left"><span class="level-item">二、版本管理目标</span></span></a></li><li><a class="level is-mobile" href="#三、版本管理原则"><span class="level-left"><span class="level-item">三、版本管理原则</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

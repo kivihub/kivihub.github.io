@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="零、零拷贝概念 “Zero-copy“ describes computer operations in which the CPU does not perform the task of copying data from one memory area to another. —— wikipedia  如维基百科所说，零拷贝是指避免CPU在不同的内存区域间拷贝数据。这可具体细分为操作系统级"><meta property="og:type" content="blog"><meta property="og:title" content="零拷贝"><meta property="og:url" content="https://kivihub.github.io/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="零、零拷贝概念 “Zero-copy“ describes computer operations in which the CPU does not perform the task of copying data from one memory area to another. —— wikipedia  如维基百科所说，零拷贝是指避免CPU在不同的内存区域间拷贝数据。这可具体细分为操作系统级"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/%E9%9B%B6%E6%8B%B7%E8%B4%9D/jdpkVNoaeGbIcUdR.png"><meta property="article:published_time" content="2021-02-07T05:20:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:22.060Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/%E9%9B%B6%E6%8B%B7%E8%B4%9D/jdpkVNoaeGbIcUdR.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/"},"headline":"零拷贝","image":["https://kivihub.github.io/thumbnail/%E9%9B%B6%E6%8B%B7%E8%B4%9D/jdpkVNoaeGbIcUdR.png"],"datePublished":"2021-02-07T05:20:00.000Z","dateModified":"2026-01-15T03:18:22.060Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"零、零拷贝概念 “Zero-copy“ describes computer operations in which the CPU does not perform the task of copying data from one memory area to another. —— wikipedia  如维基百科所说，零拷贝是指避免CPU在不同的内存区域间拷贝数据。这可具体细分为操作系统级"}</script><link rel="canonical" href="https://kivihub.github.io/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-07T05:20:00.000Z" title="2/7/2021, 1:20:00 PM">2021-02-07</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Netty/">Netty</a></span><span class="level-item">12 分钟读完 (大约1843个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">零拷贝</h1><div class="content"><h4 id="零、零拷贝概念"><a href="#零、零拷贝概念" class="headerlink" title="零、零拷贝概念"></a>零、零拷贝概念</h4><blockquote>
+<p>“<strong>Zero-copy</strong>“ describes computer operations in which the CPU does not perform the task of copying data from one memory area to another. —— wikipedia</p>
+</blockquote>
+<p>如维基百科所说，零拷贝是指避免CPU在不同的内存区域间拷贝数据。这可具体细分为操作系统级（OS level）别和用户态（User level）级别。</p>
+<span id="more"></span>
+
+<h5 id="zero-copy-on-OS-level"><a href="#zero-copy-on-OS-level" class="headerlink" title="zero copy on OS level"></a>zero copy on OS level</h5><p>针对设备驱动，文件系统，网络协议栈等内核态资源，程序可利用操作系统提供的系统函数调用，避免数据从内核态和用户态间的拷贝，充分利用操作系统资源，获得更高的性能。</p>
+<p>具体而言，操作系统通过相应的系统函数使CPU移交总线控制权给DMA，由DMA负责内核态间数据复制操作，不通过用户态进行中转。与此同时CPU并行去处理其他复杂的逻辑，也减少了上下文切换带来的开销。</p>
+<h5 id="zero-copy-on-User-level"><a href="#zero-copy-on-User-level" class="headerlink" title="zero copy on User level"></a>zero copy on User level</h5><p>应用程序在用户态通过一些操作避免数据拷贝，也可以称为零拷贝。如Netty的CompositeByteBuf，可通过逻辑聚合多个ByteBuffer，避免物理复制多个ByteBuffer到一个大的ByteBuffer，来减少拷贝。</p>
+<h4 id="一、操作系统的Zero-Copy"><a href="#一、操作系统的Zero-Copy" class="headerlink" title="一、操作系统的Zero Copy"></a>一、操作系统的Zero Copy</h4><h5 id="1-Linux零拷贝系统函数"><a href="#1-Linux零拷贝系统函数" class="headerlink" title="1. Linux零拷贝系统函数"></a>1. Linux零拷贝系统函数</h5><ul>
+<li><p>sys&#x2F;socket.h中的sendfile，sendfile64</p>
+</li>
+<li><p>splice，tee，vmsplice</p>
+</li>
+<li><p>process_vm_readv, process_vm_writev</p>
+</li>
+<li><p>copy_file_range</p>
+</li>
+<li><p>mmap，AF_XDP</p>
+</li>
+</ul>
+<p>经常有人mmap和sendfile放在一起进行比较，而忽略了他们的应用场景。</p>
+<h5 id="2-sendfile"><a href="#2-sendfile" class="headerlink" title="2. sendfile"></a>2. sendfile</h5><p>1）适用场景：适用于程序不参与处理数据，数据只在系统内核态间传输</p>
+<ul>
+<li>不使用sendfile</li>
+</ul>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/jdpkVNoaeGbIcUdR.png" alt="Image for post"></p>
+<ul>
+<li>使用sendfile</li>
+</ul>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/R8AZ-MG5UhjYpgfD.png" alt="Image for post"></p>
+<p>2）方法描述：由DMA负责在内核态进行数据拷贝，不再经过用户态中转</p>
+<p>3）优点：减少了数据拷贝（内核态和用户态的拷贝为零）；减少了上下文切换；对文件大小没有限制；性能更好，约比使用read,write提高65%性能。</p>
+<ul>
+<li>不实用sendfile时，发生了4次拷贝</li>
+</ul>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/figure1.gif" alt="Traditional data copying approach"></p>
+<ul>
+<li>使用sendfile时，发生了3次拷贝，用户态拷贝为零。（如果网络接口支持<em>gather operations</em>，可以再减少一次拷贝: Read buffer-&gt; Socket buffer）</li>
+</ul>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/figure3.gif" alt="Data copy with transferTo()"></p>
+<ul>
+<li>不实用sendfile时，发生了四次上下文切换</li>
+</ul>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/figure2.gif" alt="Traditional context switches"></p>
+<ul>
+<li>使用sendfile时，只有两次上下文切换</li>
+</ul>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/figure4.gif" alt="Context switching when using transferTo()"></p>
+<p>4）缺点：程序不能参与处理</p>
+<h5 id="3-mmap"><a href="#3-mmap" class="headerlink" title="3. mmap"></a>3. mmap</h5><p>1）适用场景：适用于程序参与处理数据，修改系统内核态的数据</p>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/POBN-YXYgKS8ZHsn.png" alt="Image for post"></p>
+<p>2）方法描述：把文件或设备映射到内存，他通过给定的位置读取文件对应的块到内存。用户对这块内存的修改会直接反应到内核空间，与此同时，内核空间的修改，也会直接反应到用户空间。</p>
+<p>3）优点：程序参与处理数据；处理小文件时性能高</p>
+<p>4）缺点：没有减少上下文切换带来的开销；处理大文件时开销较大；</p>
+<h5 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h5><table>
+<thead>
+<tr>
+<th></th>
+<th>Sendfile</th>
+<th>Mmap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>适用场景</td>
+<td>程序不处理数据</td>
+<td>程序参与数据处理</td>
+</tr>
+<tr>
+<td>上下文切换次数</td>
+<td>2次</td>
+<td>4次</td>
+</tr>
+<tr>
+<td>数据拷贝次数</td>
+<td>3次或2次</td>
+<td>3次</td>
+</tr>
+<tr>
+<td>文件大小与性能</td>
+<td>无限制</td>
+<td>小文件性能好</td>
+</tr>
+<tr>
+<td>Java NIO对系统调用的封装</td>
+<td><em>FileChannel.transferTo(long position, long count,WritableByteChannel target)</em></td>
+<td><em>MappedByteBuffer</em>类，可通过*FileChannel.map()*获取</td>
+</tr>
+</tbody></table>
+<p>其中，<em>MappedByteBuffer</em>是Java的一种direct byteBuffer。</p>
+<h4 id="二、Java-direct-vs-non-direct-byte-buffer"><a href="#二、Java-direct-vs-non-direct-byte-buffer" class="headerlink" title="二、Java direct vs non-direct byte buffer"></a>二、Java direct vs non-direct byte buffer</h4><blockquote>
+<p> <strong>直接缓冲区中通过文件映射创建的MappedByteBuffer与前面提到的mmap是一一对应的，体现了零拷贝的概念，其他类型缓冲区与OS level的零拷贝无关。</strong></p>
+</blockquote>
+<h5 id="1-直接缓冲区和非直接缓冲区的区别"><a href="#1-直接缓冲区和非直接缓冲区的区别" class="headerlink" title="1. 直接缓冲区和非直接缓冲区的区别"></a>1. 直接缓冲区和非直接缓冲区的区别</h5><blockquote>
+<ol>
+<li><p>The first difference between non-direct and direct byte buffer comes from the fact, <strong>how you create them</strong>. You can create non-direct byte buffer either by allocating space for buffer’s content or by wrapping an existing byte array into a buffer. While a Direct byte buffer may be created by calling factory method allocateDirect() or by mapping a region of a file directly into memory , known  as MappedByteBuffer.</p>
+</li>
+<li><p>In the case of Direct byte buffer, JVM performs <strong>native IO operation</strong> directly into the buffer, without copying them into any intermediate buffer, this makes it very attractive for performing high-speed IO operation on them, but this facility comes with care. If a memory mapped file is shared between multiple processes then you need to ensure that it won’t get corrupted i.e. some regions of memory mapped file not becoming unavailable.</p>
+</li>
+<li><p>One more difference between direct and non-direct byte buffers are that former’s <strong>memory footprint</strong> may not be obvious because they are allocated outside of Java heap while non-direct buffers consume heap space and are subject to garbage collection.</p>
+</li>
+<li><p>You can check whether a byte buffer is direct or non-direct by calling <strong>isDirect()</strong> method from java.nio.ByteBuffer class. It returns true if byte buffer is direct.</p>
+</li>
+</ol>
+<p>Read more: <a target="_blank" rel="noopener" href="https://javarevisited.blogspot.com/2015/08/difference-between-direct-non-direct-mapped-bytebuffer-nio-java.html#ixzz6lqSEEIpV">https://javarevisited.blogspot.com/2015/08/difference-between-direct-non-direct-mapped-bytebuffer-nio-java.html#ixzz6lqSEEIpV</a></p>
+</blockquote>
+<h5 id="2-ByteBuffer"><a href="#2-ByteBuffer" class="headerlink" title="2. ByteBuffer"></a>2. ByteBuffer</h5><p>如图所示，Java提供了三种ByteBuffer实现：</p>
+<p><img src="/2021/02/07/%E9%9B%B6%E6%8B%B7%E8%B4%9D/pic/image-20210206121231225.png" alt="image-20210206121231225"></p>
+<p>1）HeapByteBuffer</p>
+<p>是非直接内存，用来在JVM堆上申请管理缓存，通常是字节数组的包装类。受JVM GC控制。</p>
+<p>2）MappedByteBuffer</p>
+<p>也是一种直接内存，是用来映射文件到直接内存中的，不受JVM GC控制。<strong>其通过系统函数mmap调用实现，利用缺页中断机制实现直接访问文件，避免数据拷贝到用户态，体现了零拷贝</strong>。</p>
+<p>FileChannel.map最终也是调用了DirectByteBuffer的构造函数<em>DirectByteBuffer(int cap, long addr, FileDescriptor fd, Runnable unmapper)</em>。</p>
+<p>3）DirectByteBuffer</p>
+<p>是直接内存，用来在JVM堆外申请和管理内存，不受JVM GC控制。<em>ByteBuffer.allocateDirect(int capacity)<em>会调用构造函数</em>DirectByteBuffer(int cap)</em>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Primary constructor</span></span><br><span class="line">DirectByteBuffer(<span class="type">int</span> cap)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Invoked to construct a direct ByteBuffer referring to the block of</span></span><br><span class="line"><span class="comment">// memory. A given arbitrary object may also be attached to the buffer.</span></span><br><span class="line">DirectByteBuffer(<span class="type">long</span> addr, <span class="type">int</span> cap, Object ob)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Invoked only by JNI: NewDirectByteBuffer(void*, long)</span></span><br><span class="line"><span class="keyword">private</span> <span class="title function_">DirectByteBuffer</span><span class="params">(<span class="type">long</span> addr, <span class="type">int</span> cap)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// For memory-mapped buffers -- invoked by FileChannelImpl via reflection</span></span><br><span class="line"><span class="keyword">protected</span> <span class="title function_">DirectByteBuffer</span><span class="params">(<span class="type">int</span> cap, <span class="type">long</span> addr, FileDescriptor fd, Runnable unmapper)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// For duplicates and slices</span></span><br><span class="line">DirectByteBuffer(DirectBuffer db, <span class="type">int</span> mark, <span class="type">int</span> pos, <span class="type">int</span> lim, <span class="type">int</span> cap, <span class="type">int</span> off)</span><br></pre></td></tr></table></figure>
+
+<h4 id="三、常见Java中间件对零拷贝的使用"><a href="#三、常见Java中间件对零拷贝的使用" class="headerlink" title="三、常见Java中间件对零拷贝的使用"></a>三、常见Java中间件对零拷贝的使用</h4><h5 id="1）Netty"><a href="#1）Netty" class="headerlink" title="1）Netty"></a>1）Netty</h5><ul>
+<li>OS-level：FileRegion封装了FileChannel.transferTo()</li>
+<li>User-level：<code>Transparent zero copy is achieved by built-in composite buffer type</code>，类CompositeByteBuf避免了ByteBuf间的拷贝。</li>
+</ul>
+<h5 id="2）Kafka"><a href="#2）Kafka" class="headerlink" title="2）Kafka"></a>2）Kafka</h5><ul>
+<li>OS-level：Customer从broker消费数据，采用sendfile；</li>
+<li>OS-level：Producer生产的数据持久化到broker，采用mmap文件映射；</li>
+</ul>
+<h5 id="3）RocketMQ"><a href="#3）RocketMQ" class="headerlink" title="3）RocketMQ"></a>3）RocketMQ</h5><ul>
+<li>OS-level：生产和消费，采用mmap；</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="# 参考"></a># 参考</h4><ol>
+<li>✽<a target="_blank" rel="noopener" href="https://shawn-xu.medium.com/its-all-about-buffers-zero-copy-mmap-and-java-nio-50f2a1bfc05c">It’s all about buffers: zero-copy, mmap and Java NIO</a></li>
+<li>✽<a target="_blank" rel="noopener" href="https://developer.ibm.com/articles/j-zerocopy/">Efficient data transfer through zero copy - IBM developer</a></li>
+<li>✽<a target="_blank" rel="noopener" href="https://javarevisited.blogspot.com/2015/08/difference-between-direct-non-direct-mapped-bytebuffer-nio-java.html#axzz6lqPbftlt">Difference between Direct, Non Direct and Mapped ByteBuffer in Java</a></li>
+<li>✽<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Zero-copy">Zero-copy - wikipedia</a></li>
+<li>✽<a target="_blank" rel="noopener" href="https://www.programmersought.com/article/53865537623/">DirectByteBuffer and MappedByteBuffer</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linuxjournal.com/article/6345?page=0,0">Zero Copy I: User-Mode Perspective</a></li>
+<li><a target="_blank" rel="noopener" href="https://binglau7.github.io/2018/12/10/Netty%E4%B8%8EZero-Copy/">Netty与Zero Copy</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/20727615/is-nettys-zero-copy-different-from-os-level-zero-copy">is-nettys-zero-copy-different-from-os-level-zero-copy</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/43594">理解Netty中的Zero-copy</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/78335525">Kafka零拷贝</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.imooc.com/article/299872">零拷贝</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/02/07/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A14%E5%B1%82%E5%92%8C7%E5%B1%82%E5%8C%BA%E5%88%AB/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">负载均衡4层和7层区别</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/02/06/Netty%E9%AB%98%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/"><span class="level-item">Netty高性能分析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#零、零拷贝概念"><span class="level-left"><span class="level-item">零、零拷贝概念</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#zero-copy-on-OS-level"><span class="level-left"><span class="level-item">zero copy on OS level</span></span></a></li><li><a class="level is-mobile" href="#zero-copy-on-User-level"><span class="level-left"><span class="level-item">zero copy on User level</span></span></a></li></ul></li><li><a class="level is-mobile" href="#一、操作系统的Zero-Copy"><span class="level-left"><span class="level-item">一、操作系统的Zero Copy</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-Linux零拷贝系统函数"><span class="level-left"><span class="level-item">1. Linux零拷贝系统函数</span></span></a></li><li><a class="level is-mobile" href="#2-sendfile"><span class="level-left"><span class="level-item">2. sendfile</span></span></a></li><li><a class="level is-mobile" href="#3-mmap"><span class="level-left"><span class="level-item">3. mmap</span></span></a></li><li><a class="level is-mobile" href="#4-总结"><span class="level-left"><span class="level-item">4. 总结</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、Java-direct-vs-non-direct-byte-buffer"><span class="level-left"><span class="level-item">二、Java direct vs non-direct byte buffer</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-直接缓冲区和非直接缓冲区的区别"><span class="level-left"><span class="level-item">1. 直接缓冲区和非直接缓冲区的区别</span></span></a></li><li><a class="level is-mobile" href="#2-ByteBuffer"><span class="level-left"><span class="level-item">2. ByteBuffer</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、常见Java中间件对零拷贝的使用"><span class="level-left"><span class="level-item">三、常见Java中间件对零拷贝的使用</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）Netty"><span class="level-left"><span class="level-item">1）Netty</span></span></a></li><li><a class="level is-mobile" href="#2）Kafka"><span class="level-left"><span class="level-item">2）Kafka</span></span></a></li><li><a class="level is-mobile" href="#3）RocketMQ"><span class="level-left"><span class="level-item">3）RocketMQ</span></span></a></li></ul></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item"># 参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

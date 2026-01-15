@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="mysql5.7以上版本在查看explain时需关闭衍生表优化：set session optimizer_switch&amp;#x3D;&amp;#39;derived_merge&amp;#x3D;off&amp;#39;，否则会隐藏衍生表的信息；"><meta property="og:type" content="blog"><meta property="og:title" content="explain"><meta property="og:url" content="https://kivihub.github.io/2020/07/28/explain/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="mysql5.7以上版本在查看explain时需关闭衍生表优化：set session optimizer_switch&amp;#x3D;&amp;#39;derived_merge&amp;#x3D;off&amp;#39;，否则会隐藏衍生表的信息；"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/explain/1240-20210115030154368.png"><meta property="article:published_time" content="2020-07-27T16:00:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:17.561Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/explain/1240-20210115030154368.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/07/28/explain/"},"headline":"explain","image":["https://kivihub.github.io/thumbnail/explain/1240-20210115030154368.png"],"datePublished":"2020-07-27T16:00:00.000Z","dateModified":"2026-01-15T03:18:17.561Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"mysql5.7以上版本在查看explain时需关闭衍生表优化：set session optimizer_switch&#x3D;&#39;derived_merge&#x3D;off&#39;，否则会隐藏衍生表的信息；"}</script><link rel="canonical" href="https://kivihub.github.io/2020/07/28/explain/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-07-27T16:00:00.000Z" title="7/28/2020, 12:00:00 AM">2020-07-28</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Mysql/">Mysql</a></span><span class="level-item">6 分钟读完 (大约877个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">explain</h1><div class="content"><!-- date: 2020.07.28 00:00 -->
+<p><img src="/2020/07/28/explain/pic/1240-20210115030154368.png" alt="image.png"></p>
+<blockquote>
+<p>mysql5.7以上版本在查看explain时需关闭衍生表优化：<code>set session optimizer_switch=&#39;derived_merge=off&#39;</code>，否则会隐藏衍生表的信息；</p>
+</blockquote>
+<span id="more"></span>
+<h4 id="一、explain概述"><a href="#一、explain概述" class="headerlink" title="一、explain概述"></a>一、explain概述</h4><p>explain可以显示SQL执行的相关信息，如使用哪个索引，执行顺序等。具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>含义</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>select的标识</td>
+<td>id大的先执行，id相等由上到下执行</td>
+</tr>
+<tr>
+<td>select type</td>
+<td>查询类型</td>
+<td></td>
+</tr>
+<tr>
+<td>table</td>
+<td>查询的表名</td>
+<td></td>
+</tr>
+<tr>
+<td>partitios</td>
+<td>匹配的分区名</td>
+<td>分库时使用</td>
+</tr>
+<tr>
+<td>type</td>
+<td>联表类型</td>
+<td>描述表之间是如何关联（join）的</td>
+</tr>
+<tr>
+<td>ref</td>
+<td>与实际索引进行比较的列或常量</td>
+<td></td>
+</tr>
+<tr>
+<td>possible_keys</td>
+<td>可选的索引</td>
+<td></td>
+</tr>
+<tr>
+<td>key</td>
+<td>实际选择的索引</td>
+<td></td>
+</tr>
+<tr>
+<td>key_len</td>
+<td>实际选择的索引的长度</td>
+<td>一般用于判断联合索引</td>
+</tr>
+<tr>
+<td>rows</td>
+<td>待检查行的预估值</td>
+<td></td>
+</tr>
+<tr>
+<td>filtered</td>
+<td>根据条件筛选的行数在表中的百分比</td>
+<td></td>
+</tr>
+<tr>
+<td>Extra</td>
+<td>附加信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="二、select-type"><a href="#二、select-type" class="headerlink" title="二、select type"></a>二、select type</h4><table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SIMPLE</td>
+<td>简单查询，没使用联表或子查询</td>
+</tr>
+<tr>
+<td>PRIMARY</td>
+<td>最外层查询</td>
+</tr>
+<tr>
+<td>SUBQUERY</td>
+<td>子查询</td>
+</tr>
+<tr>
+<td>DRIVDE</td>
+<td>衍生表</td>
+</tr>
+</tbody></table>
+<h4 id="三、type"><a href="#三、type" class="headerlink" title="三、type"></a>三、type</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span> 假设有如下表定义：</span><br><span class="line"><span class="keyword">CREATE TABLE</span> `employees` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `first_name` <span class="type">varchar</span>(<span class="number">14</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `last_name` <span class="type">varchar</span>(<span class="number">16</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `gender` enum(<span class="string">&#x27;M&#x27;</span>,<span class="string">&#x27;F&#x27;</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `hire_date` <span class="type">date</span> <span class="keyword">NOT NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`emp_no`),</span><br><span class="line">  KEY `idx_name` (`first_name`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4</span><br></pre></td></tr></table></figure>
+
+<p>效率：system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; all</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+<th>解释</th>
+<th>简化理解</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>system</td>
+<td>表中只有一行数据，是const的特例</td>
+<td>表中只有一行数据，一般指衍生表</td>
+<td>表只有一行记录</td>
+<td></td>
+</tr>
+<tr>
+<td>const</td>
+<td>表中最多只有一行数据符合匹配条件</td>
+<td><code>将主键</code>或<code>唯一索引的所有部分</code>与<code>常量值</code>进行比较时为const，结果集最多有一条</td>
+<td>查询条件为主键或唯一索引全部，ref为const</td>
+<td>select * from employees where id&#x3D;1</td>
+</tr>
+<tr>
+<td>eq_ref</td>
+<td>根据前表的每行数据在当前表只能关联一行数据</td>
+<td>一般为两个表的链接字段为<code>主键列</code>或<code>唯一索引的所有部分</code>，使得两张表的记录一一对应</td>
+<td>联表场景，主键或唯一索引全部，ref为联表字段</td>
+<td>select * from employees as a left join dept_emp as b on a.id &#x3D; b.emp_id</td>
+</tr>
+<tr>
+<td>ref</td>
+<td>对于前一个表中的每个行组合，将从该表中读取具有匹配索引值的所有行</td>
+<td>联表时使用<code>键的左边前缀</code>，或者<code>键不是主键或唯一索引全部</code>，使得两张表的记录会出现一对多的情况</td>
+<td>查询条件非主键或唯一索引的全部，ref为联表字段</td>
+<td>select * from employees where first_name&#x3D;’wang’</td>
+</tr>
+<tr>
+<td>range</td>
+<td>使用索引检索给定范围内的行</td>
+<td>如使用&lt;&gt;,&gt;,&gt;&#x3D;,&lt;,&lt;&#x3D;,in,like,between</td>
+<td>走索引，范围查询</td>
+<td></td>
+</tr>
+<tr>
+<td>index</td>
+<td>扫描索引数</td>
+<td>常见于不加查询条件的覆盖索引查询</td>
+<td>走索引，全表扫描</td>
+<td></td>
+</tr>
+<tr>
+<td>all</td>
+<td>扫描全表</td>
+<td>常见于不加查询条件，或查询条件没有加索引</td>
+<td>不走索引，全表扫描</td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="四、Extra"><a href="#四、Extra" class="headerlink" title="四、Extra"></a>四、Extra</h4><table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Using index</td>
+<td>只查询索引数即可获得结果集，无需回表</td>
+</tr>
+<tr>
+<td>Using index condition</td>
+<td>使用索引下推，延迟回表；且减少了需要回表的结果集</td>
+</tr>
+<tr>
+<td>Using temporary</td>
+<td>解析结果集时需要用到临时表</td>
+</tr>
+<tr>
+<td>Using filesort</td>
+<td>使用文件排序，数量小时使用内存排序，数量大时使用磁盘排序</td>
+</tr>
+</tbody></table>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/explain-output.html">https://dev.mysql.com/doc/refman/5.7/en/explain-output.html</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/08/03/MySQL_Workbench%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">MySQL_Workbench常用操作</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/07/27/%E5%B0%BD%E6%97%A9%E6%8A%BD%E8%B1%A1%E5%92%8C%E6%8C%81%E7%BB%AD%E9%87%8D%E6%9E%84/"><span class="level-item">尽早抽象和持续重构</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、explain概述"><span class="level-left"><span class="level-item">一、explain概述</span></span></a></li><li><a class="level is-mobile" href="#二、select-type"><span class="level-left"><span class="level-item">二、select type</span></span></a></li><li><a class="level is-mobile" href="#三、type"><span class="level-left"><span class="level-item">三、type</span></span></a></li><li><a class="level is-mobile" href="#四、Extra"><span class="level-left"><span class="level-item">四、Extra</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

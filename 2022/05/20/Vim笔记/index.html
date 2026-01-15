@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="参考资料：《Vim 7.4 中文手册》，《Vim实用技巧》  1、查找某个单词时，可以用&amp;#x2F;，？；也可在普通模式下，光标定位在该单词下，输入*，#。 2、关于标记"><meta property="og:type" content="blog"><meta property="og:title" content="Vim笔记"><meta property="og:url" content="https://kivihub.github.io/2022/05/20/Vim%E7%AC%94%E8%AE%B0/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="参考资料：《Vim 7.4 中文手册》，《Vim实用技巧》  1、查找某个单词时，可以用&amp;#x2F;，？；也可在普通模式下，光标定位在该单词下，输入*，#。 2、关于标记"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2022-05-20T04:30:54.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:18.480Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2022/05/20/Vim%E7%AC%94%E8%AE%B0/"},"headline":"Vim笔记","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2022-05-20T04:30:54.000Z","dateModified":"2026-01-15T03:18:18.480Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"参考资料：《Vim 7.4 中文手册》，《Vim实用技巧》  1、查找某个单词时，可以用&#x2F;，？；也可在普通模式下，光标定位在该单词下，输入*，#。 2、关于标记"}</script><link rel="canonical" href="https://kivihub.github.io/2022/05/20/Vim%E7%AC%94%E8%AE%B0/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-05-20T04:30:54.000Z" title="5/20/2022, 12:30:54 PM">2022-05-20</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a></span><span class="level-item">8 分钟读完 (大约1241个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Vim笔记</h1><div class="content"><blockquote>
+<p>参考资料：《Vim 7.4 中文手册》，《Vim实用技巧》</p>
+</blockquote>
+<p>1、查找某个单词时，可以用&#x2F;，？；也可在普通模式下，光标定位在该单词下，输入*，#。</p>
+<p>2、关于标记</p>
+<span id="more"></span>
+
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// <span class="string">&#x27;为单引号</span></span><br><span class="line"><span class="string">&#x27;</span><span class="string">&#x27;            跳转回刚才的位置</span></span><br><span class="line"><span class="string">ma            设置标记 【小写是文件内的，大写是全局的】</span></span><br><span class="line"><span class="string">&#x27;</span><span class="keyword">a</span>            跳转到<span class="keyword">a</span>的标记处</span><br><span class="line"><span class="symbol">&lt;Ctrl-i&gt;</span>    跳转到相对新的位置</span><br><span class="line"><span class="symbol">&lt;Ctrl-o&gt;</span>    跳转到相对旧的位置</span><br></pre></td></tr></table></figure>
+
+<p> 3、一些特殊标记</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;    跳转前的光标位置</span></span><br><span class="line"><span class="string">&quot;    最后编辑的光标位置</span></span><br><span class="line"><span class="string">[    最后修改的开始位置</span></span><br><span class="line"><span class="string">]    最后修改的结束位置</span></span><br></pre></td></tr></table></figure>
+
+<p>4、Redo&#x2F;Undo</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">u            undo</span><br><span class="line">&lt;Ctrl-r&gt;     redo</span><br><span class="line"></span><br><span class="line">// 撤销树</span><br><span class="line">:undolist    查看撤销树</span><br><span class="line">:g-            时间点后退</span><br><span class="line">:g+            时间点前进</span><br><span class="line">:undo num    跳转到某一个节点上</span><br><span class="line">:earlier 10s    回到10秒前 m:代表分钟，h:代表小时，d:代表天</span><br></pre></td></tr></table></figure>
+
+<p>5、点命令</p>
+<p><code>.    重复最后一次的修改操作，重复任何除&quot;u&quot;（撤销），&lt;C-R&gt;和冒号命令外的修改</code></p>
+<p>6、可视模式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v    逐光标选择，可视模式下可用：o,O移动到对角上或另一边上。</span><br><span class="line">V    按行选择</span><br></pre></td></tr></table></figure>
+
+<p>7、文本对象有</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">w            word  </span><br><span class="line">s            sentence </span><br><span class="line">p            passage</span><br><span class="line">(or)        ()内容 </span><br><span class="line">[or]        []中内容</span><br><span class="line">&#123;or&#125;        &#123;&#125;中内</span><br></pre></td></tr></table></figure>
+
+<p>8、大小写</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~        交换大小写</span><br><span class="line">U        转换成大写 </span><br><span class="line">u        转换成小写</span><br><span class="line">guw    把这个单词变成小写</span><br><span class="line">gUw    把这个单词变成大写</span><br><span class="line">g~~    把本行转换大写</span><br><span class="line">// 可视模式下，可直接用U,u来转换。</span><br></pre></td></tr></table></figure>
+
+<p>9、文件操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gf（光标移动到文件下）</span><br><span class="line">:find 文件名    可以添加路径： :set path+=path</span><br><span class="line">:args *.txt        可以打开多个文件 // 使用next,previous等来移动</span><br><span class="line">:argo command    所有文件执行命令</span><br><span class="line">:saveas newname 文件另存为newname</span><br><span class="line">:read &#123;filename&#125;    将某个文件读入某行</span><br><span class="line">:.,$write tempo        将部分本文件写入tempo文件 </span><br><span class="line">:.write &gt;&gt;tempo        将当前行追加入tempo文件</span><br></pre></td></tr></table></figure>
+
+<p>10、使用寄存器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1）特殊寄存器：</span><br><span class="line">   &quot;寄存器        默认存储器。内容是最近删除或者复制内容。</span><br><span class="line">   0寄存器        存储复制内容</span><br><span class="line"></span><br><span class="line">2）拷贝/粘贴：</span><br><span class="line">拷贝</span><br><span class="line">  &quot;fyas        拷贝一个句子到寄存器f</span><br><span class="line">  &quot;fYas        拷贝一个句子增加到寄存器f </span><br><span class="line">粘贴</span><br><span class="line">   插入模式时    &lt;Ctrl-R&gt; &#123;register&#125;  将寄存器内容插入到光标位置；</span><br><span class="line">   普通模式时    &quot;fp  将寄存器f内容粘贴出来</span><br><span class="line"></span><br><span class="line">3）记录和回放命令：</span><br><span class="line">记录</span><br><span class="line">q&#123;register&#125; q  // 普通模式下，q大写寄存器 q 追加内容</span><br><span class="line">执行宏</span><br><span class="line">@&#123;register&#125; 第二次开始就可以用@@</span><br></pre></td></tr></table></figure>
+
+<p>11、分割窗口：<code>split vsplit</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Ctrl-W&gt; w h j k l t b变换窗口(top bottom)</span><br><span class="line">&lt;Ctrl-W&gt; H J K L 移动窗口(top bottom)</span><br></pre></td></tr></table></figure>
+
+<p>12、折叠</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">zf    创建一个折叠</span><br><span class="line">zo    打开一个折叠</span><br><span class="line">zc    关闭一个折叠</span><br><span class="line">zr    减少折叠</span><br><span class="line">zm    折叠更多</span><br><span class="line"></span><br><span class="line">如果你有一个嵌套了好几层深的折叠，可以用如下两个命令操作：</span><br><span class="line">zR    这几个嵌套全部打开</span><br><span class="line">zM    这几个嵌套全部关闭</span><br><span class="line"></span><br><span class="line">还可以用如下命令快速禁止和恢复折叠功能：</span><br><span class="line">zn    快速禁止折叠功能</span><br><span class="line">zN    快速恢复折叠功能</span><br></pre></td></tr></table></figure>
+
+<p>13、替换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">:%substitute/from/to/gc</span><br><span class="line">主要参数：</span><br><span class="line"> %：表示所有行  </span><br><span class="line"> g：表示global全局 </span><br><span class="line"> c:confirm,确认</span><br><span class="line"></span><br><span class="line">行范围参数： </span><br><span class="line">  . ：表示当行 </span><br><span class="line">  0：表示首行 </span><br><span class="line">  $：表示末行 </span><br><span class="line">  Num：表示某一行</span><br><span class="line"></span><br><span class="line">行范围示例：</span><br><span class="line"> :1,5s/this/that/g   1到5行上执行替换命令。</span><br><span class="line"> :54s/President/Fool/  指定第54行进行替换</span><br></pre></td></tr></table></figure>
+
+<p>14、global命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:[range]global/&#123;pattern&#125;/&#123;command&#125;    //其中pattern，会让你找到符合该模式的某一行</span><br></pre></td></tr></table></figure>
+
+<p>15、反转行顺序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:g/^/m 0 //其中m是move的意思</span><br></pre></td></tr></table></figure>
+
+<p>16、单词统计</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g&lt;Ctrl-g&gt;</span><br></pre></td></tr></table></figure>
+
+<p>17、命令行窗口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">q:  可以编辑其中的命令，并执行。</span><br></pre></td></tr></table></figure>
+
+<p>18、缓冲区列表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">查看命令</span><br><span class="line">:buffers或者:ls</span><br><span class="line"></span><br><span class="line">打开一个缓冲区：  </span><br><span class="line">:buffer 2(缓冲区号)</span><br><span class="line">:buffer name(缓冲区文件名)</span><br><span class="line"></span><br><span class="line">变换缓冲区：    </span><br><span class="line">:bnext  </span><br><span class="line">:bprevious </span><br><span class="line">:bfist </span><br><span class="line">:blast</span><br><span class="line"></span><br><span class="line">删除一个缓冲区：  </span><br><span class="line">:bdelete 3</span><br></pre></td></tr></table></figure>
+
+<p>19、加密</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim -x exam.txt 启用加密</span><br><span class="line">set key=启用/关闭加密</span><br><span class="line">:X 已经打开文件后实施加密</span><br></pre></td></tr></table></figure>
+
+<p>20、插入模式时更正</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Ctrl-W&gt; 删除该词</span><br><span class="line">&lt;Ctrl-U&gt; 删除本行</span><br></pre></td></tr></table></figure>
+
+<p>21、自动补全</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;C-P&gt;或者&lt;C-N&gt;</span><br><span class="line"></span><br><span class="line">补全特定文本：</span><br><span class="line"> &lt;C-X&gt;&lt;C-F&gt; 文件名</span><br><span class="line"> &lt;C-X&gt;&lt;C-L&gt; 整行</span><br><span class="line"> &lt;C-X&gt;&lt;C-D&gt; 宏定义</span><br><span class="line"> &lt;C-X&gt;&lt;C-I&gt; 当前文件以及所包含的的文件</span><br><span class="line"> &lt;C-X&gt;&lt;C-K&gt; 字典文件内的单词</span><br><span class="line"> &lt;C-X&gt;&lt;C-T&gt; 同义词词典文件内的单词</span><br><span class="line"> &lt;C-X&gt;&lt;C-]&gt; 标签</span><br><span class="line"> &lt;C-X&gt;&lt;C-V&gt; Vim命令行</span><br></pre></td></tr></table></figure>
+
+<p>22、从另一行拷贝</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yy/p    yy复制，p粘贴</span><br><span class="line">&lt;C-Y&gt;    该命令插入光标上方的字符</span><br><span class="line">&lt;C-E&gt;    该命令插入光标下方的字符</span><br></pre></td></tr></table></figure>
+
+<p>23、数字加减</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">普通模式下，光标移动到数字下： </span><br><span class="line">&lt;C-A&gt;    增加1</span><br><span class="line">3&lt;C-A&gt;    增加3</span><br><span class="line">&lt;C-X&gt;    减去1</span><br></pre></td></tr></table></figure>
+
+<p>24、单个模式里匹配大小写敏感</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\c 在模式前添加\c，忽略本次大小写敏感</span><br><span class="line">\C 在模式前添加\C，本次匹配大小写敏感</span><br></pre></td></tr></table></figure>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/06/10/go%E5%8C%85%E5%92%8C%E6%A8%A1%E5%9D%97/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">go包和模块</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/05/13/FutureTask%E6%9E%84%E5%BB%BA%E9%AB%98%E6%95%88%E7%BC%93%E5%AD%98/"><span class="level-item">FutureTask构建高效缓存</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><!--!--></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、什么是扩展点 本质是面向接口编程；"><meta property="og:type" content="blog"><meta property="og:title" content="扩展点的设计"><meta property="og:url" content="https://kivihub.github.io/2020/03/21/%E6%89%A9%E5%B1%95%E7%82%B9%E7%9A%84%E8%AE%BE%E8%AE%A1/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、什么是扩展点 本质是面向接口编程；"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2020-03-21T02:36:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:24.630Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/03/21/%E6%89%A9%E5%B1%95%E7%82%B9%E7%9A%84%E8%AE%BE%E8%AE%A1/"},"headline":"扩展点的设计","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2020-03-21T02:36:00.000Z","dateModified":"2026-01-15T03:18:24.630Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、什么是扩展点 本质是面向接口编程；"}</script><link rel="canonical" href="https://kivihub.github.io/2020/03/21/%E6%89%A9%E5%B1%95%E7%82%B9%E7%9A%84%E8%AE%BE%E8%AE%A1/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-03-21T02:36:00.000Z" title="3/21/2020, 10:36:00 AM">2020-03-21</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84/">代码架构</a></span><span class="level-item">3 分钟读完 (大约443个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">扩展点的设计</h1><div class="content"><!-- date: 2020.03.21 10:36 -->
+<h4 id="一、什么是扩展点"><a href="#一、什么是扩展点" class="headerlink" title="一、什么是扩展点"></a>一、什么是扩展点</h4><ol>
+<li>本质是面向接口编程；</li>
+</ol>
+<span id="more"></span>
+<ol start="2">
+<li><p>扩展点是一类在系统开发时预留的特殊接口，<strong>系统在运行时会动态寻找，装载和执行这类接口的实现</strong>。以此来实现对指定功能的扩展，且不需要对已有系统做任何修改。</p>
+</li>
+<li><p>只要符合扩展点的契约，任何人在任何时间都可以去扩展特定功能，而不必关心程序的主体逻辑。</p>
+</li>
+<li><p>如果不使用扩展点，增加功能势必会修改程序的主体。</p>
+</li>
+<li><p>系统开发时，提炼出扩展点，也是系统中各个功能模块抽象度较高的一种表现；</p>
+</li>
+</ol>
+<h4 id="二、扩展点的优点"><a href="#二、扩展点的优点" class="headerlink" title="二、扩展点的优点"></a>二、扩展点的优点</h4><ol>
+<li><p>符合开闭原则</p>
+</li>
+<li><p>框架的Core是稳定的，扩展已有的功能更简单，只需要两步：<br>1）开发新扩展功能；<br>2）加入运行时依赖；</p>
+</li>
+<li><p>Core中可以独立完整运行，并可以限定扩展的范围，且也很容易控制扩展对Core功能造成影响。</p>
+</li>
+</ol>
+<h4 id="三、如何设计扩展点"><a href="#三、如何设计扩展点" class="headerlink" title="三、如何设计扩展点"></a>三、如何设计扩展点</h4><ol>
+<li><p>首先要明白要扩展什么？</p>
+</li>
+<li><p>抽象出要扩展的接口</p>
+</li>
+<li><p>写出扩展加载逻辑等Core逻辑，这个最小的内核，可以独立运行。<br> 常见的扩展点的加载逻辑有：<br> 1）Java JDK SPI；<br> 2）Spring SPI;<br> 3）eclipse 扩展点；</p>
+</li>
+</ol>
+<h4 id="四、EDI中的扩展点"><a href="#四、EDI中的扩展点" class="headerlink" title="四、EDI中的扩展点"></a>四、EDI中的扩展点</h4><ol>
+<li><p>Flow的结点支持扩展；</p>
+</li>
+<li><p>日志框架支持扩展；</p>
+</li>
+<li><p>RPC框架支持扩展；</p>
+</li>
+<li><p>DT支持的协议是扩展的，目前支持X12，Edifact；</p>
+</li>
+<li><p>DT的功能结点也是扩展的；</p>
+</li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/03/25/%E8%A3%85%E9%A5%B0%E5%99%A8%E5%92%8C%E4%BB%A3%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">装饰器和代理的区别</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/03/20/%E4%BB%8ECamel%E4%B8%AD%E5%AD%A6%E4%B9%A0FluntApi%E8%AE%BE%E8%AE%A1/"><span class="level-item">从Camel中学习FluntApi设计</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、什么是扩展点"><span class="level-left"><span class="level-item">一、什么是扩展点</span></span></a></li><li><a class="level is-mobile" href="#二、扩展点的优点"><span class="level-left"><span class="level-item">二、扩展点的优点</span></span></a></li><li><a class="level is-mobile" href="#三、如何设计扩展点"><span class="level-left"><span class="level-item">三、如何设计扩展点</span></span></a></li><li><a class="level is-mobile" href="#四、EDI中的扩展点"><span class="level-left"><span class="level-item">四、EDI中的扩展点</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="volatile是对共享变量的修饰词，无法修饰局部变量。它保证了被修饰变量的可见性和禁止指令重排。  一、JMM和volatile"><meta property="og:type" content="blog"><meta property="og:title" content="volatile"><meta property="og:url" content="https://kivihub.github.io/2020/08/13/volatile/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="volatile是对共享变量的修饰词，无法修饰局部变量。它保证了被修饰变量的可见性和禁止指令重排。  一、JMM和volatile"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2020-08-13T15:03:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:21.691Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/08/13/volatile/"},"headline":"volatile","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2020-08-13T15:03:00.000Z","dateModified":"2026-01-15T03:18:21.691Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"volatile是对共享变量的修饰词，无法修饰局部变量。它保证了被修饰变量的可见性和禁止指令重排。  一、JMM和volatile"}</script><link rel="canonical" href="https://kivihub.github.io/2020/08/13/volatile/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-08-13T15:03:00.000Z" title="8/13/2020, 11:03:00 PM">2020-08-13</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Java%E5%B9%B6%E5%8F%91/">Java并发</a></span><span class="level-item">7 分钟读完 (大约1010个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">volatile</h1><div class="content"><!-- date: 2020.08.13 23:03 -->
+
+<blockquote>
+<p>volatile是对共享变量的修饰词，无法修饰局部变量。它保证了被修饰变量的可见性和禁止指令重排。</p>
+</blockquote>
+<h2 id="一、JMM和volatile"><a href="#一、JMM和volatile" class="headerlink" title="一、JMM和volatile"></a>一、JMM和volatile</h2><span id="more"></span>
+
+<blockquote>
+<p>JMM里volatile的规则：每个对变量 x 的读都能看到一个对 x 的写。所有对 volatile 变量的读写都是 volatile 动作。</p>
+</blockquote>
+<p>该规则显示声明了volatile对可见性的保证，及暗含了禁止重排序的约定。</p>
+<h2 id="二、volatile在各层实现机制"><a href="#二、volatile在各层实现机制" class="headerlink" title="二、volatile在各层实现机制"></a>二、volatile在各层实现机制</h2><blockquote>
+<p>内存栅栏保证了可见性和禁止重排序，禁止编译器、解释器、JIT、CPU进行指令重排且保证可见性。</p>
+</blockquote>
+<h3 id="1-Java语言"><a href="#1-Java语言" class="headerlink" title="1. Java语言"></a>1. Java语言</h3><p>1）实现方式：用volatile修饰共享变量</p>
+<p>2）主要作用：标识可见性和有序性</p>
+<h3 id="2-Java编译器"><a href="#2-Java编译器" class="headerlink" title="2. Java编译器"></a>2. Java编译器</h3><p>对volatile修饰的变量在java字节码中增加ACC_VOLATILE的flag，且不会该变量代码进行重排序；</p>
+<h3 id="3-字节码级别"><a href="#3-字节码级别" class="headerlink" title="3. 字节码级别"></a>3. 字节码级别</h3><p>1）实现方式：ACC_VOLATILE修饰变量</p>
+<p>2）主要作用：提示JVM解释器和JIT增加内存栅栏，并禁止它们对volatile相关指令重排序；</p>
+<h3 id="4-JVM解释器和JIT"><a href="#4-JVM解释器和JIT" class="headerlink" title="4. JVM解释器和JIT"></a>4. JVM解释器和JIT</h3><p>使用JVM的OrderAccess方法在volatile相关指令位置增加内存栅栏，且不会该变量代码进行重排序；</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// linux_x86下fence方法</span></span><br><span class="line"><span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">OrderAccess::fence</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (os::is_MP()) &#123;</span><br><span class="line">    <span class="comment">// always use locked addl since mfence is sometimes expensive</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> AMD64</span></span><br><span class="line">    __asm__ <span class="title function_">volatile</span> <span class="params">(<span class="string">&quot;lock; addl $0,0(%%rsp)&quot;</span> : : : <span class="string">&quot;cc&quot;</span>, <span class="string">&quot;memory&quot;</span>)</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    __asm__ <span class="title function_">volatile</span> <span class="params">(<span class="string">&quot;lock; addl $0,0(%%esp)&quot;</span> : : : <span class="string">&quot;cc&quot;</span>, <span class="string">&quot;memory&quot;</span>)</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="http://blog.chinaunix.net/uid-22028680-id-3040196.html">参考</a>：*addl $0,0(%%esp)*表示将数值0加到esp寄存器中，而该寄存器指向栈顶的内存单元。加上一个0，esp寄存器的数值依然不变。即这是一条无用的汇编指令。在此利用这条无价值的汇编指令来配合lock指令，在<code>__asm__,__volatile__,memory</code>的作用下，用作cpu的内存屏障。</p>
+<h3 id="5-CPU级别"><a href="#5-CPU级别" class="headerlink" title="5. CPU级别"></a>5. CPU级别</h3><blockquote>
+<p>对于 Intel486 和 Pentium 处理器来说，在进行加锁操作时，总是在总线上发出 LOCK#信号，即使锁定的内存区域已经高速缓存在处理器中。</p>
+<p>对于 Pentium 4、Intel Xeon、P6 系列处理器而言，加锁操作期间，如果锁定的 内存区域已经被高速缓存进正在执行回写内存加锁操作的处理器中，并且已经完全进 入了高速缓冲线了，则处理器不对总线发出 LOCK#信号。相反，它将修改缓存区域中的 数据，并依赖高速缓存相干性机制来保证加锁操作的执行是原子的。这个操作称为“高 速缓存加锁”。高速缓存相干性机制会自动阻止两个或多个缓存了同一内存区域的处 理器同时修改该区域的数据。</p>
+<p><em>来源：IA-32 架构软件开发人员手册 第 3 卷:系统编程指南  7.1.4</em></p>
+</blockquote>
+<blockquote>
+<p>I&#x2F;O指令、加锁指令、LOCK前缀以及串行化指令等，强制在处理器上进行较强的排序。</p>
+<p><em>来源：IA-32 架构软件开发人员手册 第 3 卷:系统编程指南  7.2.4</em></p>
+</blockquote>
+<p>简单来说现代CPU会做出如下担保：</p>
+<p>1）通过嗅探机制，缓存一致性协议或锁总线保证LOCK修饰指令的可见性；</p>
+<p>2）保证LOCK修饰指令在CPU级别有序；</p>
+<h2 id="三、Unsafe实现volatile"><a href="#三、Unsafe实现volatile" class="headerlink" title="三、Unsafe实现volatile"></a>三、Unsafe实现volatile</h2><p>Unsafe提供了内存栅栏的方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Unsafe</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Ensures lack of reordering of loads before the fence</span></span><br><span class="line"><span class="comment">     * with loads or stores after the fence.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 1.8</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">loadFence</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Ensures lack of reordering of stores before the fence</span></span><br><span class="line"><span class="comment">     * with loads or stores after the fence.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 1.8</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">storeFence</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Ensures lack of reordering of loads or stores before the fence</span></span><br><span class="line"><span class="comment">     * with loads or stores after the fence.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 1.8</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">fullFence</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>与volatile的区别</strong></p>
+<p>1）Unsafe可自主决定栅栏的位置，较volatile灵活。例如，可以跨方法；有点类似synchronize和Lock的区别；</p>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/08/13/%E5%AD%97%E8%8A%82%E7%A0%81%E8%A7%A3%E9%87%8A%E5%99%A8%E5%92%8CJIT/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">字节码解释器和JIT</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/08/11/Maven%E4%BB%93%E5%BA%93%E6%9B%B4%E6%96%B0%E7%AD%96%E7%95%A5/"><span class="level-item">Maven仓库更新策略</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、JMM和volatile"><span class="level-left"><span class="level-item">一、JMM和volatile</span></span></a></li><li><a class="level is-mobile" href="#二、volatile在各层实现机制"><span class="level-left"><span class="level-item">二、volatile在各层实现机制</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-Java语言"><span class="level-left"><span class="level-item">1. Java语言</span></span></a></li><li><a class="level is-mobile" href="#2-Java编译器"><span class="level-left"><span class="level-item">2. Java编译器</span></span></a></li><li><a class="level is-mobile" href="#3-字节码级别"><span class="level-left"><span class="level-item">3. 字节码级别</span></span></a></li><li><a class="level is-mobile" href="#4-JVM解释器和JIT"><span class="level-left"><span class="level-item">4. JVM解释器和JIT</span></span></a></li><li><a class="level is-mobile" href="#5-CPU级别"><span class="level-left"><span class="level-item">5. CPU级别</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、Unsafe实现volatile"><span class="level-left"><span class="level-item">三、Unsafe实现volatile</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

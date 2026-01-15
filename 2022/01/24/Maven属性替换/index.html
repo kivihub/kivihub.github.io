@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、替换规则参考：https:&amp;#x2F;&amp;#x2F;maven.apache.org&amp;#x2F;ref&amp;#x2F;3.8.4&amp;#x2F;maven-model-builder&amp;#x2F; 1）替换时间"><meta property="og:type" content="blog"><meta property="og:title" content="Maven属性替换"><meta property="og:url" content="https://kivihub.github.io/2022/01/24/Maven%E5%B1%9E%E6%80%A7%E6%9B%BF%E6%8D%A2/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、替换规则参考：https:&amp;#x2F;&amp;#x2F;maven.apache.org&amp;#x2F;ref&amp;#x2F;3.8.4&amp;#x2F;maven-model-builder&amp;#x2F; 1）替换时间"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2022-01-24T06:56:25.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:21.277Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2022/01/24/Maven%E5%B1%9E%E6%80%A7%E6%9B%BF%E6%8D%A2/"},"headline":"Maven属性替换","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2022-01-24T06:56:25.000Z","dateModified":"2026-01-15T03:18:21.277Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、替换规则参考：https:&#x2F;&#x2F;maven.apache.org&#x2F;ref&#x2F;3.8.4&#x2F;maven-model-builder&#x2F; 1）替换时间"}</script><link rel="canonical" href="https://kivihub.github.io/2022/01/24/Maven%E5%B1%9E%E6%80%A7%E6%9B%BF%E6%8D%A2/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-01-24T06:56:25.000Z" title="1/24/2022, 2:56:25 PM">2022-01-24</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Maven/">Maven</a></span><span class="level-item">5 分钟读完 (大约752个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Maven属性替换</h1><div class="content"><h4 id="一、替换规则"><a href="#一、替换规则" class="headerlink" title="一、替换规则"></a>一、替换规则</h4><p>参考：<a target="_blank" rel="noopener" href="https://maven.apache.org/ref/3.8.4/maven-model-builder/">https://maven.apache.org/ref/3.8.4/maven-model-builder/</a></p>
+<p>1）替换时间</p>
+<span id="more"></span>
+
+<p>属性替换发生在ModelBuilder构建effective pom时，主要流程包括：profile激活、合并重复依赖、profile注入、父pom解析直至super pom、父子pom模型继承合并、模型的属性替换（也称属性翻译，属性解释）。</p>
+<p>也就是说属性替换发生在父子pom继承合并之后，含依赖继承合并、配置继承合并等。使用合并后的配置、内置配置、环境配置，进行pom中的变量替换。</p>
+<p>2）优先级</p>
+<p>pom中的变量<code>$&#123;xxx&#125;</code>在替换时可能多个配置Context都含有，此时会依据以下顺序来获取。从下面的图可知，pom.xml中定义属性优先级比内置变量<code>project.*</code>低，无法覆盖它们。也就是说父pom中使用<code>$&#123;project.version&#125;</code>声明的版本会依据子pom的版本来替换。</p>
+<table>
+<thead>
+<tr>
+<th align="left">value</th>
+<th align="left">evaluation result</th>
+<th align="left">common examples</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>project.*</code> - 内置属性</td>
+<td align="left">POM content (see <a target="_blank" rel="noopener" href="https://maven.apache.org/ref/3.8.4/maven-model/maven.html">POM reference</a>)</td>
+<td align="left"><code>$&#123;project.version&#125;</code>  <code>$&#123;project.build.finalName&#125;</code>  <code>$&#123;project.artifactId&#125;</code>  <code>$&#123;project.build.directory&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>project.basedir</code></td>
+<td align="left">the directory containing the <code>pom.xml</code> file</td>
+<td align="left"><code>$&#123;project.basedir&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>project.baseUri</code></td>
+<td align="left">the directory containing the <code>pom.xml</code> file as URI</td>
+<td align="left"><code>$&#123;project.baseUri&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>build.timestamp</code>  <code>maven.build.timestamp</code></td>
+<td align="left">the UTC timestamp of build start, in <code>yyyy-MM-dd&#39;T&#39;HH:mm:ss&#39;Z&#39;</code> default format, which can be overridden with <code>maven.build.timestamp.format</code> POM property</td>
+<td align="left"><code>$&#123;maven.build.timestamp&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>*</code> - 命令行中-D属性</td>
+<td align="left">user properties, set from CLI with <code>-Dproperty=value</code></td>
+<td align="left"><code>$&#123;skipTests&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>*</code> - pom.xml中属性</td>
+<td align="left">model properties, such as project properties set in the pom</td>
+<td align="left"><code>$&#123;any.key&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>maven.home</code></td>
+<td align="left">The path to the current Maven home.</td>
+<td align="left"><code>$&#123;maven.home&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>maven.version</code></td>
+<td align="left">The version number of the current Maven execution <em>(since 3.0.4)</em>. For example, “<code>3.0.5</code>“.</td>
+<td align="left"><code>$&#123;maven.version&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>maven.build.version</code></td>
+<td align="left">The full build version of the current Maven execution <em>(since 3.0.4)</em>. For example, “<code>Apache Maven 3.2.2 (r01de14724cdef164cd33c7c8c2fe155faf9602da; 2013-02-19T14:51:28+01:00)</code>“.</td>
+<td align="left"><code>$&#123;maven.build.version&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>maven.repo.local</code></td>
+<td align="left">The repository on the local machine Maven shall use to store installed and downloaded artifacts (POMs, JARs, etc).</td>
+<td align="left"><code>$&#123;user.home&#125;/.m2/repository</code></td>
+</tr>
+<tr>
+<td align="left"><code>*</code></td>
+<td align="left">Java system properties (see <a target="_blank" rel="noopener" href="http://download.oracle.com/javase/6/docs/api/java/lang/System.html#getProperties()">JDK reference</a>)</td>
+<td align="left"><code>$&#123;user.home&#125;</code>  <code>$&#123;java.home&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>env.*</code>  <code>*</code></td>
+<td align="left">environment variables</td>
+<td align="left"><code>$&#123;env.PATH&#125;</code></td>
+</tr>
+<tr>
+<td align="left"><code>settings.*</code></td>
+<td align="left">Local user settings (see <a target="_blank" rel="noopener" href="https://maven.apache.org/ref/3.8.4/maven-settings/settings.html">settings reference</a>)</td>
+<td align="left"><code>$&#123;settings.localRepository&#125;</code></td>
+</tr>
+</tbody></table>
+<h4 id="二、示例"><a href="#二、示例" class="headerlink" title="二、示例"></a>二、示例</h4><p>1）父Pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>person<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">prop-1</span>&gt;</span>parent<span class="tag">&lt;/<span class="name">prop-1</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">prop-2</span>&gt;</span>parent<span class="tag">&lt;/<span class="name">prop-2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 和子pom.xml保留一个进行测试，效果一样--&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>$&#123;prop-1&#125;<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>$&#123;prop-2&#125;<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2）当前pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>person<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>parent<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>son<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">prop-1</span>&gt;</span>son<span class="tag">&lt;/<span class="name">prop-1</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">project.version</span>&gt;</span>1.2.0-SNAPSHOT<span class="tag">&lt;/<span class="name">project.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>$&#123;prop-1&#125;<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span> <span class="comment">&lt;!-- 当前pom覆盖父pom属性，prop-1 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>$&#123;prop-2&#125;<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span> <span class="comment">&lt;!-- 当前pom未定义，直接继承父pom属性，prop-2 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span> <span class="comment">&lt;!-- 当前pom尝试覆盖内置属性，但是失败 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>3）在当前Pom所在工程执行<code>mvn clean compile</code>报错如下：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Could not find artifact son:parent:jar:1.1.0-SNAPSHOT</span><br></pre></td></tr></table></figure>
+
+<p>由此可看出最终生效的属性如下：</p>
+<ul>
+<li>prop-1：当前pom属性，当前pom覆盖了父pom</li>
+<li>prop-2：父pom属性，当前pom未定义该属性，继承自父pom</li>
+<li>project.version：当前pom尝试覆盖优先级更高的内置属性，但是失败</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="# 参考"></a># 参考</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://www.coder.work/article/873355">为什么我不能覆盖DependencyManagement导入的pom的版本</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/01/25/Maven%E6%BA%90%E7%A0%81-%E4%BE%9D%E8%B5%96%E8%A7%A3%E6%9E%90/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Maven源码-依赖解析</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/01/23/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/"><span class="level-item">版本管理</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、替换规则"><span class="level-left"><span class="level-item">一、替换规则</span></span></a></li><li><a class="level is-mobile" href="#二、示例"><span class="level-left"><span class="level-item">二、示例</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item"># 参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

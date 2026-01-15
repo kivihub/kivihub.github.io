@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Git是由C语言开发的一套内容寻址文件系统，并在此之上提供了一个VCS用户界面。  一、前言"><meta property="og:type" content="blog"><meta property="og:title" content="Git内部原理"><meta property="og:url" content="https://kivihub.github.io/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="Git是由C语言开发的一套内容寻址文件系统，并在此之上提供了一个VCS用户界面。  一、前言"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/image-20210129110147792.png"><meta property="article:published_time" content="2018-01-18T14:40:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:22.723Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/image-20210129110147792.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/"},"headline":"Git内部原理","image":["https://kivihub.github.io/thumbnail/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/image-20210129110147792.png"],"datePublished":"2018-01-18T14:40:00.000Z","dateModified":"2026-01-15T03:18:22.723Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"Git是由C语言开发的一套内容寻址文件系统，并在此之上提供了一个VCS用户界面。  一、前言"}</script><link rel="canonical" href="https://kivihub.github.io/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-01-18T14:40:00.000Z" title="1/18/2018, 10:40:00 PM">2018-01-18</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Git/">Git</a></span><span class="level-item">24 分钟读完 (大约3648个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Git内部原理</h1><div class="content"><!-- date: 2018.01.18 22:40 -->
+
+<blockquote>
+<p>Git是由C语言开发的一套内容寻址文件系统，并在此之上提供了一个VCS用户界面。</p>
+</blockquote>
+<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><span id="more"></span>
+
+<ul>
+<li>Git使用比较灵活，达到相同结果有多种方式。</li>
+<li>靠记忆不同场景下的命令组合，会停留在“知其然，不知其所以然”的层次。</li>
+<li>只有理解Git内部原理和Git命令的底层操作，才能深入浅出的灵活运用Git。</li>
+</ul>
+<h2 id="二、Git目录结构"><a href="#二、Git目录结构" class="headerlink" title="二、Git目录结构"></a>二、Git目录结构</h2><p>使用<code>git init</code>命令初始化当前目录，生成 <strong>.git&#x2F;</strong> 文件夹。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/image-20210129110147792.png" alt="image-20210129110147792"></p>
+<h3 id="1、工作区、暂存区和Git仓库"><a href="#1、工作区、暂存区和Git仓库" class="headerlink" title="1、工作区、暂存区和Git仓库"></a>1、工作区、暂存区和Git仓库</h3><ul>
+<li>工作区是当前目录（除去.git&#x2F;），所有的编辑操作都在该目录进行。</li>
+<li>暂存区对应.git&#x2F;index文件，它包含了当前暂存区的信息，由它可生成git的tree对象。（<code>git init</code>执行后并没有产生.git&#x2F;index，而是在首次执行<code>git add</code>命令后才生成，并把由更新文件生成的blob对象放入**.git&#x2F;objects&#x2F;**内。）</li>
+</ul>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630737.png" alt="git add生成.git&#x2F;index"></p>
+<ul>
+<li>git仓库对应.git&#x2F;，它存储了项目的所有历史快照，以供需要的时候使用。</li>
+</ul>
+<h3 id="2、-git目录"><a href="#2、-git目录" class="headerlink" title="2、.git目录"></a>2、.git目录</h3><p>.git&#x2F;包含了以下目录和文件：</p>
+<ul>
+<li><del>branches&#x2F;：新版本不再使用</del></li>
+<li>description：仅供GitWeb程序使用</li>
+<li>config：当前项目的配置选项</li>
+<li>info&#x2F;：不同于.gitignore文件，可配置本地的文件忽略模式，不会push到remote库而影响其他人。</li>
+<li>hooks&#x2F;：目录存放钩子脚本</li>
+<li>objects&#x2F;：目录存储所有数据内容</li>
+<li>refs&#x2F;：目录存储指向数据的commit对象的指针</li>
+<li>HEAD：文件内容为当前分支</li>
+<li>index：文件内容为暂存区的信息</li>
+</ul>
+<h3 id="3、index文件"><a href="#3、index文件" class="headerlink" title="3、index文件"></a>3、index文件</h3><!-- date: 2020.08.19 10:59 -->
+
+<blockquote>
+<p>.git&#x2F;index里存储的是暂存区内容，暂存的内容都会进入仓库，不会丢失（短时间内）。</p>
+</blockquote>
+<h4 id="1）查看index内容"><a href="#1）查看index内容" class="headerlink" title="1）查看index内容"></a>1）查看index内容</h4><ol>
+<li><p><code>git ls-files --stage</code></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">100644 a65bf3836e0169b1cb49a8c051141652601e80b7 0    .gitignore</span><br><span class="line">100644 99cd02507010eff1a8a3f813c16af5b83a32a9fd 0    README.md</span><br><span class="line">100644 ba0a399d89da367d5a06fe4a882fddbed1e96ad2 0    pom.xml</span><br><span class="line">100644 39138cf9e31fe22fab671a63bee972c29a5c1580 0    src/main/java/com/jd/edi/test/jsf/RpcUtil.java</span><br><span class="line">100644 75808965f4c184b2f77966391254c08d3c64f287 0    src/main/resources/log4j2.xml</span><br><span class="line">100644 18d6d3f536df2686339624d4ec7ba4c1fa3e73fa 0    src/test/java/com/jd/edi/test/log/DubboTest.java</span><br><span class="line">100644 eee242e578dcbc8e0347c06c587a4bc37057dc33 0    src/test/java/com/jd/edi/test/log/JsfTest.java</span><br><span class="line">100644 d5117d32b38f39656de1eac6597e648329bcf47d 0    src/test/resources/dubbo/DTC.zip</span><br><span class="line">100644 f07cb32715bbe1695c6f5d2e6ae5dcbd04f09e4d 0    src/test/resources/dubbo/dubbo.properties</span><br><span class="line">100644 5a4eb082c444ff0be9b7f497fae28e23be49f4e0 0    src/test/resources/edi-ka-1.0.0-SNAPSHOT.zip</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>hexdump -e &#39;16/1 &quot;%02X &quot; &quot;  |  &quot;&#39; -e &#39;16/1 &quot;%_p&quot; &quot;\n&quot;&#39; index  &gt; out.txt</code></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">44 49 52 43 00 00 00 02 00 00 00 0B 5D D4 BE 49  |  DIRC........]..I</span><br><span class="line">22 46 99 3B 5D D4 BE 49 20 21 4A 60 00 00 08 01  |  &quot;F.;]..I !J`....</span><br><span class="line">00 80 12 32 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ...2............</span><br><span class="line">00 00 00 15 A6 5B F3 83 6E 01 69 B1 CB 49 A8 C0  |  .....[..n.i..I..</span><br><span class="line">51 14 16 52 60 1E 80 B7 00 0A 2E 67 69 74 69 67  |  Q..R`......gitig</span><br><span class="line">6E 6F 72 65 00 00 00 00 00 00 00 00 5D D2 3C F7  |  nore........].&lt;.</span><br><span class="line">22 A9 B3 FC 5D D2 3C F7 22 A9 B3 FC 00 00 08 01  |  &quot;...].&lt;.&quot;.......</span><br><span class="line">00 80 12 25 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ...%............</span><br><span class="line">00 00 00 0C 99 CD 02 50 70 10 EF F1 A8 A3 F8 13  |  .......Pp.......</span><br><span class="line">C1 6A F5 B8 3A 32 A9 FD 00 09 52 45 41 44 4D 45  |  .j..:2....README</span><br><span class="line">2E 6D 64 00 5F 23 F9 3D 14 62 2F 77 5F 23 F9 3D  |  .md._#.=.b/w_#.=</span><br><span class="line">11 85 C5 BE 00 00 08 01 00 80 11 6F 00 00 81 A4  |  ...........o....</span><br><span class="line">00 00 03 E8 00 00 03 E8 00 00 11 33 E4 6C 63 C0  |  ...........3.lc.</span><br><span class="line">55 B9 86 E9 64 87 C5 0F 02 E5 34 11 9B D1 E8 FF  |  U...d.....4.....</span><br><span class="line">00 07 70 6F 6D 2E 78 6D 6C 00 00 00 5F 23 F4 29  |  ..pom.xml..._#.)</span><br><span class="line">09 38 20 93 5F 23 F4 29 05 A4 9C F2 00 00 08 01  |  .8 ._#.)........</span><br><span class="line">00 98 0B 4D 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ...M............</span><br><span class="line">00 00 05 4A DD B2 E8 32 F1 CF 37 51 02 B9 51 2F  |  ...J...2..7Q..Q/</span><br><span class="line">7E 1C 3D 30 AB D4 D5 E7 00 2B 73 72 63 2F 6D 61  |  ~.=0.....+src/ma</span><br><span class="line">69 6E 2F 6A 61 76 61 2F 63 6F 6D 2F 6A 64 2F 65  |  in/java/com/jd/e</span><br><span class="line">64 69 2F 74 65 73 74 2F 6A 73 66 2F 4D 61 69 6E  |  di/test/jsf/Main</span><br><span class="line">2E 6A 61 76 61 00 00 00 00 00 00 00 5E C7 49 0D  |  .java.......^.I.</span><br><span class="line">05 6A B2 B6 5E C7 49 0D 05 6A B2 B6 00 00 08 01  |  .j..^.I..j......</span><br><span class="line">00 98 07 E4 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ................</span><br><span class="line">00 00 03 06 39 13 8C F9 E3 1F E2 2F AB 67 1A 63  |  ....9....../.g.c</span><br><span class="line">BE E9 72 C2 9A 5C 15 80 00 2E 73 72 63 2F 6D 61  |  ..r..\....src/ma</span><br><span class="line">69 6E 2F 6A 61 76 61 2F 63 6F 6D 2F 6A 64 2F 65  |  in/java/com/jd/e</span><br><span class="line">64 69 2F 74 65 73 74 2F 6A 73 66 2F 52 70 63 55  |  di/test/jsf/RpcU</span><br><span class="line">74 69 6C 2E 6A 61 76 61 00 00 00 00 5D D4 B4 2E  |  til.java....]...</span><br><span class="line">33 40 3A 5F 5D D4 B4 2E 31 1A EA 8A 00 00 08 01  |  3@:_]...1.......</span><br><span class="line">00 98 07 38 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ...8............</span><br><span class="line">00 00 06 CB 75 80 89 65 F4 C1 84 B2 F7 79 66 39  |  ....u..e.....yf9</span><br><span class="line">12 54 C0 8D 3C 64 F2 87 00 1D 73 72 63 2F 6D 61  |  .T..&lt;d....src/ma</span><br><span class="line">69 6E 2F 72 65 73 6F 75 72 63 65 73 2F 6C 6F 67  |  in/resources/log</span><br><span class="line">34 6A 32 2E 78 6D 6C 00 00 00 00 00 5E C7 49 0D  |  4j2.xml.....^.I.</span><br><span class="line">05 6A B2 B6 5E C7 49 0D 05 6A B2 B6 00 00 08 01  |  .j..^.I..j......</span><br><span class="line">00 B6 06 02 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ................</span><br><span class="line">00 00 06 2D 18 D6 D3 F5 36 DF 26 86 33 96 24 D4  |  ...-....6.&amp;.3.$.</span><br><span class="line">EC 7B A4 C1 FA 3E 73 FA 00 30 73 72 63 2F 74 65  |  .&#123;...&gt;s..0src/te</span><br><span class="line">73 74 2F 6A 61 76 61 2F 63 6F 6D 2F 6A 64 2F 65  |  st/java/com/jd/e</span><br><span class="line">64 69 2F 74 65 73 74 2F 6C 6F 67 2F 44 75 62 62  |  di/test/log/Dubb</span><br><span class="line">6F 54 65 73 74 2E 6A 61 76 61 00 00 5F 27 AA 90  |  oTest.java.._&#x27;..</span><br><span class="line">0D 56 22 13 5F 27 AA 90 09 FF A8 76 00 00 08 01  |  .V&quot;._&#x27;.....v....</span><br><span class="line">00 B6 0F B3 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ................</span><br><span class="line">00 00 51 50 D0 7D 1E 76 95 F5 EA 98 87 14 69 C9  |  ..QP.&#125;.v......i.</span><br><span class="line">35 FE E2 D8 70 86 19 1E 00 2E 73 72 63 2F 74 65  |  5...p.....src/te</span><br><span class="line">73 74 2F 6A 61 76 61 2F 63 6F 6D 2F 6A 64 2F 65  |  st/java/com/jd/e</span><br><span class="line">64 69 2F 74 65 73 74 2F 6C 6F 67 2F 4A 73 66 54  |  di/test/log/JsfT</span><br><span class="line">65 73 74 2E 6A 61 76 61 00 00 00 00 5E C7 49 0D  |  est.java....^.I.</span><br><span class="line">05 6A B2 B6 5E C7 49 0D 05 6A B2 B6 00 00 08 01  |  .j..^.I..j......</span><br><span class="line">00 C8 0E 96 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ................</span><br><span class="line">00 00 0E A2 D5 11 7D 32 B3 8F 39 65 6D E1 EA C6  |  ......&#125;2..9em...</span><br><span class="line">59 7E 64 83 29 BC F4 7D 00 20 73 72 63 2F 74 65  |  Y~d.)..&#125;. src/te</span><br><span class="line">73 74 2F 72 65 73 6F 75 72 63 65 73 2F 64 75 62  |  st/resources/dub</span><br><span class="line">62 6F 2F 44 54 43 2E 7A 69 70 00 00 5E C7 49 0D  |  bo/DTC.zip..^.I.</span><br><span class="line">05 6A B2 B6 5E C7 49 0D 05 6A B2 B6 00 00 08 01  |  .j..^.I..j......</span><br><span class="line">00 C8 0E 97 00 00 81 A4 00 00 03 E8 00 00 03 E8  |  ................</span><br><span class="line">00 00 00 FF F0 7C B3 27 15 BB E1 69 5C 6F 5D 2E  |  .....|.&#x27;...i\o].</span><br><span class="line">6A E5 DC BD 04 F0 9E 4D 00 29 73 72 63 2F 74 65  |  j......M.)src/te</span><br><span class="line">73 74 2F 72 65 73 6F 75 72 63 65 73 2F 64 75 62  |  st/resources/dub</span><br><span class="line">62 6F 2F 64 75 62 62 6F 2E 70 72 6F 70 65 72 74  |  bo/dubbo.propert</span><br><span class="line">69 65 73 00 5D D7 A6 44 0F 4A 25 12 5D D7 A5 F6  |  ies.]..D.J%.]...</span><br><span class="line">20 E6 DA 00 00 00 08 01 00 C8 0B 60 00 00 81 A4  |   ..........`....</span><br><span class="line">00 00 03 E8 00 00 03 E8 00 29 4F 9C 5A 4E B0 82  |  .........)O.ZN..</span><br><span class="line">C4 44 FF 0B E9 B7 F4 97 FA E2 8E 23 BE 49 F4 E0  |  .D.........#.I..</span><br><span class="line">00 2C 73 72 63 2F 74 65 73 74 2F 72 65 73 6F 75  |  .,src/test/resou</span><br><span class="line">72 63 65 73 2F 65 64 69 2D 6B 61 2D 31 2E 30 2E  |  rces/edi-ka-1.0.</span><br><span class="line">30 2D 53 4E 41 50 53 48 4F 54 2E 7A 69 70 00 00  |  0-SNAPSHOT.zip..</span><br><span class="line">00 00 00 00 54 52 45 45 00 00 00 F3 00 2D 31 20  |  ....TREE.....-1 </span><br><span class="line">31 0A 73 72 63 00 2D 31 20 32 0A 6D 61 69 6E 00  |  1.src.-1 2.main.</span><br><span class="line">2D 31 20 32 0A 6A 61 76 61 00 2D 31 20 31 0A 63  |  -1 2.java.-1 1.c</span><br><span class="line">6F 6D 00 2D 31 20 31 0A 6A 64 00 2D 31 20 31 0A  |  om.-1 1.jd.-1 1.</span><br><span class="line">65 64 69 00 2D 31 20 31 0A 74 65 73 74 00 2D 31  |  edi.-1 1.test.-1</span><br><span class="line">20 31 0A 6A 73 66 00 2D 31 20 30 0A 72 65 73 6F  |   1.jsf.-1 0.reso</span><br><span class="line">75 72 63 65 73 00 31 20 30 0A C3 B7 95 22 38 01  |  urces.1 0....&quot;8.</span><br><span class="line">71 55 91 97 79 3D 4A 97 3B 21 B9 57 1E 53 74 65  |  qU..y=J.;!.W.Ste</span><br><span class="line">73 74 00 2D 31 20 32 0A 6A 61 76 61 00 2D 31 20  |  st.-1 2.java.-1 </span><br><span class="line">31 0A 63 6F 6D 00 2D 31 20 31 0A 6A 64 00 2D 31  |  1.com.-1 1.jd.-1</span><br><span class="line">20 31 0A 65 64 69 00 2D 31 20 31 0A 74 65 73 74  |   1.edi.-1 1.test</span><br><span class="line">00 2D 31 20 31 0A 6C 6F 67 00 2D 31 20 30 0A 72  |  .-1 1.log.-1 0.r</span><br><span class="line">65 73 6F 75 72 63 65 73 00 33 20 31 0A DA 51 E1  |  esources.3 1..Q.</span><br><span class="line">E1 F7 1B E3 6D FF C4 EA 5A 23 05 74 72 EA 7C 76  |  ....m...Z#.tr.|v</span><br><span class="line">97 64 75 62 62 6F 00 32 20 30 0A ED 23 F0 8E F3  |  .dubbo.2 0..#...</span><br><span class="line">10 DA 69 79 3B 26 1B 99 E6 81 B8 59 B5 1B 38 09  |  ..iy;&amp;.....Y..8.</span><br><span class="line">58 52 E9 C5 2C 00 18 95 21 2B 6C 8C 58 FF 6D 16  |  XR..,...!+l.X.m.</span><br><span class="line">BA 82 A9                                         |  ...</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="2）index格式"><a href="#2）index格式" class="headerlink" title="2）index格式"></a>2）index格式</h4><ol>
+<li><p>该文件创建的时间，最后修改时间</p>
+</li>
+<li><p>inode信息，设备号和Innode号</p>
+</li>
+<li><p>文件权限，例如：777</p>
+</li>
+<li><p>文件的用户及用户组</p>
+</li>
+<li><p>文件大小</p>
+</li>
+<li><p><code>文件的blobId</code></p>
+</li>
+<li><p>文件的相对路径</p>
+</li>
+</ol>
+<h2 id="三、Git命令"><a href="#三、Git命令" class="headerlink" title="三、Git命令"></a>三、Git命令</h2><p>Git包含底层命令（Plumbing）和高层命令（Procelain）。</p>
+<p>1）用户平时使用的Git命令一般为高层命令，如add、commit、checkout等；高层命令对用户友好，便于理解和操作。</p>
+<p>2）Git起初被设计为供VCS使用的工具集，这些工具也称为底层命令；底层命令一般不被用户直接使用，而是被shell或脚本调用。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630684.png" alt="Git部分底层命令"></p>
+<p>此处列举几个底层命令简要说明：</p>
+<ul>
+<li>checkout-index：Copy files from the index to the working tree.</li>
+<li>cat-file：Provide content or type and size information for repository objects.</li>
+<li>hash-object：Compute object ID and optionally creates a blob from a file.</li>
+<li>update-index：Register file contents in the working tree to the index.</li>
+<li>write-tree：Create a tree object from the current index.</li>
+<li>commit-tree：Create a new commit object.</li>
+</ul>
+<h2 id="四、Git对象"><a href="#四、Git对象" class="headerlink" title="四、Git对象"></a>四、Git对象</h2><p>Git定义了4种对象：blob、tree、commit和tag，它们都位于**.git&#x2F;objects&#x2F;**目录下。git对象在原文件的基础上增加了一个头部，即<code>对象内容 = 对象头 + 文件内容</code>。这种格式无法直接通过<code>cat</code>命令读取，需要使用<code>git cat-file</code>这个底层命令才能正确读取。</p>
+<p>对象头的格式为：<code>对象头 = 对象类型 + 空格 + 数据内容长度 + null byte</code>，例如一个文件内容为“hello world”，其blob对象头为”blob 11\000”。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630784.png" alt="git cat-file可读取git的4种对象"></p>
+<ul>
+<li>blob：工作区的文件以blob对象的形式进入git仓库，相当于UNIX中的inodes或文件内容。</li>
+<li>tree：tree对象包含对blob对象以及其他tree对象的引用，相当于UNIX中的目录。</li>
+<li>commit：包含了上一次commit对象的Hash串引用、该时间点项目快照的顶层tree对象的Hash串引用、作者&#x2F;提交者信息、时间戳、空行，以及提交的注释信息。</li>
+</ul>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630655.png" alt="commit、tree、blob的引用关系"></p>
+<ul>
+<li>tag：包含一个commit的Hash串引用、标签名，以及其他信息（由标签类型决定）。</li>
+</ul>
+<h2 id="五、内容寻址"><a href="#五、内容寻址" class="headerlink" title="五、内容寻址"></a>五、内容寻址</h2><p>1）依赖底层命令<code>git hash-object</code>命令，对文件内容增加头信息后计算hash值并返回，增加<code>-w</code>参数后在git仓库内创建blob对象（<strong>blob对象 &#x3D; 对象头 + 文件内容</strong>）。</p>
+<p>2）blob对象存储到git仓库目录（.git&#x2F;objects&#x2F;）时，依据40位（16进制字符）长度的hash串指定存储目录（hash串前2位）和命名文件（hash串后38位）。</p>
+<p>例如某blob对象的hash值为<code>62/0d4582bfbf773ef15f9b52ac434906a3cdf9c3</code>，那么它在git仓库中的路径为<code>.git/objects/62/0d4582bfbf773ef15f9b52ac434906a3cdf9c3</code>。</p>
+<p>3）Git内容寻址本质是：Git根据由文件内容（增加文件头）产生的Hash值来标识和索引文件，另外进行命令操作时没有必要写完整的hash串，只要输入的hash串长度是唯一可识别和索引的即可。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630685.png" alt="根据文件内容的hash值索引文件"></p>
+<p>4）无需考虑Hash碰撞的情况，在大型项目上也可以放心使用Git。因为在概率上SHA-1产生的哈希值碰撞的机会可以小到忽略。</p>
+<h2 id="六、hash碰撞"><a href="#六、hash碰撞" class="headerlink" title="六、hash碰撞"></a>六、hash碰撞</h2><!-- date: 2020.08.04 13:03 -->
+
+<p>1）hash碰撞后的原则</p>
+<p>当出现冲突时，保留当前仓库已有的对象；</p>
+<p> 2）冲突场景</p>
+<table>
+<thead>
+<tr>
+<th>已存在</th>
+<th>新对象</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>blob</td>
+<td>blob</td>
+<td>commit success, lost fail</td>
+</tr>
+<tr>
+<td>tree</td>
+<td>blob</td>
+<td>commit sucess, push fail</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>blob</td>
+<td>commit sucess, push fail</td>
+</tr>
+<tr>
+<td>blob</td>
+<td>commit</td>
+<td>commit fail, when updating “ref”</td>
+</tr>
+<tr>
+<td>blob</td>
+<td>tree</td>
+<td>commit fail, when create commit</td>
+</tr>
+<tr>
+<td>tree</td>
+<td>commit</td>
+<td>commit fail, when updating “ref”</td>
+</tr>
+<tr>
+<td>tree</td>
+<td>tree</td>
+<td>push success, reference to wrong tree</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>commit</td>
+<td>HEAD always point to old</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>tree</td>
+<td>commit fail, when create commit</td>
+</tr>
+</tbody></table>
+<h2 id="七、Git版本机制"><a href="#七、Git版本机制" class="headerlink" title="七、Git版本机制"></a>七、Git版本机制</h2><p>1）HEAD指向当前分支。若master是当前分支，则HEAD文件内容为<code>ref: refs/heads/master</code>。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630721.png" alt="HEAD指向当前分支"></p>
+<p>2）分支（本地分支、远程分支、远程跟踪分支、跟踪分支）和标签（tag对象）都包含了对commit对象的引用。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630760.png" alt="master分支引用了hash为1ad0的commit对象"></p>
+<p>3）commit对象包含了上次commit对象的引用（类似单链表）和本次提交的顶级tree对象的引用。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630757.png" alt="commit对象引用了tree对象"></p>
+<ul>
+<li>每个顶级tree对象可看做是一个完整的版本。</li>
+<li>通过commit对象的链式结构进行串联，形成提交历史和版本历史。</li>
+</ul>
+<p>4）总之：git的分支和标签通过引用commit对象来标注当前分支的版本信息。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630758.png" alt="git的版本历史机制"></p>
+<p>Note：凡是对Git对象的引用，都指的是Git对象的40位长度的Hash串。</p>
+<h2 id="八、引用规格（refspec）"><a href="#八、引用规格（refspec）" class="headerlink" title="八、引用规格（refspec）"></a>八、引用规格（refspec）</h2><p>引用规格指的是远程仓库分支和本地分支的映射，可表示为<code>&lt;src&gt;:&lt;dst&gt;</code>，这也暗示了数据流向为<code>src →  dst</code>。</p>
+<h3 id="1）fetch和push命令"><a href="#1）fetch和push命令" class="headerlink" title="1）fetch和push命令"></a>1）fetch和push命令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">两命令都包含引用规格（refspec）来指定数据流向。</span></span><br><span class="line">git fetch [remote repository] [remote branch]:[local branch]</span><br><span class="line">git push [remote repository] [local branch]:[remote branch]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2）config文件配置refspec"><a href="#2）config文件配置refspec" class="headerlink" title="2）config文件配置refspec"></a>2）config文件配置refspec</h3><p>当使用缺省的fetch&#x2F;push命令时，Git会根据.git&#x2F;config中的refspec配置进行操作。</p>
+<p>I、当通过<code>git remote add</code>命令添加一个远程分支的同时，会在.git&#x2F;config文件中添加一个配置结点。</p>
+<p><img src="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/pic/1240-20210115031630801.png" alt="git remote add"></p>
+<p>fetch中的”+“是可选的，它告诉Git在不能fast-forward的情况下，也强制去更新它。此后执行<code>git fetch orgin</code>这个缺省命令时，会拉取origin远程仓库的所有分支。</p>
+<p>II、可通过<code>git log origin/master</code>来查看从远程仓库fetch的master分支。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">以下三个命令是等价的，Git会把他们都扩展为refs/remote/origin/master</span></span><br><span class="line">git log origin/master</span><br><span class="line">git log remote/origin/master</span><br><span class="line">git log refs/remote/origin/master</span><br></pre></td></tr></table></figure>
+
+<p>III、refspec指定分支映射</p>
+<ul>
+<li>可通过改写fetch行为<code>fetch = +refs/heads/master:refs/remotes/origin/mymaster</code>，指定把远程的master分支映射为本地的origin&#x2F;mymaster分支。</li>
+<li>也可指定多个映射，一次拉取多个指定分支。</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[remote</span> <span class="string">&quot;origin&quot;]</span></span><br><span class="line">      <span class="attr">url</span> = <span class="string">git@github.com:kivihub/test.git</span></span><br><span class="line">      <span class="attr">fetch</span> = <span class="string">+refs/heads/master:refs/remotes/origin/master</span></span><br><span class="line">      <span class="attr">fetch</span> = <span class="string">+refs/heads/experiment:refs/remotes/origin/experiment</span></span><br><span class="line">      <span class="attr">fetch</span> = <span class="string">+refs/heads/qa/*:refs/remote/orgin/qa/*</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可同时指定push的refspec。若要把本地的master分支push到远程的qa&#x2F;master分支，可配置如下：</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">[remote</span> <span class="string">&quot;origin&quot;]</span></span><br><span class="line">      <span class="attr">url</span> = <span class="string">git@github.com:kivihub/test.git</span></span><br><span class="line">      <span class="attr">fetch</span> = <span class="string">+refs/heads/master:refs/remotes/origin/master</span></span><br><span class="line">      <span class="attr">fetch</span> = <span class="string">+refs/heads/experiment:refs/remotes/origin/experiment</span></span><br><span class="line">      <span class="attr">fetch</span> = <span class="string">+refs/heads/qa/*:refs/remote/orgin/qa/*</span></span><br><span class="line">      <span class="attr">push</span> = <span class="string">refs/heads/master:refs/heads/qa/master </span></span><br></pre></td></tr></table></figure>
+
+<p>IV、删除远程分支<br>通过命令<code>git push origin :master</code>可以删除远程origin库的master分支。因为refspec的格式为<src>:<dst>，通过把<src>置空表示把远程分支变为空，也就是删除它。</p>
+<h2 id="九、垃圾回收"><a href="#九、垃圾回收" class="headerlink" title="九、垃圾回收"></a>九、垃圾回收</h2><p><code>git gc</code>垃圾回收命令用于压缩或删除数据，节省磁盘空间。</p>
+<ul>
+<li>将松散对象进行打包存入packfile。</li>
+<li>将不被任何commit引用并且已存在一段时间（数月）的对象删除。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/zssureqh/article/details/53056095">GIT科普系列5：index in git</a> </li>
+<li>《Pro Git》相关章节内容<ol>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-%E5%BA%95%E5%B1%82%E5%91%BD%E4%BB%A4%E5%92%8C%E9%AB%98%E5%B1%82%E5%91%BD%E4%BB%A4">Git 内部原理 - 底层命令和高层命令</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-Git-%E5%AF%B9%E8%B1%A1">Git 内部原理 - Git 对象</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-Git-%E5%BC%95%E7%94%A8">Git 内部原理 - Git 引用</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-%E5%8C%85%E6%96%87%E4%BB%B6">Git 内部原理 - 包文件</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-%E5%BC%95%E7%94%A8%E8%A7%84%E6%A0%BC">Git 内部原理 - 引用规格</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">Git 内部原理 - 传输协议</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-%E7%BB%B4%E6%8A%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D">Git 内部原理 - 维护与数据恢复</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">Git 内部原理 - 环境变量</a></li>
+</ol>
+</li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/docs">Git命令列表</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/vic___/article/details/9446729">.gitignore和exclude</a></li>
+<li>Hash碰撞<ol>
+<li><a target="_blank" rel="noopener" href="http://web.archive.org/web/20120701221418/http://kerneltrap.org/mailarchive/git/2006/8/28/211065">Linus reply: Starting to think about sha-256?</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/9392365/how-would-git-handle-a-sha-1-collision-on-a-blob/34599081#34599081">https://stackoverflow.com/questions/9392365/how-would-git-handle-a-sha-1-collision-on-a-blob/34599081#34599081</a></li>
+</ol>
+</li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/01/29/Git%E9%85%8D%E7%BD%AE/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Git配置</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/"><span class="level-item">VCS简介</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、前言"><span class="level-left"><span class="level-item">一、前言</span></span></a></li><li><a class="level is-mobile" href="#二、Git目录结构"><span class="level-left"><span class="level-item">二、Git目录结构</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、工作区、暂存区和Git仓库"><span class="level-left"><span class="level-item">1、工作区、暂存区和Git仓库</span></span></a></li><li><a class="level is-mobile" href="#2、-git目录"><span class="level-left"><span class="level-item">2、.git目录</span></span></a></li><li><a class="level is-mobile" href="#3、index文件"><span class="level-left"><span class="level-item">3、index文件</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）查看index内容"><span class="level-left"><span class="level-item">1）查看index内容</span></span></a></li><li><a class="level is-mobile" href="#2）index格式"><span class="level-left"><span class="level-item">2）index格式</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#三、Git命令"><span class="level-left"><span class="level-item">三、Git命令</span></span></a></li><li><a class="level is-mobile" href="#四、Git对象"><span class="level-left"><span class="level-item">四、Git对象</span></span></a></li><li><a class="level is-mobile" href="#五、内容寻址"><span class="level-left"><span class="level-item">五、内容寻址</span></span></a></li><li><a class="level is-mobile" href="#六、hash碰撞"><span class="level-left"><span class="level-item">六、hash碰撞</span></span></a></li><li><a class="level is-mobile" href="#七、Git版本机制"><span class="level-left"><span class="level-item">七、Git版本机制</span></span></a></li><li><a class="level is-mobile" href="#八、引用规格（refspec）"><span class="level-left"><span class="level-item">八、引用规格（refspec）</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）fetch和push命令"><span class="level-left"><span class="level-item">1）fetch和push命令</span></span></a></li><li><a class="level is-mobile" href="#2）config文件配置refspec"><span class="level-left"><span class="level-item">2）config文件配置refspec</span></span></a></li></ul></li><li><a class="level is-mobile" href="#九、垃圾回收"><span class="level-left"><span class="level-item">九、垃圾回收</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

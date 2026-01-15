@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、Linux线程生命周期 二、CPU使用率"><meta property="og:type" content="blog"><meta property="og:title" content="CPU使用率和负载"><meta property="og:url" content="https://kivihub.github.io/2021/01/21/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、Linux线程生命周期 二、CPU使用率"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/image-20210122114753854.png"><meta property="article:published_time" content="2021-01-21T05:25:46.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:18.644Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/image-20210122114753854.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2021/01/21/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/"},"headline":"CPU使用率和负载","image":["https://kivihub.github.io/thumbnail/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/image-20210122114753854.png"],"datePublished":"2021-01-21T05:25:46.000Z","dateModified":"2026-01-15T03:18:18.644Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、Linux线程生命周期 二、CPU使用率"}</script><link rel="canonical" href="https://kivihub.github.io/2021/01/21/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-21T05:25:46.000Z" title="1/21/2021, 1:25:46 PM">2021-01-21</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a></span><span class="level-item">10 分钟读完 (大约1474个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">CPU使用率和负载</h1><div class="content"><h4 id="一、Linux线程生命周期"><a href="#一、Linux线程生命周期" class="headerlink" title="一、Linux线程生命周期"></a>一、Linux线程生命周期</h4><p><img src="/2021/01/21/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/pic/image-20210122114753854.png" alt="来源：https:&#x2F;&#x2F;swapanroy.wordpress.com&#x2F;about&#x2F;"></p>
+<h4 id="二、CPU使用率"><a href="#二、CPU使用率" class="headerlink" title="二、CPU使用率"></a>二、CPU使用率</h4><span id="more"></span>
+
+<p><img src="/2021/01/21/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/pic/image-20210122160458169.png" alt="image-20210122160458169"></p>
+<h4 id="三、当前负载-活跃任务数"><a href="#三、当前负载-活跃任务数" class="headerlink" title="三、当前负载 - 活跃任务数"></a>三、当前负载 - 活跃任务数</h4><h5 id="1-负载-维基"><a href="#1-负载-维基" class="headerlink" title="1. 负载 - 维基"></a>1. 负载 - 维基</h5><blockquote>
+<p>An idle computer has a load number of 0 (the idle process isn’t counted). Each process using or waiting for CPU (the <em>ready queue</em> or run queue) increments the load number by 1. Each process that terminates decrements it by 1. Most UNIX systems count only processes in the <em>running</em> (on CPU) or <em>runnable</em> (waiting for CPU) states. However, Linux also includes processes in uninterruptible sleep states (usually waiting for disk activity), which can lead to markedly different results if many processes remain blocked in I&#x2F;O due to a busy or stalled I&#x2F;O system. </p>
+<p>This, for example, includes processes blocking due to an NFS server failure or too slow media (e.g., USB 1.x storage devices). Such circumstances can result in an elevated load average which does not reflect an actual increase in CPU use (but still gives an idea of how long users have to wait).</p>
+</blockquote>
+<p>一个空闲的电脑的负载是0（空闲进程不被统计）。每个正在使用或等待使用CPU的进程（处于就绪队列或运行队列）都会使负载加1。而随着进程结束，则会使负载减1。大部分UNIX系统只计算了这两种状态。但是Linux还统计了不可中断的睡眠态（通常在等待磁盘活动）进程，如果许多进程由于I&#x2F;O系统繁忙或停止而在I&#x2F;O中保持阻塞状态，则会导致明显不同的结果。</p>
+<p>例如，这包括由于NFS服务器故障或介质（例如USB 1.x存储设备）太慢而导致的进程阻塞。这种情况可能会导致平均负载增加，而这并不反映CPU使用的实际增加（但仍然给出了用户必须等待多长时间的想法）。</p>
+<h5 id="2-不可中断的睡眠态-维基"><a href="#2-不可中断的睡眠态-维基" class="headerlink" title="2. 不可中断的睡眠态 - 维基"></a>2. 不可中断的睡眠态 - 维基</h5><blockquote>
+<p>An uninterruptible sleep state is a sleep state that won’t handle a signal right away. It will wake only as a result of a waited-upon resource becoming available or after a time-out occurs during that wait (if specified when put to sleep). It is mostly used by device drivers waiting for disk or network IO (input&#x2F;output). When the process is sleeping uninterruptibly, signals accumulated during the sleep will be noticed when the process returns from the system call or trap.</p>
+<p>In Unix-like systems the command ‘<code>ps -l</code>‘ uses code “<code>D</code>“ for the uninterruptible sleep state of a process. Such processes cannot be killed even with <code>SIGKILL</code> and the only non-sophisticated way to get rid of them is to reboot the system.</p>
+</blockquote>
+<p>不可中断的睡眠状态是指不能立即处理信号的睡眠状态。它只会在等待的资源变为可用时或在等待期间发生超时（如果在进入睡眠时指定）后唤醒。它主要由等待磁盘或网络IO（输入&#x2F;输出）的设备驱动程序使用。当进程处于不可中断的睡眠状态时，当进程从系统调用或调用返回时，将注意到在睡眠过程中积累的信号陷阱。</p>
+<p>在类似于Unix的系统命令“<code>ps-l</code>”使用代码“<code>D</code>”表示进程的不间断睡眠状态。即使使用<code>SIGKILL</code>，也不能终止这样的进程，而摆脱它们唯一简单的方法就是重启系统。</p>
+<h5 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h5><p>由以上可知Linux系统下的活跃任务数计算公式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">active_tasks = ready_queue.length + run_queue.length + uninterruptible_sleep_state.length</span><br></pre></td></tr></table></figure>
+
+<h4 id="四、平均负载-指数平滑法"><a href="#四、平均负载-指数平滑法" class="headerlink" title="四、平均负载 - 指数平滑法"></a>四、平均负载 - 指数平滑法</h4><blockquote>
+<p>很多电力公司用它来预测电力负载。</p>
+</blockquote>
+<p><img src="/2021/01/21/CPU%E4%BD%BF%E7%94%A8%E7%8E%87%E5%92%8C%E8%B4%9F%E8%BD%BD/pic/image-20210122115338963.png" alt="image-20210122115338963"></p>
+<h4 id="1-指数平滑法-MBA智库百科"><a href="#1-指数平滑法-MBA智库百科" class="headerlink" title="1. 指数平滑法 - MBA智库百科"></a>1. 指数平滑法 - MBA智库百科</h4><blockquote>
+<p>指数平滑法是布朗(Robert G..Brown)所提出，布朗(Robert G..Brown)认为时间序列的态势具有稳定性或规则性，所以时间序列可被合理地顺势推延；他认为最近的过去态势，在某种程度上会持续到最近的未来，所以将较大的权数放在最近的资料。</p>
+<p>　　指数平滑法是生产预测中常用的一种方法。也用于中短期经济发展趋势预测，所有预测方法中，指数平滑是用得最多的一种。简单的全期平均法是对时间数列的过去数据一个不漏地全部加以同等利用；移动平均法则不考虑较远期的数据，并在加权移动平均法中给予近期资料更大的权重；而指数平滑法则兼容了全期平均和移动平均所长，不舍弃过去的数据，但是仅给予逐渐减弱的影响程度，即随着数据的远离，赋予逐渐收敛为零的权数。</p>
+<p>　　也就是说指数平滑法是在移动平均法基础上发展起来的一种时间序列分析预测法，它是通过计算指数平滑值，配合一定的时间序列预测模型对现象的未来进行预测。其原理是任一期的指数平滑值都是本期实际观察值与前一期指数平滑值的加权平均。</p>
+</blockquote>
+<h5 id="2-Linux负载源码注释"><a href="#2-Linux负载源码注释" class="headerlink" title="2. Linux负载源码注释"></a>2. Linux负载源码注释</h5><p>来源：<em>linux&#x2F;kernel&#x2F;sched&#x2F;loadavg.c</em>  <a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/blob/master/kernel/sched/loadavg.c">Github源码</a>  <a href="../../src/main/c/kernel/sched/loadavg.c">本仓库副本</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The global load average is an exponentially decaying average of nr_running +</span></span><br><span class="line"><span class="comment"> * nr_uninterruptible.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Once every LOAD_FREQ:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *   nr_active = 0;</span></span><br><span class="line"><span class="comment"> *   for_each_possible_cpu(cpu)</span></span><br><span class="line"><span class="comment"> *     nr_active += cpu_of(cpu)-&gt;nr_running + cpu_of(cpu)-&gt;nr_uninterruptible;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *   avenrun[n] = avenrun[0] * exp_n + nr_active * (1 - exp_n)</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Process_states">Process_states</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sleep_(system_call)#Uninterruptible_sleep">Uninterruptible_sleep (ps的D状态)</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Run_queue">run queue</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.sohu.com/a/334948096_262549">深度好文：全面解析 Linux Load</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Load_(computing)">维基 CPU Load</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.mbalib.com/wiki/%E6%8C%87%E6%95%B0%E5%B9%B3%E6%BB%91%E6%B3%95">指数平滑法 MBA智库百科</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Exponential_smoothing">维基 Exponential_smoothing</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average">维基 Exponential_moving_average</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/01/24/IO/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">IO</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/01/21/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"><span class="level-item">分库分表</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、Linux线程生命周期"><span class="level-left"><span class="level-item">一、Linux线程生命周期</span></span></a></li><li><a class="level is-mobile" href="#二、CPU使用率"><span class="level-left"><span class="level-item">二、CPU使用率</span></span></a></li><li><a class="level is-mobile" href="#三、当前负载-活跃任务数"><span class="level-left"><span class="level-item">三、当前负载 - 活跃任务数</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-负载-维基"><span class="level-left"><span class="level-item">1. 负载 - 维基</span></span></a></li><li><a class="level is-mobile" href="#2-不可中断的睡眠态-维基"><span class="level-left"><span class="level-item">2. 不可中断的睡眠态 - 维基</span></span></a></li><li><a class="level is-mobile" href="#3-总结"><span class="level-left"><span class="level-item">3. 总结</span></span></a></li></ul></li><li><a class="level is-mobile" href="#四、平均负载-指数平滑法"><span class="level-left"><span class="level-item">四、平均负载 - 指数平滑法</span></span></a></li><li><a class="level is-mobile" href="#1-指数平滑法-MBA智库百科"><span class="level-left"><span class="level-item">1. 指数平滑法 - MBA智库百科</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-Linux负载源码注释"><span class="level-left"><span class="level-item">2. Linux负载源码注释</span></span></a></li></ul></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

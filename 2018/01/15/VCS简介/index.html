@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、三类版本控制系统1、本地版本控制系统"><meta property="og:type" content="blog"><meta property="og:title" content="VCS简介"><meta property="og:url" content="https://kivihub.github.io/2018/01/15/VCS%E7%AE%80%E4%BB%8B/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、三类版本控制系统1、本地版本控制系统"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/VCS%E7%AE%80%E4%BB%8B/1240-20210115031556381.png"><meta property="article:published_time" content="2018-01-15T14:33:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:22.942Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/VCS%E7%AE%80%E4%BB%8B/1240-20210115031556381.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2018/01/15/VCS%E7%AE%80%E4%BB%8B/"},"headline":"VCS简介","image":["https://kivihub.github.io/thumbnail/VCS%E7%AE%80%E4%BB%8B/1240-20210115031556381.png"],"datePublished":"2018-01-15T14:33:00.000Z","dateModified":"2026-01-15T03:18:22.942Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、三类版本控制系统1、本地版本控制系统"}</script><link rel="canonical" href="https://kivihub.github.io/2018/01/15/VCS%E7%AE%80%E4%BB%8B/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-01-15T14:33:00.000Z" title="1/15/2018, 10:33:00 PM">2018-01-15</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Git/">Git</a></span><span class="level-item">14 分钟读完 (大约2054个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">VCS简介</h1><div class="content"><!-- date: 2018.01.15 22:33 -->
+
+<h2 id="一、三类版本控制系统"><a href="#一、三类版本控制系统" class="headerlink" title="一、三类版本控制系统"></a>一、三类版本控制系统</h2><h3 id="1、本地版本控制系统"><a href="#1、本地版本控制系统" class="headerlink" title="1、本地版本控制系统"></a>1、本地版本控制系统</h3><span id="more"></span>
+
+<p>1）机制：通过数据库记录文件历次更新的差异，差异以补丁的形式记录对应文件修订前后的内容变化。</p>
+<p>2）不足：不支持多开发者协同工作。</p>
+<p>3）典型软件：rcs。</p>
+<p><img src="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/pic/1240-20210115031556381.png" alt="本地版本控制系统"></p>
+<h3 id="2、集中化版本控制系统"><a href="#2、集中化版本控制系统" class="headerlink" title="2、集中化版本控制系统"></a>2、集中化版本控制系统</h3><p>1）机制：单一的集中管理的服务器保存所有文件的修订版本，协同工作的人们通过客户端连到该服务器，取出最新的文件或提交更新。</p>
+<p>2）不足：中央服务器的单点故障可能导致数据丢失。</p>
+<p>3）典型软件：CVS，Subversion，Perforce等。</p>
+<p><img src="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/pic/1240-20210115031556281.png" alt="集中化版本控制系统"></p>
+<h3 id="3、分布式版本控制系统"><a href="#3、分布式版本控制系统" class="headerlink" title="3、分布式版本控制系统"></a>3、分布式版本控制系统</h3><p>1）机制：每个客户端都拥有独立且完整的版本仓库，且客户端地位相等（类似P2P网络），它们之间可相互获取、推送更新。</p>
+<p>2）优点：</p>
+<ul>
+<li>消除集中版本控制系统的单点故障；</li>
+<li>协作开发时，允许单个客户端在本地版本仓库独立提交更新，并在合适时推送给其他客户端或某个约定为中央仓库的客户端。</li>
+</ul>
+<p>3）典型软件：Git，Mercurial，Bazaar，Darcs等。</p>
+<p><img src="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/pic/1240-20210115031556296.png" alt="分布式版本控制系统"></p>
+<h2 id="二、Git基础"><a href="#二、Git基础" class="headerlink" title="二、Git基础"></a>二、Git基础</h2><h3 id="1、Git优势"><a href="#1、Git优势" class="headerlink" title="1、Git优势"></a>1、Git优势</h3><ul>
+<li><p>速度</p>
+</li>
+<li><p>简单的设计</p>
+</li>
+<li><p>对非线性开发模式的强力支持（允许上千个并行开发分支）</p>
+</li>
+<li><p>完全分布式</p>
+</li>
+<li><p>有能力高效管理类似Linux内核一样的超大规模项目（速度和数据量）</p>
+</li>
+</ul>
+<h3 id="2、Git特性"><a href="#2、Git特性" class="headerlink" title="2、Git特性"></a>2、Git特性</h3><h4 id="1）保存快照，而非差异"><a href="#1）保存快照，而非差异" class="headerlink" title="1）保存快照，而非差异"></a>1）保存快照，而非差异</h4><ul>
+<li><p>Git关心文件整体内容的变化，而大多数其他系统则关心文件内容的差异。</p>
+</li>
+<li><p>此特性为多分支并行开发提供了支持。</p>
+</li>
+</ul>
+<p><img src="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/pic/540-20210115031556223.png" alt="其他系统在每个版本上记录各个文件的具体差异"></p>
+<p><img src="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/pic/540-20210115031556206.png" alt="Git保存每次更新时的文件快照"></p>
+<h4 id="2）几乎所有操作都是本地操作"><a href="#2）几乎所有操作都是本地操作" class="headerlink" title="2）几乎所有操作都是本地操作"></a>2）几乎所有操作都是本地操作</h4><ul>
+<li>速度快</li>
+<li>客户端离线时也可进行更新操作</li>
+</ul>
+<h4 id="3）时刻保持数据完整性"><a href="#3）时刻保持数据完整性" class="headerlink" title="3）时刻保持数据完整性"></a>3）时刻保持数据完整性</h4><ul>
+<li>保存到Git之前，所有数据都要经过Hash运算，并将Hash值作为数据的唯一标识和索引，而非文件名。</li>
+<li>Git采用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SHA-1/1699692?fr=aladdin">SHA-1</a>算法来生成文件或整个目录的杂凑值，并作为唯一标识。该算法输出160bit哈希值，即40个16进制字符（0-9及a-f）。类似<code>24b9da6552252987aa493b52f8696cd6d3b00373</code>。</li>
+</ul>
+<h4 id="4）多数操作仅添加数据"><a href="#4）多数操作仅添加数据" class="headerlink" title="4）多数操作仅添加数据"></a>4）多数操作仅添加数据</h4><ul>
+<li>保证历史版本的可回溯</li>
+</ul>
+<h4 id="5）三种状态（git-status命令当前状态）"><a href="#5）三种状态（git-status命令当前状态）" class="headerlink" title="5）三种状态（git status命令当前状态）"></a>5）三种状态（<code>git status</code>命令当前状态）</h4><blockquote>
+<p>原理：通过比较<strong>相同文件名</strong>所对应的<strong>SHA-1值</strong>是否相同，来判断文件是否更新。</p>
+</blockquote>
+<p>I、已修改（modified）</p>
+<ul>
+<li>状态：工作区的文件已修改，还未暂存。</li>
+<li>系统通过比较<strong>工作区</strong>和<strong>暂存区</strong>（对应.git&#x2F;index）内相同文件名的文件的SHA-1值，来判定文件是否更新。</li>
+<li>用户可通过<code>git diff</code>命令查看工作区和暂存区内容的具体差异。</li>
+</ul>
+<p>II、已暂存（staged）</p>
+<ul>
+<li>状态：工作区修改的文件已保存至暂存区，但还未提交。</li>
+<li>系统通过比较<strong>暂存区</strong>（对应.git&#x2F;index）和<strong>Git仓库</strong>（对应.git&#x2F;HEAD）内相同文件名的文件的SHA-1值，来判定文件是否更新。</li>
+<li>用户可通过<code>git diff --cached</code>命令查看暂存区和Git仓库的具体内容差异。</li>
+</ul>
+<p>III、已提交（committed）</p>
+<ul>
+<li>状态：暂存区的文件已提交至版本库。</li>
+<li>系统通过比较<strong>暂存区</strong>和<strong>Git仓库</strong>内相同文件名的文件的SHA-1值，来判定文件是否更新。（同上）</li>
+</ul>
+<p><img src="/2018/01/15/VCS%E7%AE%80%E4%BB%8B/pic/540.png" alt="工作目录，暂存区域和Git目录"></p>
+<h4 id="6）单向性"><a href="#6）单向性" class="headerlink" title="6）单向性"></a>6）单向性</h4><p>I、当差异发生时提示<strong>已修改，已暂存，已提交</strong>三种状态，这暗示了Git中更新并提交文件的单向性，<strong>工作区 → 暂存区 → Git目录</strong>。</p>
+<p>II、Git中的版本回退命令<code>git reset</code>和<code>git revert</code>在各自不同参数下的执行结果都满足工作区的版本<strong>不旧于</strong>暂存区，暂存区的版本<strong>不旧于</strong>Git目录。</p>
+<p>Note：<code>git reset</code>和<code>git revert</code>命令在<strong>提交层面</strong>上实现回退的思路不同，前者做<strong>减法</strong>（适合在私有分支上回退），而后者做<strong>加法</strong>（适合在公共分支上回退）。</p>
+<p>III、本质上讲：</p>
+<ul>
+<li><p>git不关心文件新旧，只关心文件是否相同（通过相同文件名的SHA-1值判断）。</p>
+<ul>
+<li>若相同，直接引用已有文件的SHA-1值，Git仓库内也只会保留一份文件；</li>
+<li>若不同，则引用更新后文件的SHA-1值，Git仓库会保有不同版本的文件。</li>
+</ul>
+</li>
+<li><p>约定更新和提交是单向的。</p>
+</li>
+</ul>
+<p>Note：<code>git add</code>命令后，<strong>新增或更新的文件</strong>会以blob对象（blob、tree、commit、tag四大对象之一）的形式<strong>首次进入</strong>.&#x2F;git&#x2F;objects目录。</p>
+<h2 id="三、Git操作清单"><a href="#三、Git操作清单" class="headerlink" title="三、Git操作清单"></a>三、Git操作清单</h2><!-- date: 2018.01.23 22:57 -->
+
+<p>接下来的文章将针对不同的场景需求，对Git的命令和操作进行解析和实践。本文依据不同场景对操作进行归类，以此对Git的功能有个全面的认识。</p>
+<blockquote>
+<p>Git自助服务：<code>git help 命令</code>可获取命令详情</p>
+</blockquote>
+<h3 id="1、Git配置"><a href="#1、Git配置" class="headerlink" title="1、Git配置"></a>1、Git配置</h3><ol>
+<li>配置基本信息 <code>git config</code><ul>
+<li>配置用户信息</li>
+<li>配置工具：文本编辑器、差异分析工具</li>
+</ul>
+</li>
+<li>配置忽略文件 <code>vim file</code><ul>
+<li>.gitignore</li>
+<li>.git&#x2F;info&#x2F;exclude</li>
+<li>$HOME&#x2F;.config&#x2F;git&#x2F;ignore</li>
+</ul>
+</li>
+</ol>
+<h3 id="2、Git基础操作"><a href="#2、Git基础操作" class="headerlink" title="2、Git基础操作"></a>2、Git基础操作</h3><ol>
+<li>获取项目Git仓库<ul>
+<li>当前目录初始化 <code>git init</code></li>
+<li>现有仓库克隆 <code>git clone</code></li>
+</ul>
+</li>
+<li>提交更新至Git仓库<ul>
+<li>跟踪新文件  <code>git add</code></li>
+<li>暂存已修改文件 <code>git add</code></li>
+<li>提交文件 <code>git commit [-a]</code></li>
+<li>撤销操作<ul>
+<li>修改最后一次提交 <code>git commit --amend</code></li>
+<li>回退Git仓库 <code>git revert</code> | <code>git reset --soft</code></li>
+<li>回退暂存区 <code>git reset [--mixed]</code> | <code>git reset [commit] file</code></li>
+<li>回退工作区 <code>git reset --hard</code> | <code>git checkout [commit] file</code><ul>
+<li>储藏与恢复 <code>git stach</code> | <code>git stash pop</code></li>
+<li>查看提交记录 <code>git fsck</code>|<code>git log</code>|<code>git log -g</code>|<code>git reflog</code></li>
+<li>清除未跟踪文件和目录 <code>git clean -df</code></li>
+</ul>
+<ol start="3">
+<li>查看操作</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>查看当前状态 <code>git status</code></li>
+<li>查看文件差异  <code>git diff</code>|<code>git diff [commit]</code>|<code>git diff --cached commit</code>|<code>git diff [commit] [commit]</code></li>
+<li>查看完整提交历史 <code>git log [-g]</code>|<code>git reflog</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="3、Git远程仓库操作"><a href="#3、Git远程仓库操作" class="headerlink" title="3、Git远程仓库操作"></a>3、Git远程仓库操作</h3><ol>
+<li>管理远程仓库<ul>
+<li>查看 <code>git remote [-v]</code></li>
+<li>增加 <code>git remote add</code></li>
+<li>修改  <code>git remote rename old-name new-name</code></li>
+<li>删除 <code>git remote rm name</code></li>
+</ul>
+</li>
+<li>远程仓库交互<ul>
+<li>抓取数据 <code>git fetch</code> | <code>git pull</code></li>
+<li>推送数据 <code>git push</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="4、Git标签-分支"><a href="#4、Git标签-分支" class="headerlink" title="4、Git标签&#x2F;分支"></a>4、Git标签&#x2F;分支</h3><ol>
+<li>标签<ul>
+<li>标签类型</li>
+<li>查看标签 <code>git tag</code></li>
+<li>管理标签  <code>git tag</code></li>
+</ul>
+</li>
+<li>分支<ul>
+<li>分支概念和原理</li>
+<li>远程分支&#x2F;跟踪分支</li>
+<li>创建分支 <code>git branch</code> | <code>git checkout -b</code></li>
+<li>删除分支 <code>git branch -d</code></li>
+<li>合并分支 <code>git merge</code></li>
+<li>衍合分支 <code>git rebase</code></li>
+<li>开发中的分支工作流程</li>
+</ul>
+</li>
+</ol>
+<h3 id="5、其他补充内容"><a href="#5、其他补充内容" class="headerlink" title="5、其他补充内容"></a>5、其他补充内容</h3><ol>
+<li>祖先引用</li>
+<li>提交范围<ul>
+<li>双点语法</li>
+<li>三点语法</li>
+<li>多点范围</li>
+</ul>
+</li>
+<li>补丁</li>
+<li>挑拣(cherry-pick)</li>
+<li>git调试<ul>
+<li>文件标注</li>
+<li>二分查找</li>
+</ul>
+</li>
+<li>重写历史<ul>
+<li>修改最近一次提交</li>
+<li>修改多个提交</li>
+<li>重排提交</li>
+<li>压制提交</li>
+<li>拆分提交</li>
+</ul>
+</li>
+<li>子模块</li>
+</ol>
+<h2 id="、参考文章"><a href="#、参考文章" class="headerlink" title="#、参考文章"></a>#、参考文章</h2><ol>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/houpeiyong/p/5890748.html">代码回滚：git reset、git checkout和git revert区别和联系</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/zssureqh/article/details/52136946">GIT科普系列3：底层存储机制Internal Objects</a></li>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86-Git-%E5%AF%B9%E8%B1%A1">Git 内部原理 - Git 对象</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/wishfly/article/details/2043180">Diff程序的原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Git">https://en.wikipedia.org/wiki/Git</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/01/18/Git%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Git内部原理</span></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、三类版本控制系统"><span class="level-left"><span class="level-item">一、三类版本控制系统</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、本地版本控制系统"><span class="level-left"><span class="level-item">1、本地版本控制系统</span></span></a></li><li><a class="level is-mobile" href="#2、集中化版本控制系统"><span class="level-left"><span class="level-item">2、集中化版本控制系统</span></span></a></li><li><a class="level is-mobile" href="#3、分布式版本控制系统"><span class="level-left"><span class="level-item">3、分布式版本控制系统</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、Git基础"><span class="level-left"><span class="level-item">二、Git基础</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、Git优势"><span class="level-left"><span class="level-item">1、Git优势</span></span></a></li><li><a class="level is-mobile" href="#2、Git特性"><span class="level-left"><span class="level-item">2、Git特性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）保存快照，而非差异"><span class="level-left"><span class="level-item">1）保存快照，而非差异</span></span></a></li><li><a class="level is-mobile" href="#2）几乎所有操作都是本地操作"><span class="level-left"><span class="level-item">2）几乎所有操作都是本地操作</span></span></a></li><li><a class="level is-mobile" href="#3）时刻保持数据完整性"><span class="level-left"><span class="level-item">3）时刻保持数据完整性</span></span></a></li><li><a class="level is-mobile" href="#4）多数操作仅添加数据"><span class="level-left"><span class="level-item">4）多数操作仅添加数据</span></span></a></li><li><a class="level is-mobile" href="#5）三种状态（git-status命令当前状态）"><span class="level-left"><span class="level-item">5）三种状态（git status命令当前状态）</span></span></a></li><li><a class="level is-mobile" href="#6）单向性"><span class="level-left"><span class="level-item">6）单向性</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#三、Git操作清单"><span class="level-left"><span class="level-item">三、Git操作清单</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、Git配置"><span class="level-left"><span class="level-item">1、Git配置</span></span></a></li><li><a class="level is-mobile" href="#2、Git基础操作"><span class="level-left"><span class="level-item">2、Git基础操作</span></span></a></li><li><a class="level is-mobile" href="#3、Git远程仓库操作"><span class="level-left"><span class="level-item">3、Git远程仓库操作</span></span></a></li><li><a class="level is-mobile" href="#4、Git标签-分支"><span class="level-left"><span class="level-item">4、Git标签/分支</span></span></a></li><li><a class="level is-mobile" href="#5、其他补充内容"><span class="level-left"><span class="level-item">5、其他补充内容</span></span></a></li></ul></li><li><a class="level is-mobile" href="#、参考文章"><span class="level-left"><span class="level-item">#、参考文章</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

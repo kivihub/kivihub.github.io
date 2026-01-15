@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、前置问题 垃圾回收的条件是什么？"><meta property="og:type" content="blog"><meta property="og:title" content="垃圾回收"><meta property="og:url" content="https://kivihub.github.io/2020/06/11/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、前置问题 垃圾回收的条件是什么？"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/1240-20210115023653058.png"><meta property="article:published_time" content="2020-06-11T01:42:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:20.432Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/1240-20210115023653058.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/06/11/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"},"headline":"垃圾回收","image":["https://kivihub.github.io/thumbnail/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/1240-20210115023653058.png"],"datePublished":"2020-06-11T01:42:00.000Z","dateModified":"2026-01-15T03:18:20.432Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、前置问题 垃圾回收的条件是什么？"}</script><link rel="canonical" href="https://kivihub.github.io/2020/06/11/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-06-11T01:42:00.000Z" title="6/11/2020, 9:42:00 AM">2020-06-11</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/">Java虚拟机</a></span><span class="level-item">9 分钟读完 (大约1412个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">垃圾回收</h1><div class="content"><!-- date: 2020.06.11 09:42 -->
+
+<h2 id="一、前置问题"><a href="#一、前置问题" class="headerlink" title="一、前置问题"></a>一、前置问题</h2><ol>
+<li>垃圾回收的条件是什么？</li>
+</ol>
+<span id="more"></span>
+<ol start="2">
+<li>什么是STW?为什么要有STW？</li>
+<li>安全点是什么？为什么要有安全点？</li>
+<li>对象的分配策略？</li>
+<li>对象分配到老年代的场景?</li>
+<li>什么是空间担保机制？</li>
+</ol>
+<h2 id="二、内存动态分配和垃圾收集"><a href="#二、内存动态分配和垃圾收集" class="headerlink" title="二、内存动态分配和垃圾收集"></a>二、内存动态分配和垃圾收集</h2><p>Java语言由JVM负责内存的分配以及垃圾收集。带来的好处是这减少了程序员的工作，不容易出现内存泄漏，内存溢出，访问越界等问题。但是也带来了挑战，当需要排查内存泄漏等问题时就需要了解JVM的内存分配和垃圾收集机制。</p>
+<h2 id="三、垃圾回收"><a href="#三、垃圾回收" class="headerlink" title="三、垃圾回收"></a>三、垃圾回收</h2><blockquote>
+<p>JVM的各个内存区域存放了不同的内容，如方法区主要是类元信息和运行时常量池，堆存放对象实例。由于类元数据信息的生命周期几乎会持续整个java进程，所以方法区的空间使用较稳定，运行中产生的垃圾较少。对象的生命周期大部分都是朝生夕死，时刻都有对象死去和新生，所以堆是垃圾收集的重点关注区域。</p>
+</blockquote>
+<p>垃圾收集器在回收类和对象时，判断其是否是垃圾有不同的标准：</p>
+<h3 id="1、回收类条件"><a href="#1、回收类条件" class="headerlink" title="1、回收类条件"></a>1、回收类条件</h3><p>1）该类的所有实例已回收</p>
+<p>类的实例会通过类型指针应用类元信息，程序可能随时会通过该实例访问类元数据来调用某个方法等。</p>
+<p>2）加载该类的ClassLoader被回收</p>
+<p>ClassLoader保存了其加载类的引用。例如，方法java.lang.ClassLoader#findLoadedClass就从中查找是否加载了某个类。</p>
+<p>3）该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。<br>Class对象作为类元数据的镜像对象，它如果在程序中被引用，也可能会随时访问类元信息。</p>
+<h3 id="2、回收对象条件"><a href="#2、回收对象条件" class="headerlink" title="2、回收对象条件"></a>2、回收对象条件</h3><p>回收对象有两种主流方法1）引用计数，2）可达性分析。考虑到引用计数无法解决循环依赖时的垃圾回收问题，JVM选择了可达性分析。</p>
+<p>可达性分析的操作：</p>
+<p>1）从GCRoot开始遍历和标记所有引用关联的对象</p>
+<p>2）标记的对象都是可达的，非垃圾对象；没有标记到的，被认为的垃圾对象；</p>
+<p>3）垃圾对象被垃圾收集器回收</p>
+<h2 id="四、STW和安全点"><a href="#四、STW和安全点" class="headerlink" title="四、STW和安全点"></a>四、STW和安全点</h2><h3 id="1、STW-stop-the-world"><a href="#1、STW-stop-the-world" class="headerlink" title="1、STW - stop the world"></a>1、STW - stop the world</h3><p>执行垃圾回收时，垃圾回收器要求所有工作线程暂停（即STW），类似快照，在此基础上进行垃圾的回收操作。线程暂停的点就是安全点。</p>
+<h3 id="2、安全点"><a href="#2、安全点" class="headerlink" title="2、安全点"></a>2、安全点</h3><p><em>安全点的设置原则</em></p>
+<p>1）方法栈帧执行前后设置安全点，可以减少保存上下文的工作，且此时可认为已执行完完整的CPU指令。</p>
+<p>2）循环尾部，考虑循环可能时较耗时的操作，故作此折中。</p>
+<p><em>常见安全点位置</em></p>
+<p>1）循环的末尾（原则2）</p>
+<p>2）方法临返回前（原则1）</p>
+<p>3）调用方法之后（原则1）</p>
+<p>4）抛异常的位置（原则1）</p>
+<h2 id="五、堆的分代规则"><a href="#五、堆的分代规则" class="headerlink" title="五、堆的分代规则"></a>五、堆的分代规则</h2><p>考虑到对象的生命周期不同，JVM的堆也进行了相应划分。</p>
+<p>1、老年代：原则上存放长期存活的对象，如缓存，Class对象，线程池等；</p>
+<p>2、年轻代：原则上存放朝生夕死的对象，如方法内的局部变量，数据转换的临时对象等；</p>
+<p>其中，80%以上的对象基本都属于朝生夕死的，原则上不应该让其流转至老年代。因为在老年代回收对象的开销比年轻代大得多，回收算法也更复杂。</p>
+<h2 id="六、对象在堆各个代中的流转规则"><a href="#六、对象在堆各个代中的流转规则" class="headerlink" title="六、对象在堆各个代中的流转规则"></a>六、对象在堆各个代中的流转规则</h2><h3 id="1、对象优先分配到年轻代"><a href="#1、对象优先分配到年轻代" class="headerlink" title="1、对象优先分配到年轻代"></a>1、对象优先分配到年轻代</h3><h3 id="2、分配至老年代条件"><a href="#2、分配至老年代条件" class="headerlink" title="2、分配至老年代条件"></a>2、分配至老年代条件</h3><p>1）<em>时间维度</em></p>
+<p>年龄超过<code>-XX:MaxTenuringThreshold </code>后会由年轻代进入老年代。（默认15岁，CMS默认6岁）</p>
+<p>2）<em>空间维度</em></p>
+<p>I、超过<code>-XX:PretenureSizeThreshold</code>的大对象直接分配到老年代（大对象指一个对象占用的连续内存较大，比如数组，大字符串）；</p>
+<p>II、年轻代的survivor的空间使用超过<code>-XX:TargetSurvivorRatio</code>时，根据<code>动态年龄判断原则</code>把大龄对象移入老年代；</p>
+<h3 id="3、空间担保机制"><a href="#3、空间担保机制" class="headerlink" title="3、空间担保机制"></a>3、空间担保机制</h3><p><code>-XX:+HandlePromotionFailure</code>开启老年代的空间担保机制，其目的是为了减少fullgc次数，用历史平均值代替当前年轻代的所有对象大小，减少触发full gc的次数。</p>
+<p>该机制会在执行minor gc之前判断老年代的剩余空间是否可以容纳所有年轻代的所有对象：</p>
+<p>1）如果可以容纳，则执行minor gc</p>
+<p>2）否则，继续判断老年代剩余空间是否可以容纳年轻代历史移动对象到老年的平均大小：</p>
+<ul>
+<li><p>如果可以容纳，则执行minor gc</p>
+</li>
+<li><p>如果不可以容纳，则先执行full gc</p>
+</li>
+</ul>
+<p><img src="/2020/06/11/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/pic/1240-20210115023653058.png" alt="老年代空间担保机制"></p>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/06/11/URLClassPath%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">URLClassPath源码分析</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/06/10/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/"><span class="level-item">类加载机制</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、前置问题"><span class="level-left"><span class="level-item">一、前置问题</span></span></a></li><li><a class="level is-mobile" href="#二、内存动态分配和垃圾收集"><span class="level-left"><span class="level-item">二、内存动态分配和垃圾收集</span></span></a></li><li><a class="level is-mobile" href="#三、垃圾回收"><span class="level-left"><span class="level-item">三、垃圾回收</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、回收类条件"><span class="level-left"><span class="level-item">1、回收类条件</span></span></a></li><li><a class="level is-mobile" href="#2、回收对象条件"><span class="level-left"><span class="level-item">2、回收对象条件</span></span></a></li></ul></li><li><a class="level is-mobile" href="#四、STW和安全点"><span class="level-left"><span class="level-item">四、STW和安全点</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、STW-stop-the-world"><span class="level-left"><span class="level-item">1、STW - stop the world</span></span></a></li><li><a class="level is-mobile" href="#2、安全点"><span class="level-left"><span class="level-item">2、安全点</span></span></a></li></ul></li><li><a class="level is-mobile" href="#五、堆的分代规则"><span class="level-left"><span class="level-item">五、堆的分代规则</span></span></a></li><li><a class="level is-mobile" href="#六、对象在堆各个代中的流转规则"><span class="level-left"><span class="level-item">六、对象在堆各个代中的流转规则</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、对象优先分配到年轻代"><span class="level-left"><span class="level-item">1、对象优先分配到年轻代</span></span></a></li><li><a class="level is-mobile" href="#2、分配至老年代条件"><span class="level-left"><span class="level-item">2、分配至老年代条件</span></span></a></li><li><a class="level is-mobile" href="#3、空间担保机制"><span class="level-left"><span class="level-item">3、空间担保机制</span></span></a></li></ul></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

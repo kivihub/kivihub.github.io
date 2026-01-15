@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、DNS流程DNS是一种应用层协议，DNS客户端请求DNS服务器把域名解析为目标IP。 图片来源"><meta property="og:type" content="blog"><meta property="og:title" content="DNS和URL重定向"><meta property="og:url" content="https://kivihub.github.io/2021/03/22/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、DNS流程DNS是一种应用层协议，DNS客户端请求DNS服务器把域名解析为目标IP。 图片来源"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/how-route-53-routes-traffic.8d313c7da075c3c7303aaef32e89b5d0b7885e7c.png"><meta property="article:published_time" content="2021-03-22T03:29:36.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:18.440Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/how-route-53-routes-traffic.8d313c7da075c3c7303aaef32e89b5d0b7885e7c.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2021/03/22/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/"},"headline":"DNS和URL重定向","image":["https://kivihub.github.io/thumbnail/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/how-route-53-routes-traffic.8d313c7da075c3c7303aaef32e89b5d0b7885e7c.png"],"datePublished":"2021-03-22T03:29:36.000Z","dateModified":"2026-01-15T03:18:18.440Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、DNS流程DNS是一种应用层协议，DNS客户端请求DNS服务器把域名解析为目标IP。 图片来源"}</script><link rel="canonical" href="https://kivihub.github.io/2021/03/22/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-03-22T03:29:36.000Z" title="3/22/2021, 11:29:36 AM">2021-03-22</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a></span><span class="level-item">2 分钟读完 (大约351个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">DNS和URL重定向</h1><div class="content"><h4 id="一、DNS流程"><a href="#一、DNS流程" class="headerlink" title="一、DNS流程"></a>一、DNS流程</h4><p>DNS是一种应用层协议，DNS客户端请求DNS服务器把域名解析为目标IP。</p>
+<p><a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/route53/what-is-dns/">图片来源</a></p>
+<span id="more"></span>
+
+<p><img src="/2021/03/22/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/pic/how-route-53-routes-traffic.8d313c7da075c3c7303aaef32e89b5d0b7885e7c.png" alt="how-route-53-routes-traffic"></p>
+<h4 id="二、Url转发流程"><a href="#二、Url转发流程" class="headerlink" title="二、Url转发流程"></a>二、Url转发流程</h4><p>URL转发使用http 301，302状态码响应请求端，使其redirect到另一个URL。</p>
+<p><a target="_blank" rel="noopener" href="https://blogs.oracle.com/cloud-infrastructure/http-url-redirect-on-oracle-cloud-infrastructure">图片来源</a></p>
+<p><img src="/2021/03/22/DNS%E5%92%8CURL%E9%87%8D%E5%AE%9A%E5%90%91/pic/architecture.png" alt="img"></p>
+<h4 id="三、DNS和Url转发的对比"><a href="#三、DNS和Url转发的对比" class="headerlink" title="三、DNS和Url转发的对比"></a>三、DNS和Url转发的对比</h4><p>1）基于协议不同</p>
+<ul>
+<li>DNS基于DNS协议</li>
+<li>URL转发使用的HTTP协议</li>
+</ul>
+<p>2）发生阶段不同</p>
+<ul>
+<li>DNS发生在HTTP连接建立前，通过DNS获取目标的IP</li>
+<li>URL转发发生在HTTP连接已建立</li>
+</ul>
+<p>3）功能不同</p>
+<ul>
+<li>DNS主要是返回域名对应的IP</li>
+<li>URL转发至完整路径的URI，如果是不同的域名的URI，需要触发DNS再次解析域名。</li>
+</ul>
+<p>NOTE：现在大部分提供DNS服务的网站，也提供了URL转发服务。如<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/302/12649">腾讯云DNS解析控制台</a></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="# 参考"></a># 参考</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/URL_redirection">https://en.wikipedia.org/wiki/URL_redirection</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Domain_Name_System">https://en.wikipedia.org/wiki/Domain_Name_System</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F">https://zh.wikipedia.org/wiki/%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/DNS%E8%AE%B0%E5%BD%95%E7%B1%BB%E5%9E%8B%E5%88%97%E8%A1%A8">https://zh.wikipedia.org/wiki/DNS%E8%AE%B0%E5%BD%95%E7%B1%BB%E5%9E%8B%E5%88%97%E8%A1%A8</a></li>
+<li><a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/route53/what-is-dns/">https://aws.amazon.com/cn/route53/what-is-dns/</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/03/22/RSA%E4%B8%8EPadding%E6%A8%A1%E5%BC%8F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">RSA与Padding模式</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/03/19/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E7%9A%84%E7%A7%81%E9%92%A5%E5%8C%85%E5%90%AB%E4%BA%86%E5%85%AC%E9%92%A5%E4%BF%A1%E6%81%AF/"><span class="level-item">非对称密码的私钥包含了公钥信息</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、DNS流程"><span class="level-left"><span class="level-item">一、DNS流程</span></span></a></li><li><a class="level is-mobile" href="#二、Url转发流程"><span class="level-left"><span class="level-item">二、Url转发流程</span></span></a></li><li><a class="level is-mobile" href="#三、DNS和Url转发的对比"><span class="level-left"><span class="level-item">三、DNS和Url转发的对比</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item"># 参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

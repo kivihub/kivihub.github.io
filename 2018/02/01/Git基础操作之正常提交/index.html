@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="本人把基础操作分为两个部分：1）正常提交操作；2）撤销操作。主要因为撤销操作有多种场景，且同一命令的不同参数的结果可能大相径庭，故单独把撤销操作做为一节。 一、获取项目的Git仓库"><meta property="og:type" content="blog"><meta property="og:title" content="Git基础操作之正常提交"><meta property="og:url" content="https://kivihub.github.io/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="本人把基础操作分为两个部分：1）正常提交操作；2）撤销操作。主要因为撤销操作有多种场景，且同一命令的不同参数的结果可能大相径庭，故单独把撤销操作做为一节。 一、获取项目的Git仓库"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/1240-20210115031929830.png"><meta property="article:published_time" content="2018-02-01T12:41:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:22.703Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/1240-20210115031929830.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/"},"headline":"Git基础操作之正常提交","image":["https://kivihub.github.io/thumbnail/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/1240-20210115031929830.png"],"datePublished":"2018-02-01T12:41:00.000Z","dateModified":"2026-01-15T03:18:22.703Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"本人把基础操作分为两个部分：1）正常提交操作；2）撤销操作。主要因为撤销操作有多种场景，且同一命令的不同参数的结果可能大相径庭，故单独把撤销操作做为一节。 一、获取项目的Git仓库"}</script><link rel="canonical" href="https://kivihub.github.io/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-02-01T12:41:00.000Z" title="2/1/2018, 8:41:00 PM">2018-02-01</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Git/">Git</a></span><span class="level-item">10 分钟读完 (大约1467个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Git基础操作之正常提交</h1><div class="content"><!-- date: 2018.02.01 20:41 -->
+<p>本人把基础操作分为两个部分：1）正常提交操作；2）撤销操作。主要因为撤销操作有多种场景，且同一命令的不同参数的结果可能大相径庭，故单独把撤销操作做为一节。</p>
+<h2 id="一、获取项目的Git仓库"><a href="#一、获取项目的Git仓库" class="headerlink" title="一、获取项目的Git仓库"></a>一、获取项目的Git仓库</h2><span id="more"></span>
+<blockquote>
+<p>获取项目的Git仓库有两种方式：1）在本地目录初始化Git仓库，通过Git的提交操作新增项目文件至Git仓库，被Git管理；2）通过克隆已有的Git仓库到本地目录，被Git管理。</p>
+</blockquote>
+<h3 id="1、Git初始化本地目录"><a href="#1、Git初始化本地目录" class="headerlink" title="1、Git初始化本地目录"></a>1、Git初始化本地目录</h3><p>使用<code>git init</code>命令初始化当前目录，操作结束后在本地生成.git仓库。</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031929830.png" alt="git init命令初始化"></p>
+<h3 id="2、克隆远程仓库到本地"><a href="#2、克隆远程仓库到本地" class="headerlink" title="2、克隆远程仓库到本地"></a>2、克隆远程仓库到本地</h3><p>若要通过克隆的方式的获取Git仓库，只需要知道远程仓库的Git地址，就可以通过<code>git clone url</code>的方式将其克隆到本地。</p>
+<p>1）远程仓库地址选用本人在GitHub上的一个测试项目，仓库地址为<code>https://github.com/kivihub/test.git</code>。</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031930202.png" alt="远程Git仓库"></p>
+<p>2）通过<code>git clone https://github.com/kivihub/test.git</code>克隆远程仓库。</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031930120.png" alt="克隆远程仓库到本地目录"></p>
+<h2 id="二、正常的提交流程"><a href="#二、正常的提交流程" class="headerlink" title="二、正常的提交流程"></a>二、正常的提交流程</h2><h3 id="1、查看状态"><a href="#1、查看状态" class="headerlink" title="1、查看状态"></a>1、查看状态</h3><p>通过<code>git status</code>命令查看当前状态。</p>
+<p>1）未跟踪状态</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031929952.png" alt="未跟踪状态"></p>
+<p>2）暂存状态</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031929951.png" alt="暂存状态"></p>
+<p>3）已提交状态</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031930033.png" alt="已提交状态"></p>
+<p>4）已修改状态</p>
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031929893.png" alt="已修改状态"></p>
+<h3 id="2、状态变化图"><a href="#2、状态变化图" class="headerlink" title="2、状态变化图"></a>2、状态变化图</h3><p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031930079.png" alt="状态变化图"></p>
+<h3 id="3、暂存文件"><a href="#3、暂存文件" class="headerlink" title="3、暂存文件"></a>3、暂存文件</h3><p>1）未跟踪文件的暂存操作</p>
+<ul>
+<li>新建文件<strong>foo.txt</strong>（文件处于<strong>未跟踪</strong>状态）。</li>
+<li><code>git add foo.txt</code>，把文件提交至暂存区（文件处于<strong>已暂存</strong>状态）。</li>
+</ul>
+<p>2）已修改文件的暂存操作</p>
+<ul>
+<li>编辑<strong>已暂存态</strong>和<strong>已提交态</strong>的文件后，文件新增<strong>已修改状态</strong>。</li>
+<li><code>git add file</code>，把文件提交至暂存区（文件处于<strong>已暂存</strong>状态）。</li>
+</ul>
+<h3 id="4、提交文件"><a href="#4、提交文件" class="headerlink" title="4、提交文件"></a>4、提交文件</h3><p>1）提交<strong>暂存态</strong>文件<br><code>git commit file</code></p>
+<p>2）提交<strong>已修改</strong>态（跳过暂存态）和<strong>已暂存</strong>态文件<br><code>git commit -a</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.本命令无视当前路径，它会提交`git status`里除`未跟踪态`以外的所有文件至git仓库。</span><br><span class="line">2.相当于执行了两步操作： </span><br><span class="line">  a. git add 项目的根路径</span><br><span class="line">  b. git commit</span><br></pre></td></tr></table></figure>
+
+<p>3）git commit的常用参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git commit -a 提交本项目除未跟踪态以外的所有文件至Git仓库。</span><br><span class="line">git commit -m &quot;commit description&quot; -m后空格然后跟着本次提交的描述，可免去进入编辑页面。</span><br><span class="line"></span><br><span class="line">Note：</span><br><span class="line">1.编辑页面也有好处，你可以看到本次修改了文件。</span><br><span class="line">2.若想在提交的编辑页面放弃本次提交，则不做输入退出就会放弃提交。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031930167.png" alt="不做输入退出编辑后会放弃本次提交"></p>
+<h3 id="5、修改-删除文件"><a href="#5、修改-删除文件" class="headerlink" title="5、修改&#x2F;删除文件"></a>5、修改&#x2F;删除文件</h3><p>1）通过git命令操作，可根据参数修改文件工作区和暂存区的状态。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">示例</span></span><br><span class="line">`git rm file`           # 删除工作区和暂存区的指定文件</span><br><span class="line">相当于执行了两步操作：</span><br><span class="line">1. `rm file` </span><br><span class="line">2. `git add file`</span><br><span class="line"></span><br><span class="line">`git rm --cached file`  # 只删除暂存区的指定文件，保留工作区的文件。</span><br><span class="line">例如：一个应用场景是误将本该ignore的文件提交至暂存区，可进行如下操作：</span><br><span class="line">1.通过此命令删除暂存区文件后，保留工作区文件</span><br><span class="line">2.然后通过编辑.gitigore或者exlude文件忽略该文件</span><br></pre></td></tr></table></figure>
+
+<p>2）非git命令操作：按序执行<strong>修改→暂存→提交</strong>操作。</p>
+<h3 id="6、查看历史和差异"><a href="#6、查看历史和差异" class="headerlink" title="6、查看历史和差异"></a>6、查看历史和差异</h3><p>1）查看历史  <code>git log</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">`git log`常用参数</span><br><span class="line">-g                # 查看全部历史，相当于执行 git reflog</span><br><span class="line">--oneline         # 显示为一行</span><br><span class="line">--graph           # 图像化显示</span><br><span class="line">--all             # 显示所有分支</span><br><span class="line">--decorate        # 标注分支和标签</span><br><span class="line">-number           # 显示近number次提交信息</span><br><span class="line">-p                # 按补丁格式显示每次更新的差异（与git diff内容一致）</span><br><span class="line">--stat            # 显示每次更新的文件修改统计信息</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Note：可通过gitk命令运行图形化版本查看工具。Debian系列Linux发行版可通过<code>sudo apt install gitk</code>命令进行安装。</p>
+</blockquote>
+<p>2）查看差异 <code>git diff</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">`git diff`   # 比较工作区和暂存区的差异</span><br><span class="line"></span><br><span class="line">`git diff --cached `    # 比较暂存区和Git仓库的差异</span><br><span class="line">`git diff --cached [commit|branch|tag]`    # 比较暂存区与指定commit的差异</span><br><span class="line"></span><br><span class="line">`git diff HEAD`  # 比较工作区和Git仓库的差异</span><br><span class="line">`git diff [commit|branch|tag]`    # 比较工作区和指定commit的差异</span><br><span class="line"></span><br><span class="line">`git diff [commit|branch|tag] [commit|branch|tag]`   # 比较两个commit的差异</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Note:以上命令后面都增加文件路径，指定查看具体目录或文件的差异。</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018/02/01/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%AD%A3%E5%B8%B8%E6%8F%90%E4%BA%A4/pic/1240-20210115031930168.png" alt="git diff 命令"></p>
+<h2 id="附：常用shell操作命令"><a href="#附：常用shell操作命令" class="headerlink" title="附：常用shell操作命令"></a>附：常用shell操作命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在Linux的shell里进行命令操作时难免会输错单词，这时可通过以下几个命令快速修正</span></span><br><span class="line">`ctrl + w`   # 删除光标前一个word（等同于Vim编辑态的`ctrl + w`)</span><br><span class="line">`ctrl + u`   # 清空本行（等同于Vim编辑态的`ctrl + u`）</span><br><span class="line">`ctrl + l`   # 清屏，相当于执行`clear`</span><br><span class="line">`ctrl + d`   # 退出shell，县挡土相当于执行`exit`</span><br><span class="line">`cd`         # 进入当前用户home</span><br><span class="line">`cd -`       # 返回刚才目录</span><br><span class="line">`ln -s 源目录 目录连接` # 建立目录的软连接，例如：可在用户home建立git仓库的软连接，减少目录的切换操作。</span><br><span class="line">`[tab][tab]` # 连续两次tab键，会提示当前的可能命令组合或可选路径</span><br></pre></td></tr></table></figure>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/02/04/Git%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C%E4%B9%8B%E6%92%A4%E9%94%80%E6%93%8D%E4%BD%9C/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Git基础操作之撤销操作</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/01/29/Git%E9%85%8D%E7%BD%AE/"><span class="level-item">Git配置</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、获取项目的Git仓库"><span class="level-left"><span class="level-item">一、获取项目的Git仓库</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、Git初始化本地目录"><span class="level-left"><span class="level-item">1、Git初始化本地目录</span></span></a></li><li><a class="level is-mobile" href="#2、克隆远程仓库到本地"><span class="level-left"><span class="level-item">2、克隆远程仓库到本地</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、正常的提交流程"><span class="level-left"><span class="level-item">二、正常的提交流程</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、查看状态"><span class="level-left"><span class="level-item">1、查看状态</span></span></a></li><li><a class="level is-mobile" href="#2、状态变化图"><span class="level-left"><span class="level-item">2、状态变化图</span></span></a></li><li><a class="level is-mobile" href="#3、暂存文件"><span class="level-left"><span class="level-item">3、暂存文件</span></span></a></li><li><a class="level is-mobile" href="#4、提交文件"><span class="level-left"><span class="level-item">4、提交文件</span></span></a></li><li><a class="level is-mobile" href="#5、修改-删除文件"><span class="level-left"><span class="level-item">5、修改/删除文件</span></span></a></li><li><a class="level is-mobile" href="#6、查看历史和差异"><span class="level-left"><span class="level-item">6、查看历史和差异</span></span></a></li></ul></li><li><a class="level is-mobile" href="#附：常用shell操作命令"><span class="level-left"><span class="level-item">附：常用shell操作命令</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

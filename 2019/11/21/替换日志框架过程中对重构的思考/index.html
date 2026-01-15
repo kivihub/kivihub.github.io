@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="新的SPI日志框架开发完成后，便着手替换之前的日志逻辑，即用新的日志框架来重构之前的代码。在这个过程中，如果遵循正确的方法会使这个周期缩短，准确率也会提高，以下是在此次重构过程中总结的几条经验。  1. 动手之前先了解日志的业务逻辑，并统计涉及修改的类"><meta property="og:type" content="blog"><meta property="og:title" content="替换日志框架过程中对重构的思考"><meta property="og:url" content="https://kivihub.github.io/2019/11/21/%E6%9B%BF%E6%8D%A2%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%AF%B9%E9%87%8D%E6%9E%84%E7%9A%84%E6%80%9D%E8%80%83/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="新的SPI日志框架开发完成后，便着手替换之前的日志逻辑，即用新的日志框架来重构之前的代码。在这个过程中，如果遵循正确的方法会使这个周期缩短，准确率也会提高，以下是在此次重构过程中总结的几条经验。  1. 动手之前先了解日志的业务逻辑，并统计涉及修改的类"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2019-11-21T05:49:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:25.940Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2019/11/21/%E6%9B%BF%E6%8D%A2%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%AF%B9%E9%87%8D%E6%9E%84%E7%9A%84%E6%80%9D%E8%80%83/"},"headline":"替换日志框架过程中对重构的思考","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2019-11-21T05:49:00.000Z","dateModified":"2026-01-15T03:18:25.940Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"新的SPI日志框架开发完成后，便着手替换之前的日志逻辑，即用新的日志框架来重构之前的代码。在这个过程中，如果遵循正确的方法会使这个周期缩短，准确率也会提高，以下是在此次重构过程中总结的几条经验。  1. 动手之前先了解日志的业务逻辑，并统计涉及修改的类"}</script><link rel="canonical" href="https://kivihub.github.io/2019/11/21/%E6%9B%BF%E6%8D%A2%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%AF%B9%E9%87%8D%E6%9E%84%E7%9A%84%E6%80%9D%E8%80%83/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-11-21T05:49:00.000Z" title="11/21/2019, 1:49:00 PM">2019-11-21</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a></span><span class="level-item">5 分钟读完 (大约752个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">替换日志框架过程中对重构的思考</h1><div class="content"><!-- date: 2019.11.21 13:49 -->
+
+<blockquote>
+<p>新的SPI日志框架开发完成后，便着手替换之前的日志逻辑，即用新的日志框架来重构之前的代码。在这个过程中，如果遵循正确的方法会使这个周期缩短，准确率也会提高，以下是在此次重构过程中总结的几条经验。</p>
+</blockquote>
+<h4 id="1-动手之前先了解日志的业务逻辑，并统计涉及修改的类"><a href="#1-动手之前先了解日志的业务逻辑，并统计涉及修改的类" class="headerlink" title="1. 动手之前先了解日志的业务逻辑，并统计涉及修改的类"></a>1. 动手之前先了解日志的业务逻辑，并统计涉及修改的类</h4><span id="more"></span>
+
+<p>1）程序中的代码逻辑几乎都暗合具体的业务逻辑，重构已有的逻辑之前，要了解已有的逻辑。<br>2）统计需要修改的类，预估工作量。</p>
+<h4 id="2-根据业务逻辑，由主及次的对涉及到的类进行修改"><a href="#2-根据业务逻辑，由主及次的对涉及到的类进行修改" class="headerlink" title="2. 根据业务逻辑，由主及次的对涉及到的类进行修改"></a>2. 根据业务逻辑，由主及次的对涉及到的类进行修改</h4><p>由主及次的去重构，基于以下的事实：<br>1）主要的逻辑往往包含了复杂的逻辑，需要集中精力去修改；<br>2）次要的逻辑往往逻辑比较简单，只需要机械的替换即可，不需花费太多的精力；<br>3）随着重构时间的拉长，人的厌倦感会增加，精力会损耗;<br>所以，由主及次的修改往往会使重构的效率大幅增加。</p>
+<h4 id="3-测试阶段暂时注释旧代码（不要删除），正式发布时剔除注释的旧代码"><a href="#3-测试阶段暂时注释旧代码（不要删除），正式发布时剔除注释的旧代码" class="headerlink" title="3. 测试阶段暂时注释旧代码（不要删除），正式发布时剔除注释的旧代码"></a>3. 测试阶段暂时注释旧代码（不要删除），正式发布时剔除注释的旧代码</h4><p>测试阶段以注释的方式保留旧代码有以下好处：<br>1）这样方便比对，比用版本控制去溯源要方便，所见所得。<br>2）替换时，可以很方便的查找之前已经执行的替换，直接拷贝稍作修改即可。</p>
+<h4 id="4-在新的feature分支或hotfix分支上进行重构"><a href="#4-在新的feature分支或hotfix分支上进行重构" class="headerlink" title="4. 在新的feature分支或hotfix分支上进行重构"></a>4. 在新的feature分支或hotfix分支上进行重构</h4><p>不影响已有环境。</p>
+<h4 id="5-一次重构尽量控制保证变化的可测性，若过多变化需要拆解为多次重构"><a href="#5-一次重构尽量控制保证变化的可测性，若过多变化需要拆解为多次重构" class="headerlink" title="5. 一次重构尽量控制保证变化的可测性，若过多变化需要拆解为多次重构"></a>5. 一次重构尽量控制保证变化的可测性，若过多变化需要拆解为多次重构</h4><ol>
+<li><p>重构一定要结合测试，而如果要确保测试的可行性和准确性，就要控制每次重构的变化量。</p>
+</li>
+<li><p>重构是一个迭代的过程：重构A –&gt; 测试A –&gt; 重构B –&gt; 测试B …</p>
+</li>
+<li><p>如果变化过多，需要拆分。例如本次日志框架的重构的早期目标为a.替换原有的日志框架;b.修改已有的字段名称；最终我决定先完成a，因为a+b无法完整测试。</p>
+</li>
+</ol>
+<h4 id="6-初期建议本地测试，通过IDEA-remote连接调试比较方便，减少（定位错误-修改-发布）的时间周期"><a href="#6-初期建议本地测试，通过IDEA-remote连接调试比较方便，减少（定位错误-修改-发布）的时间周期" class="headerlink" title="6. 初期建议本地测试，通过IDEA remote连接调试比较方便，减少（定位错误-&gt;修改-&gt;发布）的时间周期"></a>6. 初期建议本地测试，通过IDEA remote连接调试比较方便，减少（定位错误-&gt;修改-&gt;发布）的时间周期</h4><h4 id="END-写在后面"><a href="#END-写在后面" class="headerlink" title="END. 写在后面"></a>END. 写在后面</h4><p>针对本次日志框架的重构，我总共重构了两次，以下是耗时列表（不包含测试时间）：</p>
+<table>
+<thead>
+<tr>
+<th>次序</th>
+<th>重构方式</th>
+<th>旧代码处理方式</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一次</td>
+<td>不分主次</td>
+<td>删除旧代码</td>
+<td>2天</td>
+</tr>
+<tr>
+<td>第二次</td>
+<td>先主后次</td>
+<td>注释旧代码</td>
+<td>0.8天</td>
+</tr>
+</tbody></table>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2019/12/03/%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BB%84%E4%BB%B6%E7%9A%84%E4%B8%AD%E9%97%B4%E5%B1%82/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">第三方组件的中间层</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2019/11/11/%E7%94%B1%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/"><span class="level-item">由日志框架的异常处理引发的思考</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-动手之前先了解日志的业务逻辑，并统计涉及修改的类"><span class="level-left"><span class="level-item">1. 动手之前先了解日志的业务逻辑，并统计涉及修改的类</span></span></a></li><li><a class="level is-mobile" href="#2-根据业务逻辑，由主及次的对涉及到的类进行修改"><span class="level-left"><span class="level-item">2. 根据业务逻辑，由主及次的对涉及到的类进行修改</span></span></a></li><li><a class="level is-mobile" href="#3-测试阶段暂时注释旧代码（不要删除），正式发布时剔除注释的旧代码"><span class="level-left"><span class="level-item">3. 测试阶段暂时注释旧代码（不要删除），正式发布时剔除注释的旧代码</span></span></a></li><li><a class="level is-mobile" href="#4-在新的feature分支或hotfix分支上进行重构"><span class="level-left"><span class="level-item">4. 在新的feature分支或hotfix分支上进行重构</span></span></a></li><li><a class="level is-mobile" href="#5-一次重构尽量控制保证变化的可测性，若过多变化需要拆解为多次重构"><span class="level-left"><span class="level-item">5. 一次重构尽量控制保证变化的可测性，若过多变化需要拆解为多次重构</span></span></a></li><li><a class="level is-mobile" href="#6-初期建议本地测试，通过IDEA-remote连接调试比较方便，减少（定位错误-修改-发布）的时间周期"><span class="level-left"><span class="level-item">6. 初期建议本地测试，通过IDEA remote连接调试比较方便，减少（定位错误-&gt;修改-&gt;发布）的时间周期</span></span></a></li><li><a class="level is-mobile" href="#END-写在后面"><span class="level-left"><span class="level-item">END. 写在后面</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

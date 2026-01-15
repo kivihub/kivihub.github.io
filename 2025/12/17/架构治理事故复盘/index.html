@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、架构治理事故简述废弃接口治理专项在经过平台前置校验和风险评估后，选择了通过飞书推送卡片给用户，逾期自动合入MR的策略。  平台前置校验"><meta property="og:type" content="blog"><meta property="og:title" content="架构治理事故复盘"><meta property="og:url" content="https://kivihub.github.io/2025/12/17/%E6%9E%B6%E6%9E%84%E6%B2%BB%E7%90%86%E4%BA%8B%E6%95%85%E5%A4%8D%E7%9B%98/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、架构治理事故简述废弃接口治理专项在经过平台前置校验和风险评估后，选择了通过飞书推送卡片给用户，逾期自动合入MR的策略。  平台前置校验"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2025-12-17T13:01:40.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:19.571Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2025/12/17/%E6%9E%B6%E6%9E%84%E6%B2%BB%E7%90%86%E4%BA%8B%E6%95%85%E5%A4%8D%E7%9B%98/"},"headline":"架构治理事故复盘","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2025-12-17T13:01:40.000Z","dateModified":"2026-01-15T03:18:19.571Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、架构治理事故简述废弃接口治理专项在经过平台前置校验和风险评估后，选择了通过飞书推送卡片给用户，逾期自动合入MR的策略。  平台前置校验"}</script><link rel="canonical" href="https://kivihub.github.io/2025/12/17/%E6%9E%B6%E6%9E%84%E6%B2%BB%E7%90%86%E4%BA%8B%E6%95%85%E5%A4%8D%E7%9B%98/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-12-17T13:01:40.000Z" title="12/17/2025, 9:01:40 PM">2025-12-17</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E5%B7%A5%E4%BD%9C/">工作</a></span><span class="level-item">11 分钟读完 (大约1698个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">架构治理事故复盘</h1><div class="content"><h3 id="一、架构治理事故简述"><a href="#一、架构治理事故简述" class="headerlink" title="一、架构治理事故简述"></a>一、架构治理事故简述</h3><p>废弃接口治理专项在经过平台前置校验和风险评估后，选择了通过飞书推送卡片给用户，逾期自动合入MR的策略。</p>
+<ol>
+<li>平台前置校验</li>
+</ol>
+<span id="more"></span>
+<pre><code> * 平台监测无流量120天 → 用户确认下线 → 流量灰度拦截 → 流量正式拦截 → 生成IDL接口下线MR
+</code></pre>
+<ol start="2">
+<li>风险评估<ul>
+<li>IDL codegen代码场景，编译阶段提示接口不存在，不会影响线上服务</li>
+<li>泛化调用场景，小流量上线阶段调用异常触发告警，不会造成线上高危影响</li>
+</ul>
+</li>
+</ol>
+<p>这次事故是由于未考虑到Codebase的IDL仓库有重定向所导致的IDL被多PSM复用的场景，导致删除PSM A废弃接口的同时，删除了与其共用IDL的PSM B的的接口。且IDL自动合码后，依赖PSM B的上游是定时拉取IDL最新版本进行泛化调用，没有小流量灰度阶段，导致事故发生。</p>
+<h3 id="二、治理原则-效率-OR-稳定性"><a href="#二、治理原则-效率-OR-稳定性" class="headerlink" title="二、治理原则-效率 OR 稳定性"></a>二、治理原则-效率 OR 稳定性</h3><p>架构治理是一项在不改变系统原有功能的基础上进行的配置、IDL、代码、流程等方面的治理，旨在优化系统架构，提升系统稳定性、系统性能、研发效率。但架构治理有些专项工作的收益偏长期、业务不受益甚至要承担风险，比如废弃接口下线。</p>
+<p>这种优化项如果作为既定目标确定要去推进，但是研发不受益导致配合度不高。就废弃接口下线来说，通过前置校验和风险评估后，从客观来讲，采取消息通知和逾期系统自动操作的方式是比较理想的。但由于这里面弱化了用户的响应，虽然提高了效率，可以达成更大、更激进的目标，但是一定程度上会有稳定的风险。一旦出现事故，整套流程就是备受质疑的点。</p>
+<p>在实现目标时，效率和稳定性上偶尔会有冲突，目标越激进越冲突。从执行者角度来看，我起初出于目标管理和理性判断决策了自动合入的策略，但是事故之后，由于未感受到有容错机制，所以决策思路转向为稳定第一，以后的所有方案要满足程序正义。执行者没有得到制度上的容错，只能以制度作为功能设计的第一原则，不会再去量化和权衡效率、风险、稳定性，即便一个高效率方案的事故风险为千万分之一，也选择放弃。</p>
+<p>缺乏容错和稳定第一，恐怕就是各大公司内缺乏创新的一个原因吧。我虽不愿，奈何不系之舟随波浮沉。乐观来看，自动合入导致的事故，只能说是个坏的决策结果，而不能说是坏的决策。</p>
+<h3 id="三、治理目标-架构治理目标管理"><a href="#三、治理目标-架构治理目标管理" class="headerlink" title="三、治理目标-架构治理目标管理"></a>三、治理目标-架构治理目标管理</h3><p>团队和专项目标在遇到事故后，会调整稳定性的权重。由于近因效应和记忆易得性会影响事故概率的判断，会导致把稳定性的权重调增的过高。尤其是在没有机制容错的情况下，团队行事准则会变成目标和事故双导向。此时会自下而上，调整架构治理目标，降低预期。比如，审慎的砍掉所有看得见的有风险的事项，毕竟哪个团队也不想短期内出现2次事故。</p>
+<p>目标会自底向上进行传导，逐级向上修正预期。最坏的结果是与顶层目标冲突，或者逐级修正后收益小和进展慢导致价值低估，最终导致架构治理项目停滞。转而把人力投入到短期有益、低风险的事项中去，但是当真的决定去做这样的事时，需要先问下，你真的找到这样的事了吗？还是陷入了指标陷阱，追逐数据而非解决问题。</p>
+<h3 id="四、方案评审-邀请拥有更多信息的人"><a href="#四、方案评审-邀请拥有更多信息的人" class="headerlink" title="四、方案评审-邀请拥有更多信息的人"></a>四、方案评审-邀请拥有更多信息的人</h3><p>见<a href="/2025/12/30/关于会议">关于会议</a></p>
+<h3 id="五、流程设计-架构治理和程序正义"><a href="#五、流程设计-架构治理和程序正义" class="headerlink" title="五、流程设计-架构治理和程序正义"></a>五、流程设计-架构治理和程序正义</h3><p>当无容错机制时，程序正义是唯一选择。任何通过量化手段得到的低风险评估，在事故面前都苍白无力。程序正义体现在通过卡点转移责任、通过流程体现合规、避免质疑和挑战现有的流程、不做优于少做、少做优于多做、不出问题优于解决问题。</p>
+<p>程序正义的褒义体现在它保证了正常流转的下限，但同时僵化了流程。如果期望通过公司文化的务实创新、敢为极致等口号来解决此类问题，只是空想。响应口号需要承担打破流程、流程失灵的风险，风险由执行者承担，那么文化就只是一个大家心照不宣的笑话，无人会去遵守。</p>
+<h3 id="六、事故定责-制度的容错机制"><a href="#六、事故定责-制度的容错机制" class="headerlink" title="六、事故定责-制度的容错机制"></a>六、事故定责-制度的容错机制</h3><p>制度容错是指，意识到系统的复杂性，在复杂的系统中做的一些事情会有一些固有风险。意识到风险是客观存在的，无论事务的执行者是谁都无法避免，那么在制度层面给与容错，才能保持创新的持续存在。</p>
+<h3 id="七、事故流弊-奖惩细则决定做事原则"><a href="#七、事故流弊-奖惩细则决定做事原则" class="headerlink" title="七、事故流弊-奖惩细则决定做事原则"></a>七、事故流弊-奖惩细则决定做事原则</h3><p>事故流弊是指事故定责的影响。因为事故对绩效的影响，事故复盘会上往往会陷入立场争辩，而非问题求真。大家各执一词、拼声量、拼程序正义，最大程度上说着无法被证伪的谎言。事故定责，是关键事项的关键反馈，会影响个人和团队在后续做事上的原则，短则影响个人在当前公司的时间，长则影响个人的整个职业生涯。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>先求存，再求真。</p>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/12/30/%E5%85%B3%E4%BA%8E%E4%BC%9A%E8%AE%AE/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">关于会议</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/11/17/%E4%BC%A0%E8%AE%B0/"><span class="level-item">传记</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、架构治理事故简述"><span class="level-left"><span class="level-item">一、架构治理事故简述</span></span></a></li><li><a class="level is-mobile" href="#二、治理原则-效率-OR-稳定性"><span class="level-left"><span class="level-item">二、治理原则-效率 OR 稳定性</span></span></a></li><li><a class="level is-mobile" href="#三、治理目标-架构治理目标管理"><span class="level-left"><span class="level-item">三、治理目标-架构治理目标管理</span></span></a></li><li><a class="level is-mobile" href="#四、方案评审-邀请拥有更多信息的人"><span class="level-left"><span class="level-item">四、方案评审-邀请拥有更多信息的人</span></span></a></li><li><a class="level is-mobile" href="#五、流程设计-架构治理和程序正义"><span class="level-left"><span class="level-item">五、流程设计-架构治理和程序正义</span></span></a></li><li><a class="level is-mobile" href="#六、事故定责-制度的容错机制"><span class="level-left"><span class="level-item">六、事故定责-制度的容错机制</span></span></a></li><li><a class="level is-mobile" href="#七、事故流弊-奖惩细则决定做事原则"><span class="level-left"><span class="level-item">七、事故流弊-奖惩细则决定做事原则</span></span></a></li><li><a class="level is-mobile" href="#结语"><span class="level-left"><span class="level-item">结语</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

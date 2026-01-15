@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1.前置问题 什么是事务？事务的特性？"><meta property="og:type" content="blog"><meta property="og:title" content="Mysql事务及其隔离级别"><meta property="og:url" content="https://kivihub.github.io/2020/05/19/Mysql%E4%BA%8B%E5%8A%A1%E5%8F%8A%E5%85%B6%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="1.前置问题 什么是事务？事务的特性？"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2020-05-19T15:42:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:17.621Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/05/19/Mysql%E4%BA%8B%E5%8A%A1%E5%8F%8A%E5%85%B6%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/"},"headline":"Mysql事务及其隔离级别","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2020-05-19T15:42:00.000Z","dateModified":"2026-01-15T03:18:17.621Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"1.前置问题 什么是事务？事务的特性？"}</script><link rel="canonical" href="https://kivihub.github.io/2020/05/19/Mysql%E4%BA%8B%E5%8A%A1%E5%8F%8A%E5%85%B6%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-05-19T15:42:00.000Z" title="5/19/2020, 11:42:00 PM">2020-05-19</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Mysql/">Mysql</a></span><span class="level-item">7 分钟读完 (大约1102个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Mysql事务及其隔离级别</h1><div class="content"><!-- date: 2020.05.19 23:42 -->
+<h4 id="1-前置问题"><a href="#1-前置问题" class="headerlink" title="1.前置问题"></a>1.前置问题</h4><ol>
+<li>什么是事务？事务的特性？</li>
+</ol>
+<span id="more"></span>
+<ol start="2">
+<li><p>隔离级别有几种？为什么要有不同的隔离级别？</p>
+</li>
+<li><p>隔离级别是会话级的吗？</p>
+</li>
+<li><p>mvcc是什么？为什么要有mvcc？</p>
+</li>
+<li><p>mvcc和隔离级别的关系？</p>
+</li>
+<li><p>mvcc的两种同构模型？</p>
+</li>
+<li><p>redo log和undo log的区别？</p>
+</li>
+</ol>
+<h4 id="2-事务"><a href="#2-事务" class="headerlink" title="2. 事务"></a>2. 事务</h4><p>应用系统在操作数据库时，往往需要进行组合操作，事务的存在是把这种组合操作视为一个原子操作，要么全部执行成功，要么全不执行。事务通过原子性来保证数据库状态的一致性。</p>
+<h6 id="事务四个特性"><a href="#事务四个特性" class="headerlink" title="事务四个特性"></a>事务四个特性</h6><p>1）原子性：在事务中的数据库操作视为一个整体，要么全部执行，要么全不执行，避免只执行了部分操作，导致数据不一致；</p>
+<p>2）一致性：在事务操作前和操作后，数据库的数据始终处于一致性状态。例如，转账操作，需要保证转账前后，转账双方的总额不变；</p>
+<p>3）隔离性：也称并发控制；多个事务并发访问数据库时，不同事务的操作在执行时要相互隔离，在提交前对其他事务不可见；</p>
+<p>4）持久性：事务一旦提交，就是永久的。即便数据库宕机也能恢复。</p>
+<h4 id="3-事务隔离性"><a href="#3-事务隔离性" class="headerlink" title="3. 事务隔离性"></a>3. 事务隔离性</h4><p>考虑到并发的性能，MySql等数据库在实现隔离性性的时候并没有完全真正的隔离。目前有四种事务隔离级别标准：</p>
+<blockquote>
+<p>insert into t (id, name) values(1, “wang”) &#x2F;&#x2F; 初始化语句</p>
+</blockquote>
+<h6 id="1）读未提交"><a href="#1）读未提交" class="headerlink" title="1）读未提交"></a>1）读未提交</h6><p>一个事务读到了另一个事务未提交的修改，这种现象被称为脏读；</p>
+<table>
+<thead>
+<tr>
+<th>时间顺序</th>
+<th>事务一</th>
+<th>事务二</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>BEGIN</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>select name from t where id &#x3D; 1<br/> &#x2F;&#x2F; 结果为“wang”</td>
+<td>BEGIN</td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td>update t set name&#x3D;”王” where id &#x3D; 1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>select name from t where id &#x3D; 1<br/>  &#x2F;&#x2F; 结果为“王”</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>COMMIT</td>
+<td>COMMIT</td>
+</tr>
+</tbody></table>
+<h6 id="2）读已提交"><a href="#2）读已提交" class="headerlink" title="2）读已提交"></a>2）读已提交</h6><p>一个事务读到了另一个事务已提交的修改，这种现象被称为不可重复读；</p>
+<table>
+<thead>
+<tr>
+<th>时间顺序</th>
+<th>事务一</th>
+<th>事务二</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>BEGIN</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>select name from t where id &#x3D; 1<br/> &#x2F;&#x2F; 结果为“wang”</td>
+<td>BEGIN</td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td>update t set name&#x3D;”wang” where id &#x3D; 1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>select name from t where id &#x3D; 1<br/>  &#x2F;&#x2F; 结果为“wang”</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td></td>
+<td>COMMIT</td>
+</tr>
+<tr>
+<td>6</td>
+<td>select name from t where id &#x3D; 1<br/>  &#x2F;&#x2F; 结果为“王”</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>COMMIT</td>
+<td></td>
+</tr>
+</tbody></table>
+<h6 id="3）可重复读"><a href="#3）可重复读" class="headerlink" title="3）可重复读"></a>3）可重复读</h6><p>一个事务读取的结果不会受另一个事务（无论是否提交）影响。</p>
+<table>
+<thead>
+<tr>
+<th>时间顺序</th>
+<th>事务一</th>
+<th>事务二</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>BEGIN</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>select name from t where id &#x3D; 1<br/> &#x2F;&#x2F; 结果为“wang”</td>
+<td>BEGIN</td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td>update t set name&#x3D;”wang” where id &#x3D; 1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>select name from t where id &#x3D; 1<br/>  &#x2F;&#x2F; 结果为“wang”</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td></td>
+<td>COMMIT</td>
+</tr>
+<tr>
+<td>6</td>
+<td>select name from t where id &#x3D; 1<br/>  &#x2F;&#x2F; 结果为“wang”</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>COMMIT</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>但是可重复读无法解决幻读问题，即当事务A读取某个范围的记录时，事务B在该范围内插入了新的记录，那么事务A再次读取该范围记录时，就会发现新增了记录。</p>
+<h6 id="4）串行化"><a href="#4）串行化" class="headerlink" title="4）串行化"></a>4）串行化</h6><p>数据库强制事务串行执行来避免并发问题。</p>
+<h6 id="附：隔离级别表"><a href="#附：隔离级别表" class="headerlink" title="附：隔离级别表"></a>附：隔离级别表</h6><table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>读未提交</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>读已提交</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>串行化</td>
+<td>N</td>
+<td>N</td>
+<td>N</td>
+</tr>
+</tbody></table>
+<h4 id="4-InnoDb事务隔离性的实现"><a href="#4-InnoDb事务隔离性的实现" class="headerlink" title="4. InnoDb事务隔离性的实现"></a>4. InnoDb事务隔离性的实现</h4><p>InnoDB通过MVCC+间隙锁支持可重复读。</p>
+<p>1）MVCC支持修改、删除记录的可重复读。</p>
+<p>MVCC的ReadView可支持实现读已提交、可重复读的非阻塞快照读，<a href="/2020/05/20/MVCC的InnoDB实现">MVCC的InnoDB实现</a>。</p>
+<p>2）间隙锁支持新增记录的可重复读，使可RR避免大部分幻读问题。</p>
+<p>特别场景下仍会幻读，如事务A增加了一行记录，事务B update此条记录（尽管其看不到，仍可根据ID进行更新）则会导致update前后看到的记录数不同。</p>
+<h4 id="5-redo-log和undo-log"><a href="#5-redo-log和undo-log" class="headerlink" title="5. redo log和undo log"></a>5. redo log和undo log</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>redo log</th>
+<th>undo log</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>作用</td>
+<td>保证事务的持久性</td>
+<td>帮助事务回滚和支持mvcc功能</td>
+</tr>
+<tr>
+<td>记录内容</td>
+<td>物理日志，记录的是页的物理修改操作</td>
+<td>逻辑日志，根据每行记录进行记录</td>
+</tr>
+</tbody></table>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ol>
+<li>MySql技术内幕 InnoDB存储引擎  第七章</li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/05/20/Junit%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Junit源码分析</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/19/while(true)%E5%92%8Cfor(;;)%E5%88%86%E6%9E%90/"><span class="level-item">while(true)和for(;;)分析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-前置问题"><span class="level-left"><span class="level-item">1.前置问题</span></span></a></li><li><a class="level is-mobile" href="#2-事务"><span class="level-left"><span class="level-item">2. 事务</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#事务四个特性"><span class="level-left"><span class="level-item">事务四个特性</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-事务隔离性"><span class="level-left"><span class="level-item">3. 事务隔离性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）读未提交"><span class="level-left"><span class="level-item">1）读未提交</span></span></a></li><li><a class="level is-mobile" href="#2）读已提交"><span class="level-left"><span class="level-item">2）读已提交</span></span></a></li><li><a class="level is-mobile" href="#3）可重复读"><span class="level-left"><span class="level-item">3）可重复读</span></span></a></li><li><a class="level is-mobile" href="#4）串行化"><span class="level-left"><span class="level-item">4）串行化</span></span></a></li><li><a class="level is-mobile" href="#附：隔离级别表"><span class="level-left"><span class="level-item">附：隔离级别表</span></span></a></li></ul></li><li><a class="level is-mobile" href="#4-InnoDb事务隔离性的实现"><span class="level-left"><span class="level-item">4. InnoDb事务隔离性的实现</span></span></a></li><li><a class="level is-mobile" href="#5-redo-log和undo-log"><span class="level-left"><span class="level-item">5. redo log和undo log</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

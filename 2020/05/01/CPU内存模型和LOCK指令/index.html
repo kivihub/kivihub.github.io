@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="本文主要内容是对Intel CPU手册的第八章内容的简要翻译，旨在了解汇编指令Lock在CPU级别的实现机制。  一、CPU内存模型"><meta property="og:type" content="blog"><meta property="og:title" content="CPU内存模型和LOCK指令"><meta property="og:url" content="https://kivihub.github.io/2020/05/01/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="本文主要内容是对Intel CPU手册的第八章内容的简要翻译，旨在了解汇编指令Lock在CPU级别的实现机制。  一、CPU内存模型"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/1240-20210115024357094.png"><meta property="article:published_time" content="2020-05-01T05:51:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:21.640Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/1240-20210115024357094.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/05/01/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/"},"headline":"CPU内存模型和LOCK指令","image":["https://kivihub.github.io/thumbnail/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/1240-20210115024357094.png"],"datePublished":"2020-05-01T05:51:00.000Z","dateModified":"2026-01-15T03:18:21.640Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"本文主要内容是对Intel CPU手册的第八章内容的简要翻译，旨在了解汇编指令Lock在CPU级别的实现机制。  一、CPU内存模型"}</script><link rel="canonical" href="https://kivihub.github.io/2020/05/01/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-05-01T05:51:00.000Z" title="5/1/2020, 1:51:00 PM">2020-05-01</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Java%E5%B9%B6%E5%8F%91/">Java并发</a></span><span class="level-item">15 分钟读完 (大约2249个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">CPU内存模型和LOCK指令</h1><div class="content"><!-- date: 2020.05.01 13:51 -->
+
+<blockquote>
+<p>本文主要内容是对Intel CPU手册的第八章内容的简要翻译，旨在了解汇编指令Lock在CPU级别的实现机制。</p>
+</blockquote>
+<h2 id="一、CPU内存模型"><a href="#一、CPU内存模型" class="headerlink" title="一、CPU内存模型"></a>一、CPU内存模型</h2><span id="more"></span>
+
+<h3 id="1、数据一致性"><a href="#1、数据一致性" class="headerlink" title="1、数据一致性"></a>1、数据一致性</h3><h4 id="1）缓存一致性"><a href="#1）缓存一致性" class="headerlink" title="1）缓存一致性"></a>1）缓存一致性</h4><p>两个基本概念：</p>
+<p>I、<strong>Cache</strong>：缓存，又称快取，是弥补CPU和内存之间的速度差异而产生的中间存储，CPU内部有L1,L2,L3三级缓存，速度递减。</p>
+<p>II、<strong>Cache Line</strong>：为提高效率，每次从内存取出放到Cache的数据单位被称为缓存行，一般为64Byte；</p>
+<p>缓存一致性是指当处理器去访问缓存在其他处理器中的数据时，不能得到错误的数据。如果数据被修改，那么其他处理器也必须得到修改后的数据。</p>
+<h4 id="2）主存一致性"><a href="#2）主存一致性" class="headerlink" title="2）主存一致性"></a>2）主存一致性</h4><p>系统内存一致性是指多个处理器同时去访问系统内存的相同地址时，cpu需要提供通讯机制或内存访问协议来保证数据的一致性，某些场景下会允许其中的一个处理器临时的锁定这个内存地址（或更大一点的内存区域）。</p>
+<h3 id="2、原子操作保证数据一致性"><a href="#2、原子操作保证数据一致性" class="headerlink" title="2、原子操作保证数据一致性"></a>2、原子操作保证数据一致性</h3><p>IA-32的32位处理器在系统内存的位置上支持<strong>受锁定的原子操作</strong>（最近的IA-32,64处理器提供了更细粒度的锁定机制）。这些操作常会用于管理共享的数据结构（例如信号量，段描述，系统段，页表），多个处理器可能会同时去修改共享数据结构的某个相同的字段或标识。</p>
+<p>处理器通过三种机制来共同实现<strong>受锁定的原子操作</strong>：</p>
+<p>I、cpu保证的原子操作</p>
+<p>II、总线锁，使用LOCK#信号和LOCK指令前缀；</p>
+<p>III、缓存一致性协议，使共享的数据结构在被缓存的情况下同样保证原子性；</p>
+<h4 id="1）保证的原子操作"><a href="#1）保证的原子操作" class="headerlink" title="1）保证的原子操作"></a>1）保证的原子操作</h4><p>cpu保证读写一个byte，word, doubleword的原子性（P6系列的处理器还会保证从缓存行中读写四个字节的原子性，且不要求内存对齐）</p>
+<h4 id="2）总线锁和缓存一致性"><a href="#2）总线锁和缓存一致性" class="headerlink" title="2）总线锁和缓存一致性"></a>2）总线锁和缓存一致性</h4><blockquote>
+<p>Inter 64和IA-32架构的处理器访问临界区内存时会<strong>自动声明LOCK#<strong>信号，通过锁定系统总线或等效连接。当该信号被发出后，来自其他处理器或总线Agnet的请求都会被阻塞。<br>软件可以通过在指令前</strong>手动增加LOCK前缀</strong>来声明其他遵循锁定语义的场景。Intel386, Intel486, 和Pentium处理器遇到被锁定修饰的指令（locked instruction）会发出LOCK#信号。多个处理器在系统硬件的控制下对内存的访问，此硬件的设计者需要保证LOCK#信号的作用。<br>对于P6或更新的处理器系列，<strong>如果被访问的内存区域已经被缓存到处理器，那么处理器就不再发出LOCK#信号，而是只锁定处理器的缓存（通过缓存一致性协议）。常见的缓存一致性协议有：MESI，MESIF（MESIF是缓存行的状态标识，M:Modified, E: Exclusive, S:Shared, I:Invalid, F: Forwad），通过标记缓存行的状态和处理器间的通讯来实现。</strong></p>
+</blockquote>
+<h5 id="总线锁的两种使用方法"><a href="#总线锁的两种使用方法" class="headerlink" title="总线锁的两种使用方法"></a>总线锁的两种使用方法</h5><ul>
+<li><em>自动锁定</em>：处理器会自动对一些指令增加LOCK前缀来保证原子性，例如XCHG</li>
+<li><em>声明锁定</em>：在某些特定的指令前增加LOCK前缀来保证原子性。<br><img src="/2020/05/01/CPU%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%92%8CLOCK%E6%8C%87%E4%BB%A4/pic/1240-20210115024357094.png" alt="可加LOCK前缀的指令"></li>
+</ul>
+<h5 id="总线锁定无需内存对齐"><a href="#总线锁定无需内存对齐" class="headerlink" title="总线锁定无需内存对齐"></a>总线锁定无需内存对齐</h5><blockquote>
+<p>总线锁的完整性不会受内存字段的对齐影响.锁定语义在必要时会持续多个总线周期来实现完整的操作。建议锁定访问在它们的自然边界上对齐，以获得更好的系统性能。</p>
+<p>• 任意8bit的访问（不用锁定）</p>
+<p>• 被锁定的16bit访问</p>
+<p>• 被锁定的32bit访问</p>
+<p>• 被锁定的64bit访问</p>
+</blockquote>
+<h3 id="3、同步机制依赖内存有序模型"><a href="#3、同步机制依赖内存有序模型" class="headerlink" title="3、同步机制依赖内存有序模型"></a>3、同步机制依赖内存有序模型</h3><p>在多处理器系统下，实现同步机制需要依赖一个强内存有序模型。“<strong>内存有序</strong>”指的是CPU处理器通过系统总线向系统内存发出读写操作的顺序。Intel IA-32，x64架构的cpu根据具体的架构实现会支持多种<strong>内存有序模型</strong>。</p>
+<p>1）Intel 386处理器采用<strong>程序级别有序</strong>（一般被认为是强有序），即在所有场景下发到总线上的读写顺序与指令流的顺序一致。</p>
+<p>2）PentiumI4，Intel Xeon，P6系列的IA-32架构CPU，为了优化指令执行的性能，提出了不同于强一致性的memory ordering，称为<strong>处理器级别有序</strong>。该模型的不同之处在于允许执行强化性能的一些乱序操作，例如，允许写缓冲之前执行读操作。这些差异都旨在保持内存一致性的前提下，加快指令的执行速度，即使是多处理器的系统。</p>
+<p><strong>强化或弱化的内存模型，Intel 64和IA-32架构的提供了多种机制来强化或弱化内存排序模型来应对特殊的编程情景</strong>，这些机制包括：</p>
+<p>1）IO指令，Lock指令，Lock前缀修饰的指令，串行指令在处理器上强制增强有序性</p>
+<p>2）栅栏指令：SFENCE,LFENCE,MFENCE指令为特定类型的内存操作提供内存排序和序列化功能。</p>
+<p>3）MTRRs常被用于为指定的物理内存提供强化或弱化内存排序；</p>
+<p>4）PAT常被用于为指定的内存页提供强化排序；</p>
+<p>其中串行指令包括：INVD, INVEPT, INVLPG, INVVPID, LGDT, LIDT, LLDT, LTR, MOV (to control register, with the exception of MOV CR83), MOV (to debug register), WBINVD, and WRMSR4，CPUID, IRET, and RSM。</p>
+<h2 id="二、Lock指令"><a href="#二、Lock指令" class="headerlink" title="二、Lock指令"></a>二、Lock指令</h2><h3 id="1、LOCK指令保证原子性"><a href="#1、LOCK指令保证原子性" class="headerlink" title="1、LOCK指令保证原子性"></a>1、LOCK指令保证原子性</h3><h4 id="1）作用"><a href="#1）作用" class="headerlink" title="1）作用"></a>1）作用</h4><p>CPU保证被其修饰的指令的原子性。</p>
+<h4 id="2）实现方式"><a href="#2）实现方式" class="headerlink" title="2）实现方式"></a>2）实现方式</h4><p>I、依赖内存有序模型，来保证读取指令有序；</p>
+<p>II、通过总线锁或缓存一致性，保证被修饰指令操作的数据一致性：</p>
+<ul>
+<li>当访问的数据在系统内存时，通过在总线锁实现原子性；</li>
+<li>当访问的数据在处理器的缓存时，通过缓存一致性协议实现原子性；</li>
+</ul>
+<p><strong>举个栗子</strong></p>
+<p>Java的DCL中若返回的变量不加volatile修饰，则可能会由于指令重排导致另一个线程获取到一个非完全初始化的对象。当volatile修饰的变量所在的代码段成为热点，被JIT编译为汇编代码后，会增加LOCK前缀来禁止指令重拍和数据一致；</p>
+<h4 id="3）交换指令"><a href="#3）交换指令" class="headerlink" title="3）交换指令"></a>3）交换指令</h4><h5 id="CMPXCHG、XCHG"><a href="#CMPXCHG、XCHG" class="headerlink" title="CMPXCHG、XCHG"></a>CMPXCHG、XCHG</h5><p>I、CPMXCHG</p>
+<ul>
+<li>用于比较并交换操作数，CPU对CAS的原语支持</li>
+<li>非原子性，最早用于单核CPU</li>
+</ul>
+<p>II、XCHG</p>
+<ul>
+<li>用于交换两个操作数</li>
+<li>具备原子性，CPU会自动加LOCK前缀</li>
+</ul>
+<blockquote>
+<p>The LOCK prefix is automatically assumed for XCHG instruction.<br>——From Intel手册 8.1.2.2 Software Controlled Bus Locking</p>
+</blockquote>
+<h5 id="LOCK-CMPXCHAG"><a href="#LOCK-CMPXCHAG" class="headerlink" title="LOCK CMPXCHAG"></a>LOCK CMPXCHAG</h5><p>I、单核：无需加LOCK前缀，即使增加也会被替换为nop</p>
+<p>II、多核：需要加LOCK前缀</p>
+<h3 id="2、LOCK指令保证可见性"><a href="#2、LOCK指令保证可见性" class="headerlink" title="2、LOCK指令保证可见性"></a>2、LOCK指令保证可见性</h3><h4 id="1）优先锁缓存行"><a href="#1）优先锁缓存行" class="headerlink" title="1）优先锁缓存行"></a>1）优先锁缓存行</h4><p>I、CPU保证锁单个缓存行的原子性；</p>
+<p>II、效率高，不会阻塞总线上的信号；</p>
+<p>III、各CPU间，各内核间通过嗅探机制和MESI协议进行通讯，机制比较复杂；</p>
+<h4 id="2）锁总线是最后的选择"><a href="#2）锁总线是最后的选择" class="headerlink" title="2）锁总线是最后的选择"></a>2）锁总线是最后的选择</h4><p>I、如果变量跨缓存行，则需启用总线锁；</p>
+<p>II、开销较大，在总线锁期间总线不会响应其他信号；</p>
+<p>III、实现简单，是早期CPU的实现方式；</p>
+<p>Note：</p>
+<ul>
+<li>一个缓存行一般为64byte；</li>
+<li>常用的缓存一致性协议为MESI，标识缓存行的四种状态Modify,Exclude,Shared,Invalid;</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="# 参考"></a># 参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/27837731/is-x86-cmpxchg-atomic-if-so-why-does-it-need-lock/44273130#44273130">https://stackoverflow.com/questions/27837731/is-x86-cmpxchg-atomic-if-so-why-does-it-need-lock/44273130#44273130</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf">Intel架构手册</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/MESI%E5%8D%8F%E8%AE%AE">维基百科：MESI协议</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BF%AB%E5%8F%96%E4%B8%80%E8%87%B4%E6%80%A7">维基百科：缓存一致性</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/05/14/MySql%E5%92%8CB+%E6%A0%91/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">MySql和B+树</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/04/28/%E6%97%B6%E5%8C%BA%E4%B8%8E%E6%97%B6%E9%97%B4%EF%BC%9AMysql%EF%BC%8CJDBC%EF%BC%8CJVM/"><span class="level-item">时区与时间：Mysql，JDBC，JVM</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、CPU内存模型"><span class="level-left"><span class="level-item">一、CPU内存模型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、数据一致性"><span class="level-left"><span class="level-item">1、数据一致性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）缓存一致性"><span class="level-left"><span class="level-item">1）缓存一致性</span></span></a></li><li><a class="level is-mobile" href="#2）主存一致性"><span class="level-left"><span class="level-item">2）主存一致性</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2、原子操作保证数据一致性"><span class="level-left"><span class="level-item">2、原子操作保证数据一致性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）保证的原子操作"><span class="level-left"><span class="level-item">1）保证的原子操作</span></span></a></li><li><a class="level is-mobile" href="#2）总线锁和缓存一致性"><span class="level-left"><span class="level-item">2）总线锁和缓存一致性</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3、同步机制依赖内存有序模型"><span class="level-left"><span class="level-item">3、同步机制依赖内存有序模型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、Lock指令"><span class="level-left"><span class="level-item">二、Lock指令</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、LOCK指令保证原子性"><span class="level-left"><span class="level-item">1、LOCK指令保证原子性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）作用"><span class="level-left"><span class="level-item">1）作用</span></span></a></li><li><a class="level is-mobile" href="#2）实现方式"><span class="level-left"><span class="level-item">2）实现方式</span></span></a></li><li><a class="level is-mobile" href="#3）交换指令"><span class="level-left"><span class="level-item">3）交换指令</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2、LOCK指令保证可见性"><span class="level-left"><span class="level-item">2、LOCK指令保证可见性</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）优先锁缓存行"><span class="level-left"><span class="level-item">1）优先锁缓存行</span></span></a></li><li><a class="level is-mobile" href="#2）锁总线是最后的选择"><span class="level-left"><span class="level-item">2）锁总线是最后的选择</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item"># 参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

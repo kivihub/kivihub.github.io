@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、垃圾收集器简介1、垃圾收集器搭配图谱"><meta property="og:type" content="blog"><meta property="og:title" content="垃圾回收器"><meta property="og:url" content="https://kivihub.github.io/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、垃圾收集器简介1、垃圾收集器搭配图谱"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/thumbnail/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/1240-20210115023735966.png"><meta property="article:published_time" content="2020-07-13T15:09:00.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:20.502Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/thumbnail/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/1240-20210115023735966.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/"},"headline":"垃圾回收器","image":["https://kivihub.github.io/thumbnail/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/1240-20210115023735966.png"],"datePublished":"2020-07-13T15:09:00.000Z","dateModified":"2026-01-15T03:18:20.502Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、垃圾收集器简介1、垃圾收集器搭配图谱"}</script><link rel="canonical" href="https://kivihub.github.io/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-07-13T15:09:00.000Z" title="7/13/2020, 11:09:00 PM">2020-07-13</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/Java/">Java</a><span> / </span><a class="link-muted" href="/categories/Java/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/">Java虚拟机</a></span><span class="level-item">15 分钟读完 (大约2266个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">垃圾回收器</h1><div class="content"><!-- date: 2020.07.13 23:09 -->
+
+<h2 id="一、垃圾收集器简介"><a href="#一、垃圾收集器简介" class="headerlink" title="一、垃圾收集器简介"></a>一、垃圾收集器简介</h2><h3 id="1、垃圾收集器搭配图谱"><a href="#1、垃圾收集器搭配图谱" class="headerlink" title="1、垃圾收集器搭配图谱"></a>1、垃圾收集器搭配图谱</h3><span id="more"></span>
+
+<p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115023735966.png" alt="垃圾收集器组合"></p>
+<h3 id="2、垃圾收集器的发展史"><a href="#2、垃圾收集器的发展史" class="headerlink" title="2、垃圾收集器的发展史"></a>2、垃圾收集器的发展史</h3><p>1）单核时代 - 串行垃圾收集器</p>
+<p>2）多核时代 - 小内存</p>
+<ul>
+<li><p><em>CMS</em>是老年代的多线程收集器，遵循了分代框架；</p>
+</li>
+<li><p>ParNew是Serial的多线程版本，从Exact VM移植到HotSpot与CMS搭配使用</p>
+</li>
+<li><p>Parallel，Parallel Old是新框架下的并行垃圾收集器，考虑到维护成本，没有遵循之前的分代框架，所以与CMS无法搭配使用。</p>
+</li>
+</ul>
+<p>3）多核时代 - 大内存</p>
+<ul>
+<li>G1取消了逻辑分代，支持更大内存；</li>
+</ul>
+<h3 id="3、垃圾收集器的性能指标"><a href="#3、垃圾收集器的性能指标" class="headerlink" title="3、垃圾收集器的性能指标"></a>3、垃圾收集器的性能指标</h3><p>1）吞吐量</p>
+<p>2）响应时间</p>
+<h3 id="4、垃圾收集器的主流算法"><a href="#4、垃圾收集器的主流算法" class="headerlink" title="4、垃圾收集器的主流算法"></a>4、垃圾收集器的主流算法</h3><p>1）复制：主要用于年轻代，其中的跨带引用通过卡表来解决</p>
+<p>2）标记整理：用于老年代</p>
+<p>3）标记清除：用于老年代</p>
+<h3 id="5、JDK的默认垃圾收集器"><a href="#5、JDK的默认垃圾收集器" class="headerlink" title="5、JDK的默认垃圾收集器"></a>5、JDK的默认垃圾收集器</h3><ol>
+<li>JDK8：Parallel</li>
+<li>JDK9：G1</li>
+</ol>
+<h3 id="6、常用垃圾收集器组合"><a href="#6、常用垃圾收集器组合" class="headerlink" title="6、常用垃圾收集器组合"></a>6、常用垃圾收集器组合</h3><ol>
+<li>ParNew + CMS + Serial Old：偏向响应</li>
+<li>Parallel：偏向吞吐</li>
+</ol>
+<h2 id="二、Serial垃圾收集器"><a href="#二、Serial垃圾收集器" class="headerlink" title="二、Serial垃圾收集器"></a>二、Serial垃圾收集器</h2><p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115023735563.png" alt="serial垃圾收集器"></p>
+<h3 id="1、开启参数"><a href="#1、开启参数" class="headerlink" title="1、开启参数"></a>1、开启参数</h3><p>1）年轻代：-XX:+UseSerialGC，采用复制算法</p>
+<p>2）老年代：-XX:+UseSerialOldGC，采用标记整理算法</p>
+<h3 id="2、串行垃圾收集器特点"><a href="#2、串行垃圾收集器特点" class="headerlink" title="2、串行垃圾收集器特点"></a>2、串行垃圾收集器特点</h3><p>1）单线程执行，无法利用多核资源；</p>
+<p>2）单线程执行时STW工作线程；</p>
+<h2 id="三、Parallel垃圾收集器"><a href="#三、Parallel垃圾收集器" class="headerlink" title="三、Parallel垃圾收集器"></a>三、Parallel垃圾收集器</h2><p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115023735693.png" alt="parallel垃圾收集器"></p>
+<p>Parallel是Serial垃圾收集器的多线程版本，也被称为Throughput GC，是吞吐量优先的垃圾收集器。没有实现老的分代框架，无法与CMS搭配使用。</p>
+<h3 id="1、开启参数-1"><a href="#1、开启参数-1" class="headerlink" title="1、开启参数"></a>1、开启参数</h3><p>1）年轻代：-XX:+UseParallelGC，采用复制算法</p>
+<p>2）老年代：-XX:+UseParallelOldGC，采用标记整理算法</p>
+<h3 id="2、高级参数"><a href="#2、高级参数" class="headerlink" title="2、高级参数"></a>2、高级参数</h3><p>1）设置并行线程数：-XX:ParallelGCThreads，默认当前CPU核数。</p>
+<h3 id="3、parallel圾收集器特点"><a href="#3、parallel圾收集器特点" class="headerlink" title="3、parallel圾收集器特点"></a>3、parallel圾收集器特点</h3><p>1）多线程执行GC，吞吐量高；</p>
+<p>2）多线程执行时依然STW工作线程；</p>
+<h2 id="四、ParNew垃圾收集器"><a href="#四、ParNew垃圾收集器" class="headerlink" title="四、ParNew垃圾收集器"></a>四、ParNew垃圾收集器</h2><p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115023735693.png" alt="parNew垃圾收集器"></p>
+<p>只负责新生代垃圾收集，功能与Parallel Scavenge(Parallel年轻代)的收集器类似，但是可以与CMS搭配使用。</p>
+<h3 id="1、开启参数-2"><a href="#1、开启参数-2" class="headerlink" title="1、开启参数"></a>1、开启参数</h3><p>1）年轻代：-XX:+UseParNewGC，采用复制算法</p>
+<h2 id="五、CMS垃圾收集器"><a href="#五、CMS垃圾收集器" class="headerlink" title="五、CMS垃圾收集器"></a>五、CMS垃圾收集器</h2><p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115023735960.png" alt="CMS垃圾收集器"></p>
+<p>CMS只回收老年代，注重响应时间。但是在Oracle内部不受重视，优化项不如Parallel，至此到终都没有称为默认垃圾收集器。</p>
+<h3 id="1、开启参数-3"><a href="#1、开启参数-3" class="headerlink" title="1、开启参数"></a>1、开启参数</h3><p>1）老年代：-XX:+UseConcMarkSweepGC，采用标记清除算法</p>
+<h3 id="2、高级参数-1"><a href="#2、高级参数-1" class="headerlink" title="2、高级参数"></a>2、高级参数</h3><p>1）开启整理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:+UseCMSCompactAtFullCollection</span><br><span class="line">-XX:CMSFullGCsBeforeCompaction # 多少次FullGC后压缩</span><br></pre></td></tr></table></figure>
+
+<p>2）并发线程数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:ConcGCThreads</span><br></pre></td></tr></table></figure>
+
+<p>3）触发FullGC的老年代使用比例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:CMSInitiatingOccupancyFraction #指定老年代触发FullGC的比例，默认<span class="number">92</span>%；</span><br><span class="line">-XX:+UseCMSInitiatingOccupancyOnly #开启时使用使用上面的设置，否则只有第一次使用；</span><br></pre></td></tr></table></figure>
+
+<p>4）初始标记是否使用多线程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+CMSParallelInitiatingMarkEnable</span><br></pre></td></tr></table></figure>
+
+<p>5）执行FullGC前是否执行MinorGC</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+CMSScavengeBeforeRemark</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、CMS执行过程"><a href="#3、CMS执行过程" class="headerlink" title="3、CMS执行过程"></a>3、CMS执行过程</h3><ol>
+<li><p>初始标记：STW，扫描GC Root的直接关联对象；</p>
+</li>
+<li><p>并发标记：遍历所有对象，使用三色标记法+增量更新来实现</p>
+</li>
+<li><p>重新标记：STW，修正并发标记期间变化的对象引用关系</p>
+</li>
+<li><p>并发清除：清理没有被标记到的对象；若此时有新加入老年代的对象一律设置为黑色，不作清理。</p>
+</li>
+<li><p>并发重置：重置标记状态；</p>
+</li>
+</ol>
+<h3 id="4、特点"><a href="#4、特点" class="headerlink" title="4、特点"></a>4、特点</h3><p>1）注重响应时间，清理时用户线程和垃圾收集线程可以同时运行；</p>
+<p>2）复杂度高，标记过程比较复杂；</p>
+<p>3）如果不开启整理选项，容易出现内存碎片；</p>
+<p>4）无法处理浮动垃圾；</p>
+<p>5）会出现concurrent mode failure，然后STW，使用serial进行收集；</p>
+<h2 id="六、G1"><a href="#六、G1" class="headerlink" title="六、G1"></a>六、G1</h2><p>取消物理分代，取而代之的是分块的region，其保留逻辑分代。可回收年轻代和老年代；</p>
+<h3 id="1、参数"><a href="#1、参数" class="headerlink" title="1、参数"></a>1、参数</h3><p>1）设置Region大小：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:G1HeapRegionSize</span><br></pre></td></tr></table></figure>
+
+<p>2）设置年轻代大小：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:G1NewSizePercent # 默认<span class="number">5</span>%</span><br><span class="line">-XX:MaxG1NewSizePercent # 默认<span class="number">60</span>%</span><br></pre></td></tr></table></figure>
+
+<p>3）设置GC时最大停顿时间：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:MaxGGPauseMillis</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、过程"><a href="#2、过程" class="headerlink" title="2、过程"></a>2、过程</h3><p>1）初始标记：STW</p>
+<p>2）并发标记：同CMS</p>
+<p>3）最终标记：STW</p>
+<p>4）筛选回收：STW</p>
+<h3 id="3、gc类型"><a href="#3、gc类型" class="headerlink" title="3、gc类型"></a>3、gc类型</h3><p>1）young GC：优先新增Young Region（Eden + Survior），如果达到阈值则回收；</p>
+<p>2）MixGC：回收Young Region，Old Region，大对象区域</p>
+<p>3）FullGC：单线程回收所有区域，类似Serial垃圾收集器。</p>
+<h2 id="七、三色标记"><a href="#七、三色标记" class="headerlink" title="七、三色标记"></a>七、三色标记</h2><h3 id="1、并法标记期间出现的问题"><a href="#1、并法标记期间出现的问题" class="headerlink" title="1、并法标记期间出现的问题"></a>1、并法标记期间出现的问题</h3><p>1）漏标：需要处理，不然误回收</p>
+<p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115024029109.png" alt="漏标"></p>
+<p>2）多标：浮动垃圾，下次回收；</p>
+<p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115024029036.png" alt="多标"></p>
+<h3 id="2、漏标的解决方案"><a href="#2、漏标的解决方案" class="headerlink" title="2、漏标的解决方案"></a>2、漏标的解决方案</h3><h4 id="1）漏标发生时操作"><a href="#1）漏标发生时操作" class="headerlink" title="1）漏标发生时操作"></a>1）漏标发生时操作</h4><p>并法标记过程中产生漏标时，会执行以下两个逻辑：</p>
+<p>I、建立新关联 - <strong>通过增量更新记录新关联对象，供重新标记时重新扫描</strong></p>
+<p> 未扫描到的对象被已扫描过的黑对象引用，而黑对象不会再扫描标记其关联对象；</p>
+<p>II、删除旧关联 - <strong>通过原始快照记录被删除对象，供重新标记时标为黑色</strong></p>
+<p>把此对象从其旧关联删除，导致此对象只被黑对象关联，无法再被标记，而产生漏标；</p>
+<h4 id="2）增量更新"><a href="#2）增量更新" class="headerlink" title="2）增量更新"></a>2）增量更新</h4><p>在并发标记期间，新赋值的对象作为增量记录下来，再重新标记时扫描。</p>
+<p>I、实现：</p>
+<p>通过写屏障（写后屏障），把<code>建立新关联的左值对象</code>维护到一个表，在重新标记节点重新扫描表中的对象；黑色对象一旦新插入了指向白色对象的引用之后， 它就变回灰色对象了。</p>
+<p>II、特点：</p>
+<ul>
+<li><p>所有在并发标记过程中变化的引用导致由黑变灰的对象都需要重新遍历标记；</p>
+</li>
+<li><p>性能开销大，小内存时适用；</p>
+</li>
+</ul>
+<h4 id="3）原始快照"><a href="#3）原始快照" class="headerlink" title="3）原始快照"></a>3）原始快照</h4><p>在并发标记期间，引用关系发生变化的对象一律标记为黑对象，本次不回收。</p>
+<p>I、实现：</p>
+<p>通过写屏障（写前屏障），把<code>删除旧关联时的右值对象</code>维护到一张表，重新标记时标为黑色。本次不回收。此时，表中对象有可能是被引用的对象，也有可能是垃圾对象（浮动垃圾）。</p>
+<p>II、特点：</p>
+<ul>
+<li><p>所有在并发标记过程中变化的节点都做标记，本次垃圾回收不处理。</p>
+</li>
+<li><p>性能开销小，大内存时适用；</p>
+</li>
+</ul>
+<h3 id="3、CMS和G1的实现"><a href="#3、CMS和G1的实现" class="headerlink" title="3、CMS和G1的实现"></a>3、CMS和G1的实现</h3><p>1）CMS：写屏障 + 增量更新</p>
+<p>2）G1：写屏障 + 原始快照</p>
+<h2 id="八、记忆集和卡表"><a href="#八、记忆集和卡表" class="headerlink" title="八、记忆集和卡表"></a>八、记忆集和卡表</h2><p><img src="/2020/07/13/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/pic/1240-20210115024116722.png" alt="卡表实现"></p>
+<p>年轻代收集时，在扫描GCRoot时，可能会出现跨带引用，即老年代引用年轻代。为了避免扫描整个老年代，通过卡表来标记老年代的某个区域是否有对年轻代的引用。</p>
+<h3 id="1、基于前提"><a href="#1、基于前提" class="headerlink" title="1、基于前提"></a>1、基于前提</h3><p>跨带引用的量较小，所以通过老年代分块来粗化区域，提高效率。</p>
+<h3 id="2、实现"><a href="#2、实现" class="headerlink" title="2、实现"></a>2、实现</h3><p>1）把老年代分块，512字节为大小；</p>
+<p>2）年轻代维护卡表，与老年代的块一一对应；</p>
+<p>3）通过写屏障维护卡表（字节数组，一个字节对应一个老年代的块），如果发现老年代引用了年轻代则把对应的bit置为1；</p>
+<p>4）年轻代收集时通过遍历年轻代的GCRoot和老年代的脏块中的对象，其中不可达的对象则视为垃圾，不作复制。</p>
+<h3 id="3、为什么不需要年轻代对应的卡表"><a href="#3、为什么不需要年轻代对应的卡表" class="headerlink" title="3、为什么不需要年轻代对应的卡表"></a>3、为什么不需要年轻代对应的卡表</h3><p>卡表只在内存分代且部分收集时需要。FullGC时会整体回收，包含方法区、老年代和年轻代，而不是单独回收老年代。也正因为此老年代和年轻代的垃圾回收器需要进行协同，而CMS无法和Parrallel协同，所以搞出来一个ParNew来和CMS协同。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="# 参考"></a># 参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://hllvm-group.iteye.com/group/topic/37095#post-242695">https://hllvm-group.iteye.com/group/topic/37095#post-242695</a></li>
+<li><a target="_blank" rel="noopener" href="https://blogs.oracle.com/jonthecollector/our-collectors">https://blogs.oracle.com/jonthecollector/our-collectors</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Java_version_history">https://en.wikipedia.org/wiki/Java_version_history</a></li>
+</ol>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/07/16/JDK%E8%87%AA%E5%B8%A6%E7%9A%84%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">JDK自带的性能监控工具</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/07/13/maven%E6%8F%92%E4%BB%B6%E7%9A%84%E4%BE%9D%E8%B5%96%E7%9A%84%E6%9F%A5%E6%89%BE%E9%A1%BA%E5%BA%8F/"><span class="level-item">maven插件的依赖的查找顺序</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、垃圾收集器简介"><span class="level-left"><span class="level-item">一、垃圾收集器简介</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、垃圾收集器搭配图谱"><span class="level-left"><span class="level-item">1、垃圾收集器搭配图谱</span></span></a></li><li><a class="level is-mobile" href="#2、垃圾收集器的发展史"><span class="level-left"><span class="level-item">2、垃圾收集器的发展史</span></span></a></li><li><a class="level is-mobile" href="#3、垃圾收集器的性能指标"><span class="level-left"><span class="level-item">3、垃圾收集器的性能指标</span></span></a></li><li><a class="level is-mobile" href="#4、垃圾收集器的主流算法"><span class="level-left"><span class="level-item">4、垃圾收集器的主流算法</span></span></a></li><li><a class="level is-mobile" href="#5、JDK的默认垃圾收集器"><span class="level-left"><span class="level-item">5、JDK的默认垃圾收集器</span></span></a></li><li><a class="level is-mobile" href="#6、常用垃圾收集器组合"><span class="level-left"><span class="level-item">6、常用垃圾收集器组合</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、Serial垃圾收集器"><span class="level-left"><span class="level-item">二、Serial垃圾收集器</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、开启参数"><span class="level-left"><span class="level-item">1、开启参数</span></span></a></li><li><a class="level is-mobile" href="#2、串行垃圾收集器特点"><span class="level-left"><span class="level-item">2、串行垃圾收集器特点</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、Parallel垃圾收集器"><span class="level-left"><span class="level-item">三、Parallel垃圾收集器</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、开启参数-1"><span class="level-left"><span class="level-item">1、开启参数</span></span></a></li><li><a class="level is-mobile" href="#2、高级参数"><span class="level-left"><span class="level-item">2、高级参数</span></span></a></li><li><a class="level is-mobile" href="#3、parallel圾收集器特点"><span class="level-left"><span class="level-item">3、parallel圾收集器特点</span></span></a></li></ul></li><li><a class="level is-mobile" href="#四、ParNew垃圾收集器"><span class="level-left"><span class="level-item">四、ParNew垃圾收集器</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、开启参数-2"><span class="level-left"><span class="level-item">1、开启参数</span></span></a></li></ul></li><li><a class="level is-mobile" href="#五、CMS垃圾收集器"><span class="level-left"><span class="level-item">五、CMS垃圾收集器</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、开启参数-3"><span class="level-left"><span class="level-item">1、开启参数</span></span></a></li><li><a class="level is-mobile" href="#2、高级参数-1"><span class="level-left"><span class="level-item">2、高级参数</span></span></a></li><li><a class="level is-mobile" href="#3、CMS执行过程"><span class="level-left"><span class="level-item">3、CMS执行过程</span></span></a></li><li><a class="level is-mobile" href="#4、特点"><span class="level-left"><span class="level-item">4、特点</span></span></a></li></ul></li><li><a class="level is-mobile" href="#六、G1"><span class="level-left"><span class="level-item">六、G1</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、参数"><span class="level-left"><span class="level-item">1、参数</span></span></a></li><li><a class="level is-mobile" href="#2、过程"><span class="level-left"><span class="level-item">2、过程</span></span></a></li><li><a class="level is-mobile" href="#3、gc类型"><span class="level-left"><span class="level-item">3、gc类型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#七、三色标记"><span class="level-left"><span class="level-item">七、三色标记</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、并法标记期间出现的问题"><span class="level-left"><span class="level-item">1、并法标记期间出现的问题</span></span></a></li><li><a class="level is-mobile" href="#2、漏标的解决方案"><span class="level-left"><span class="level-item">2、漏标的解决方案</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1）漏标发生时操作"><span class="level-left"><span class="level-item">1）漏标发生时操作</span></span></a></li><li><a class="level is-mobile" href="#2）增量更新"><span class="level-left"><span class="level-item">2）增量更新</span></span></a></li><li><a class="level is-mobile" href="#3）原始快照"><span class="level-left"><span class="level-item">3）原始快照</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3、CMS和G1的实现"><span class="level-left"><span class="level-item">3、CMS和G1的实现</span></span></a></li></ul></li><li><a class="level is-mobile" href="#八、记忆集和卡表"><span class="level-left"><span class="level-item">八、记忆集和卡表</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1、基于前提"><span class="level-left"><span class="level-item">1、基于前提</span></span></a></li><li><a class="level is-mobile" href="#2、实现"><span class="level-left"><span class="level-item">2、实现</span></span></a></li><li><a class="level is-mobile" href="#3、为什么不需要年轻代对应的卡表"><span class="level-left"><span class="level-item">3、为什么不需要年轻代对应的卡表</span></span></a></li></ul></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item"># 参考</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

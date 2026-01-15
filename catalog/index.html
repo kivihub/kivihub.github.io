@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1.TroubleShooting (43篇) 0.TroubleShooting方法论 (1,237字) 1.观察日志 (16篇) 1.为什么我的EL在测试和线上环境结果不同 (395字) 2.fastjson升级不兼容的问题 (333字) 3.这不是我想要的日志 (354字) 4.模糊的异常信息让人蒙圈 (237字) 5.刚发现的虫子原来很早之前就有了 (410字) 6.发现冲突，解决冲突"><meta property="og:type" content="blog"><meta property="og:title" content="目录"><meta property="og:url" content="https://kivihub.github.io/catalog/index.html"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="1.TroubleShooting (43篇) 0.TroubleShooting方法论 (1,237字) 1.观察日志 (16篇) 1.为什么我的EL在测试和线上环境结果不同 (395字) 2.fastjson升级不兼容的问题 (333字) 3.这不是我想要的日志 (354字) 4.模糊的异常信息让人蒙圈 (237字) 5.刚发现的虫子原来很早之前就有了 (410字) 6.发现冲突，解决冲突"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2026-01-15T03:18:27.000Z"><meta property="article:modified_time" content="2026-01-15T03:18:27.001Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/catalog/index.html"},"headline":"目录","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2026-01-15T03:18:27.000Z","dateModified":"2026-01-15T03:18:27.001Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"1.TroubleShooting (43篇) 0.TroubleShooting方法论 (1,237字) 1.观察日志 (16篇) 1.为什么我的EL在测试和线上环境结果不同 (395字) 2.fastjson升级不兼容的问题 (333字) 3.这不是我想要的日志 (354字) 4.模糊的异常信息让人蒙圈 (237字) 5.刚发现的虫子原来很早之前就有了 (410字) 6.发现冲突，解决冲突"}</script><link rel="canonical" href="https://kivihub.github.io/catalog/index.html"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item is-active" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-3 is-size-4-mobile">目录</h1><div class="content"><!-- blog tree start -->
+<ul>
+<li><a href="/categories/TroubleShooting">1.TroubleShooting (43篇)</a><ul>
+<li><a href="/2019/05/17/TroubleShooting方法论">0.TroubleShooting方法论 (1,237字)</a></li>
+<li><a href="/categories/TroubleShooting/观察日志">1.观察日志 (16篇)</a><ul>
+<li><a href="/2019/07/05/为什么我的EL在测试和线上环境结果不同">1.为什么我的EL在测试和线上环境结果不同 (395字)</a></li>
+<li><a href="/2019/07/05/fastjson升级不兼容的问题">2.fastjson升级不兼容的问题 (333字)</a></li>
+<li><a href="/2019/09/27/这不是我想要的日志">3.这不是我想要的日志 (354字)</a></li>
+<li><a href="/2019/09/27/模糊的异常信息让人蒙圈">4.模糊的异常信息让人蒙圈 (237字)</a></li>
+<li><a href="/2019/09/30/刚发现的虫子原来很早之前就有了">5.刚发现的虫子原来很早之前就有了 (410字)</a></li>
+<li><a href="/2020/02/14/发现冲突，解决冲突">6.发现冲突，解决冲突 (214字)</a></li>
+<li><a href="/2020/03/06/小心JS中数字精度损失">7.小心JS中数字精度损失 (257字)</a></li>
+<li><a href="/2020/06/22/STFP报错Connection_reset">8.STFP报错Connection_reset (254字)</a></li>
+<li><a href="/2020/08/20/返回值里藏着异常信息">9.返回值里藏着异常信息 (324字)</a></li>
+<li><a href="/2020/11/13/看堆栈，勿急躁">10.看堆栈，勿急躁 (542字)</a></li>
+<li><a href="/2020/11/06/归约问题定位思路">11.归约问题定位思路 (267字)</a></li>
+<li><a href="/2020/12/30/CA认证的证书为什么还需要手动导入？">12.CA认证的证书为什么还需要手动导入？ (873字)</a></li>
+<li><a href="/2021/01/07/Http上传文件的Content-Type格式">13.Http上传文件的Content-Type格式 (345字)</a></li>
+<li><a href="/2021/01/17/nginx反向代理自调用时小心Header里的host">14.nginx反向代理自调用时小心Header里的host (733字)</a></li>
+<li><a href="/2021/03/03/Webmethod的IS加入Cluster异常">15.Webmethod的IS加入Cluster异常 (1,114字)</a></li>
+<li><a href="/2022/01/17/proxool的log4j冲突">16.proxool的log4j冲突 (636字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/TroubleShooting/Debug">2.Debug (5篇)</a><ul>
+<li><a href="/2019/08/10/el中函数调用结果始终为null">1.el中函数调用结果始终为null (275字)</a></li>
+<li><a href="/2019/12/19/Debug时科学观察变量">2.Debug时科学观察变量 (218字)</a></li>
+<li><a href="/2021/03/11/Debug时加的观察变量影响了debug">3.Debug时加的观察变量影响了debug (751字)</a></li>
+<li><a href="/2020/11/01/ClassNotFound与类加载的全盘委托机制">4.ClassNotFound与类加载的全盘委托机制 (226字)</a></li>
+<li><a href="/2020/08/30/日志先行，Debug其次">5.日志先行，Debug其次 (270字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/TroubleShooting/思维定势">3.思维定势 (1篇)</a><ul>
+<li><a href="/2019/07/08/对Http响应码“302”的误判">1.对Http响应码“302”的误判 (342字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/TroubleShooting/流程分析">4.流程分析 (17篇)</a><ul>
+<li><a href="/2019/08/10/原来是IDE和Rest版本不同步">1.原来是IDE和Rest版本不同步 (331字)</a></li>
+<li><a href="/2019/12/19/FTP和sshuttle的故事">2.FTP和sshuttle的故事 (321字)</a></li>
+<li><a href="/2020/03/06/方法返回集合的副本，避免污染">3.方法返回集合的副本，避免污染 (798字)</a></li>
+<li><a href="/2020/03/20/签名验证异常">4.签名验证异常 (440字)</a></li>
+<li><a href="/2020/08/06/HttpClient未设置connectTimeout导致线程池耗尽">5.HttpClient未设置connectTimeout导致线程池耗尽 (461字)</a></li>
+<li><a href="/2020/12/08/用tcpdump、wireShark分析sftp连接时readtimeout">6.用tcpdump、wireShark分析sftp连接时readtimeout (703字)</a></li>
+<li><a href="/2021/05/20/MQ积压2亿了">7.MQ积压2亿了 (660字)</a></li>
+<li><a href="/2021/05/22/MQ消费出现陡增和断崖">8.MQ消费出现陡增和断崖 (392字)</a></li>
+<li><a href="/2021/05/20/抓包分析http请求超时">9.抓包分析http请求超时 (883字)</a></li>
+<li><a href="/2021/06/02/CPU飚高排查">10.CPU飚高排查 (1,830字)</a></li>
+<li><a href="/2021/09/15/commons-io依赖冲突">11.commons-io依赖冲突 (912字)</a></li>
+<li><a href="/2021/07/22/wsdl获取逻辑修改事故的复盘">12.wsdl获取逻辑修改事故的复盘 (949字)</a></li>
+<li><a href="/2021/11/10/Maven间接依赖未下载">13.Maven间接依赖未下载 (390字)</a></li>
+<li><a href="/2021/07/19/内存飚高排查（一）">14.内存飚高排查（一） (720字)</a></li>
+<li><a href="/2021/11/13/内存飚高排查（二）">15.内存飚高排查（二） (403字)</a></li>
+<li><a href="/2021/11/13/内存飚高排查（三）">16.内存飚高排查（三） (776字)</a></li>
+<li><a href="/2021/11/13/内存飚高排查（四）">17.内存飚高排查（四） (222字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/TroubleShooting/单元测试">5.单元测试 (3篇)</a><ul>
+<li><a href="/2020/02/29/单元测试才是绩效的保命符">1.单元测试才是绩效的保命符 (430字)</a></li>
+<li><a href="/2020/11/15/el表达式与BigDecimal">2.el表达式与BigDecimal (326字)</a></li>
+<li><a href="/2021/06/06/因浮点精度损失了1分钱">3.因浮点精度损失了1分钱 (2,570字)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/categories/Golang">2.Golang (3篇)</a><ul>
+<li><a href="/2022/06/10/go包和模块">1.go包和模块 (389字)</a></li>
+<li><a href="/2022/06/10/共享变量">2.共享变量 (646字)</a></li>
+<li><a href="/2022/09/22/依赖树查看">3.依赖树查看 (117字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java">3.Java (88篇)</a><ul>
+<li><a href="/categories/Java/JavaSE">1.JavaSE (16篇)</a><ul>
+<li><a href="/2019/10/26/包冲突">1.包冲突 (1,301字)</a></li>
+<li><a href="/2020/04/19/String">2.String (282字)</a></li>
+<li><a href="/2019/10/30/Map">3.Map (1,023字)</a></li>
+<li><a href="/2020/12/24/断言">4.断言 (64字)</a></li>
+<li><a href="/2019/11/08/工厂类中使用ThreadLocal的陷阱">5.工厂类中使用ThreadLocal的陷阱 (505字)</a></li>
+<li><a href="/2020/12/16/误用BlockingQueue方法导致日志丢失">6.误用BlockingQueue方法导致日志丢失 (563字)</a></li>
+<li><a href="/2020/07/07/SLF4J日志框架">7.SLF4J日志框架 (1,364字)</a></li>
+<li><a href="/2020/11/24/System.currentTimeMillis()与GMT">8.System.currentTimeMillis()与GMT (261字)</a></li>
+<li><a href="/2020/11/15/StringEscapeUtils">9.StringEscapeUtils (86字)</a></li>
+<li><a href="/2019/12/26/文件正确写入bom">10.文件正确写入bom (584字)</a></li>
+<li><a href="/2021/12/20/echo无法清空日志">11.echo无法清空日志 (793字)</a></li>
+<li><a href="/2021/09/01/Gson如何实例化类">12.Gson如何实例化类 (399字)</a></li>
+<li><a href="/2021/12/16/Java异常堆栈丢失仅剩一行">13.Java异常堆栈丢失仅剩一行 (661字)</a></li>
+<li><a href="/2020/03/31/SFTP和FTPS，HTTPS">14.SFTP和FTPS，HTTPS (212字)</a></li>
+<li><a href="/2021/05/28/使用hsdb查看运行时类">15.使用hsdb查看运行时类 (202字)</a></li>
+<li><a href="/2021/06/30/ServiceLoader">16.ServiceLoader (548字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/Java并发">2.Java并发 (9篇)</a><ul>
+<li><a href="/2020/08/08/JMM">1.JMM (2,134字)</a></li>
+<li><a href="/2020/05/01/CPU内存模型和LOCK指令">2.CPU内存模型和LOCK指令 (2,292字)</a></li>
+<li><a href="/2020/08/13/volatile">3.volatile (1,102字)</a></li>
+<li><a href="/2020/08/16/synchronized">4.synchronized (1,542字)</a></li>
+<li><a href="/2020/06/16/AQS及其实现">5.AQS及其实现 (4,104字)</a></li>
+<li><a href="/2020/08/31/线程池剖析">6.线程池剖析 (4,177字)</a></li>
+<li><a href="/2022/03/16/ThreadLocal内存泄漏">7.ThreadLocal内存泄漏 (195字)</a></li>
+<li><a href="/2022/03/24/线程同步">8.线程同步 (265字)</a></li>
+<li><a href="/2022/05/13/FutureTask构建高效缓存">9.FutureTask构建高效缓存 (177字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/Java虚拟机">3.Java虚拟机 (7篇)</a><ul>
+<li><a href="/2020/06/10/类加载机制">1.类加载机制 (2,320字)</a></li>
+<li><a href="/2020/07/11/Java运行时内存区域">2.Java运行时内存区域 (648字)</a></li>
+<li><a href="/2020/06/11/垃圾回收">3.垃圾回收 (1,480字)</a></li>
+<li><a href="/2020/07/13/垃圾回收器">4.垃圾回收器 (2,431字)</a></li>
+<li><a href="/2020/07/16/JDK自带的性能监控工具">5.JDK自带的性能监控工具 (310字)</a></li>
+<li><a href="/2020/08/13/字节码解释器和JIT">6.字节码解释器和JIT (237字)</a></li>
+<li><a href="/2021/11/24/JVM运行参数">7.JVM运行参数 (233字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/Spring">4.Spring (12篇)</a><ul>
+<li><a href="/2022/03/21/SpringIOC">0.SpringIOC (247字)</a></li>
+<li><a href="/2020/11/13/Spring循环依赖">1.Spring循环依赖 (861字)</a></li>
+<li><a href="/2021/01/14/SpingAop">2.SpingAop (354字)</a></li>
+<li><a href="/2021/01/15/Spring事务">3.Spring事务 (638字)</a></li>
+<li><a href="/2021/01/14/SpingAopProxy">4.SpingAopProxy (727字)</a></li>
+<li><a href="/2022/03/21/Spring注解Import">5.Spring注解Import (164字)</a></li>
+<li><a href="/2021/01/17/Spring集成第三方组件-JSF">6.Spring集成第三方组件-JSF (1,239字)</a></li>
+<li><a href="/2021/01/17/Spring集成第三方组件-Mybatis">7.Spring集成第三方组件-Mybatis (1,291字)</a></li>
+<li><a href="/2021/05/09/Spring集成示例组件实战">8.Spring集成示例组件实战 (990字)</a></li>
+<li><a href="/2021/07/01/Springboot配置文件读取顺序">9.Springboot配置文件读取顺序 (566字)</a></li>
+<li><a href="/2021/07/04/扩展接口SmartInitializingSingleton">10.扩展接口SmartInitializingSingleton (941字)</a></li>
+<li><a href="/2021/01/27/Springboot自动配置">11.Springboot自动配置 (1,288字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/Maven">5.Maven (20篇)</a><ul>
+<li><a href="/2020/06/02/mvn_clean_deploy出错">1.mvn_clean_deploy出错 (164字)</a></li>
+<li><a href="/2020/06/02/mvn_dependency_tree和assembly不一致">2.mvn_dependency_tree和assembly不一致 (500字)</a></li>
+<li><a href="/2020/07/13/maven插件的依赖的查找顺序">3.maven插件的依赖的查找顺序 (245字)</a></li>
+<li><a href="/2020/08/07/Maven仓库类型">4.Maven仓库类型 (708字)</a></li>
+<li><a href="/2020/08/11/Maven仓库更新策略">5.Maven仓库更新策略 (561字)</a></li>
+<li><a href="/2020/12/16/DependencyManagment作用">6.DependencyManagment作用 (108字)</a></li>
+<li><a href="/2022/01/24/Maven属性替换">7.Maven属性替换 (789字)</a></li>
+<li><a href="/2021/09/06/Maven常用命令">8.Maven常用命令 (195字)</a></li>
+<li><a href="/2022/01/22/Maven依赖协调原则及依赖顺序的影响">9.Maven依赖协调原则及依赖顺序的影响 (518字)</a></li>
+<li><a href="/2021/11/23/打包后-JAR包名为时间戳orSNAPSHOT">10.打包后-JAR包名为时间戳orSNAPSHOT (463字)</a></li>
+<li><a href="/2021/09/18/Maven生命周期和插件MOJO">11.Maven生命周期和插件MOJO (607字)</a></li>
+<li><a href="/2021/11/23/Maven分类classifier使用">12.Maven分类classifier使用 (368字)</a></li>
+<li><a href="/2022/01/22/Maven源码-模块说明">13.Maven源码-模块说明 (330字)</a></li>
+<li><a href="/2022/01/22/Maven源码-调试方法">14.Maven源码-调试方法 (169字)</a></li>
+<li><a href="/2022/01/22/Maven源码-主流程">15.Maven源码-主流程 (1,057字)</a></li>
+<li><a href="/2022/01/25/Maven源码-依赖解析">16.Maven源码-依赖解析 (2,152字)</a></li>
+<li><a href="/2022/01/27/Maven并行参数加快编译">17.Maven并行参数加快编译 (382字)</a></li>
+<li><a href="/2022/02/09/Maven如何处理循环依赖">18.Maven如何处理循环依赖 (159字)</a></li>
+<li><a href="/2022/02/09/Maven查看模块依赖图">19.Maven查看模块依赖图 (187字)</a></li>
+<li><a href="/2022/02/10/Maven3.x兼容笔记">20.Maven3.x兼容笔记 (407字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/Netty">6.Netty (6篇)</a><ul>
+<li><a href="/2021/01/24/IO">1.IO (2,642字)</a></li>
+<li><a href="/2021/02/07/零拷贝">2.零拷贝 (1,876字)</a></li>
+<li><a href="/2021/01/30/Netty聊天室Demo">3.Netty聊天室Demo (997字)</a></li>
+<li><a href="/2021/02/05/Netty核心组件源码分析">4.Netty核心组件源码分析 (276字)</a></li>
+<li><a href="/2021/02/06/Netty高性能分析">5.Netty高性能分析 (791字)</a></li>
+<li><a href="/2021/01/26/Scalable_IO_in_Java">6.Scalable_IO_in_Java (2,532字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/Dubbo">7.Dubbo (8篇)</a><ul>
+<li><a href="/2021/05/09/Dubbo速览">1.Dubbo速览 (710字)</a></li>
+<li><a href="/2021/05/12/Dubbo扩展点">2.Dubbo扩展点 (1,045字)</a></li>
+<li><a href="/2021/05/15/Dubbo服务发布源码分析">3.Dubbo服务发布源码分析 (1,607字)</a></li>
+<li><a href="/2021/05/15/Dubbo服务引入源码分析">4.Dubbo服务引入源码分析 (3,087字)</a></li>
+<li><a href="/2021/05/15/Dubbo服务调用源码分析">5.Dubbo服务调用源码分析 (52字)</a></li>
+<li><a href="/2021/05/22/RPC服务线程池大小及集群规模评估">6.RPC服务线程池大小及集群规模评估 (806字)</a></li>
+<li><a href="/2021/05/30/关于Dubbo的重试机制">7.关于Dubbo的重试机制 (772字)</a></li>
+<li><a href="/2021/05/28/使用msgpack实体增加字段序列异常">8.使用msgpack实体增加字段序列异常 (666字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Java/源码">8.源码 (10篇)</a><ul>
+<li><a href="/2020/05/14/看源码的姿势">0.看源码的姿势 (474字)</a></li>
+<li><a href="/2020/05/19/while(true)和for(;;)分析">1.while(true)和for(;;)分析 (183字)</a></li>
+<li><a href="/2020/05/20/Junit源码分析">2.Junit源码分析 (748字)</a></li>
+<li><a href="/2020/06/11/URLClassPath源码分析">3.URLClassPath源码分析 (930字)</a></li>
+<li><a href="/2020/07/09/Tomcat类加载器">4.Tomcat类加载器 (1,886字)</a></li>
+<li><a href="/2021/11/01/slf4j加载实现">5.slf4j加载实现 (479字)</a></li>
+<li><a href="/2021/08/04/Camel的Exchange分析">6.Camel的Exchange分析 (776字)</a></li>
+<li><a href="/2021/07/04/HttpClient（一）连接池">7.HttpClient（一）连接池 (678字)</a></li>
+<li><a href="/2021/09/02/HttpClient（二）结构">8.HttpClient（二）结构 (452字)</a></li>
+<li><a href="/2022/02/16/HttpClient（三）连接池获取连接">9.HttpClient（三）连接池获取连接 (1,282字)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/categories/Mysql">4.Mysql (15篇)</a><ul>
+<li><a href="/2020/04/28/时区与时间：Mysql，JDBC，JVM">1.时区与时间：Mysql，JDBC，JVM (1,256字)</a></li>
+<li><a href="/2020/05/14/MySql和B+树">2.MySql和B+树 (2,671字)</a></li>
+<li><a href="/2020/05/17/Mysql_InnoDB锁">3.Mysql_InnoDB锁 (1,378字)</a></li>
+<li><a href="/2020/05/19/Mysql事务及其隔离级别">4.Mysql事务及其隔离级别 (1,358字)</a></li>
+<li><a href="/2020/05/20/MVCC的InnoDB实现">5.MVCC的InnoDB实现 (837字)</a></li>
+<li><a href="/2020/07/28/explain">6.explain (1,042字)</a></li>
+<li><a href="/2020/08/03/Mysql优化">7.Mysql优化 (1,246字)</a></li>
+<li><a href="/2021/03/08/InnoDb死锁分析">8.InnoDb死锁分析 (978字)</a></li>
+<li><a href="/2020/08/03/MySQL_Workbench常用操作">9.MySQL_Workbench常用操作 (72字)</a></li>
+<li><a href="/2021/05/28/left_join时on后多条件AND">10.left_join时on后多条件AND (562字)</a></li>
+<li><a href="/2020/08/03/Mysql索引优化">11.Mysql索引优化 (646字)</a></li>
+<li><a href="/2020/09/30/Mysql对Null的判断">12.Mysql对Null的判断 (135字)</a></li>
+<li><a href="/2020/11/20/JDBC的时区调停">13.JDBC的时区调停 (469字)</a></li>
+<li><a href="/2021/01/21/分库分表">14.分库分表 (517字)</a></li>
+<li><a href="/2020/08/03/Mysql如何保证数据不丢失">15.Mysql如何保证数据不丢失 (794字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Git">5.Git (14篇)</a><ul>
+<li><a href="/2020/08/19/Git分享">0.Git分享 (3,353字)</a></li>
+<li><a href="/2018/01/15/VCS简介">1.VCS简介 (2,193字)</a></li>
+<li><a href="/2018/01/29/Git配置">2.Git配置 (1,430字)</a></li>
+<li><a href="/2018/01/18/Git内部原理">3.Git内部原理 (4,317字)</a></li>
+<li><a href="/2018/02/27/Git标签和分支">4.Git标签和分支 (3,342字)</a></li>
+<li><a href="/2018/02/01/Git基础操作之正常提交">5.Git基础操作之正常提交 (1,607字)</a></li>
+<li><a href="/2018/02/04/Git基础操作之撤销操作">6.Git基础操作之撤销操作 (2,340字)</a></li>
+<li><a href="/2020/08/19/git工作流">7.git工作流 (621字)</a></li>
+<li><a href="/2018/03/04/Git补充内容">8.Git补充内容 (1,850字)</a></li>
+<li><a href="/2018/04/16/常见问题">9.常见问题 (1,154字)</a></li>
+<li><a href="/2018/07/17/查看文件变更">10.查看文件变更 (436字)</a></li>
+<li><a href="/2019/12/12/手动合并分支的技巧">11.手动合并分支的技巧 (315字)</a></li>
+<li><a href="/2019/12/18/检出文件夹时注意事项">12.检出文件夹时注意事项 (252字)</a></li>
+<li><a href="/2024/12/02/合并两个仓库">13.合并两个仓库 (547字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/Linux">6.Linux (8篇)</a><ul>
+<li><a href="/2021/01/21/CPU使用率和负载">1.CPU使用率和负载 (1,470字)</a></li>
+<li><a href="/2021/09/29/Debian包管理">2.Debian包管理 (1,004字)</a></li>
+<li><a href="/2019/07/17/同步异步和阻塞非阻塞">3.同步异步和阻塞非阻塞 (360字)</a></li>
+<li><a href="/2019/11/07/User_vs_Kernel">4.User_vs_Kernel (557字)</a></li>
+<li><a href="/2022/05/20/Vim笔记">5.Vim笔记 (1,369字)</a></li>
+<li><a href="/2022/09/08/OOM_Killer">6.OOM_Killer (259字)</a></li>
+<li><a href="/2022/09/08/进程运行信息">7.进程运行信息 (109字)</a></li>
+<li><a href="/2022/11/02/shell脚本编写">8.shell脚本编写 (388字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/分布式中间件">7.分布式中间件 (19篇)</a><ul>
+<li><a href="/categories/分布式中间件/共识协议">1.共识协议 (3篇)</a><ul>
+<li><a href="/2021/06/06/分布式网络及共识协议">1.分布式网络及共识协议 (2,302字)</a></li>
+<li><a href="/2021/06/06/常见分布式中间件的共识协议">2.常见分布式中间件的共识协议 (3,768字)</a></li>
+<li><a href="/2022/03/29/落盘机制">3.落盘机制 (498字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/分布式中间件/Elasticsearch">2.Elasticsearch (9篇)</a><ul>
+<li><a href="/2021/05/19/ES索引分片数设置原则">1.ES索引分片数设置原则 (1,075字)</a></li>
+<li><a href="/2021/05/30/ES倒排索引">2.ES倒排索引 (519字)</a></li>
+<li><a href="/2021/06/01/ES的乐观锁">3.ES的乐观锁 (171字)</a></li>
+<li><a href="/2021/06/02/ES分片和副本">4.ES分片和副本 (1,781字)</a></li>
+<li><a href="/2021/06/06/ES脑裂问题">5.ES脑裂问题 (766字)</a></li>
+<li><a href="/2021/06/06/ES分页">6.ES分页 (374字)</a></li>
+<li><a href="/2021/10/27/ES_CPU飚高">7.ES_CPU飚高 (323字)</a></li>
+<li><a href="/2021/11/05/索引备份实践">8.索引备份实践 (1,313字)</a></li>
+<li><a href="/2021/11/29/ES磁盘不足拒绝写">9.ES磁盘不足拒绝写 (511字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/分布式中间件/Redis">3.Redis (4篇)</a><ul>
+<li><a href="/2021/01/19/Consistent_Hashing_and_Random_Trees翻译">0.Consistent_Hashing_and_Random_Trees翻译 (4,916字)</a></li>
+<li><a href="/2021/01/19/一致性hash">1.一致性hash (1,443字)</a></li>
+<li><a href="/2022/03/14/缓存常见问题">2.缓存常见问题 (481字)</a></li>
+<li><a href="/2022/03/14/Redis总结">3.Redis总结 (2,136字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/分布式中间件/Zookeeper">4.Zookeeper (1篇)</a><ul>
+<li><a href="/2022/03/14/Zookeeper概念">1.Zookeeper概念 (708字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/分布式中间件/Kafka">5.Kafka (1篇)</a><ul>
+<li><a href="/2022/03/24/顺序消费">1.顺序消费 (173字)</a></li>
+</ul>
+</li>
+<li><a href="/2022/01/16/数据密集型系统设计">6.数据密集型系统设计 (7字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/代码架构">8.代码架构 (7篇)</a><ul>
+<li><a href="/2019/12/30/从一个pojo类来看单一性原则">1.从一个pojo类来看单一性原则 (250字)</a></li>
+<li><a href="/2020/03/20/从Camel中学习FluntApi设计">2.从Camel中学习FluntApi设计 (691字)</a></li>
+<li><a href="/2020/03/21/扩展点的设计">3.扩展点的设计 (473字)</a></li>
+<li><a href="/2020/03/25/装饰器和代理的区别">4.装饰器和代理的区别 (206字)</a></li>
+<li><a href="/2020/03/31/拦截器实现的细节">5.拦截器实现的细节 (187字)</a></li>
+<li><a href="/2021/05/15/从Filter和Interceptor看责任链模式">6.从Filter和Interceptor看责任链模式 (1,785字)</a></li>
+<li><a href="/2021/01/29/代码整洁之道">7.代码整洁之道 (17字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/算法">9.算法 (2篇)</a><ul>
+<li><a href="/2021/09/12/排序">1.排序 (1,006字)</a></li>
+<li><a href="/2022/02/28/算法题型总结">2.算法题型总结 (8,603字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/工具">10.工具 (7篇)</a><ul>
+<li><a href="/2019/12/25/日常使用-Ubuntu">1.日常使用-Ubuntu (2,493字)</a></li>
+<li><a href="/2020/06/20/日常使用-Mac">2.日常使用-Mac (652字)</a></li>
+<li><a href="/2020/09/01/日常使用-IDEA&Goland">3.日常使用-IDEA&amp;Goland (869字)</a></li>
+<li><a href="/2020/01/08/日常使用-Chrome">4.日常使用-Chrome (438字)</a></li>
+<li><a href="/2021/01/31/日常使用-杂">5.日常使用-杂 (69字)</a></li>
+<li><a href="/2020/11/11/sshuttle使用">6.sshuttle使用 (217字)</a></li>
+<li><a href="/2021/09/29/openfortivpn使用">7.openfortivpn使用 (349字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/网络">11.网络 (9篇)</a><ul>
+<li><a href="/2021/01/19/网络上行和下行">1.网络上行和下行 (136字)</a></li>
+<li><a href="/2021/02/07/负载均衡4层和7层区别">2.负载均衡4层和7层区别 (307字)</a></li>
+<li><a href="/2021/02/07/session_cookie_token">3.session_cookie_token (192字)</a></li>
+<li><a href="/2021/01/20/笔记本通过网线分享网络给台式机">4.笔记本通过网线分享网络给台式机 (724字)</a></li>
+<li><a href="/2021/03/22/DNS和URL重定向">5.DNS和URL重定向 (284字)</a></li>
+<li><a href="/2020/07/21/URI格式">6.URI格式 (309字)</a></li>
+<li><a href="/2022/09/08/Http_trailing_slashes">7.Http_trailing_slashes (131字)</a></li>
+<li><a href="/2022/09/08/Http_Content-Length">8.Http_Content-Length (144字)</a></li>
+<li><a href="/2025/09/09/请求代理配置">9.请求代理配置 (431字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/工程实践">12.工程实践 (15篇)</a><ul>
+<li><a href="/2021/03/04/多应用混合部署">1.多应用混合部署 (258字)</a></li>
+<li><a href="/2020/07/27/尽早抽象和持续重构">2.尽早抽象和持续重构 (517字)</a></li>
+<li><a href="/2020/07/27/工程命名与职责">3.工程命名与职责 (435字)</a></li>
+<li><a href="/2019/11/11/由日志框架的异常处理引发的思考">6.由日志框架的异常处理引发的思考 (386字)</a></li>
+<li><a href="/2019/11/21/替换日志框架过程中对重构的思考">7.替换日志框架过程中对重构的思考 (814字)</a></li>
+<li><a href="/2019/12/03/第三方组件的中间层">8.第三方组件的中间层 (315字)</a></li>
+<li><a href="/2019/12/10/科学的引用类名和包名">9.科学的引用类名和包名 (497字)</a></li>
+<li><a href="/2021/03/17/使用CPU百分位作容器缩容的参考指标">10.使用CPU百分位作容器缩容的参考指标 (558字)</a></li>
+<li><a href="/2021/04/12/大促扩容要有数据支撑">11.大促扩容要有数据支撑 (571字)</a></li>
+<li><a href="/2021/04/12/关于重构时信息量的思考">12.关于重构时信息量的思考 (259字)</a></li>
+<li><a href="/2021/04/12/你的压测结果真的符合预期吗">13.你的压测结果真的符合预期吗 (278字)</a></li>
+<li><a href="/2021/05/09/关于配置中心设计的思考">14.关于配置中心设计的思考 (409字)</a></li>
+<li><a href="/2021/07/02/蓝绿发布vs灰度发布vs滚动发布">15.蓝绿发布vs灰度发布vs滚动发布 (336字)</a></li>
+<li><a href="/2021/08/27/科学的剥离其他中间件">16.科学的剥离其他中间件 (414字)</a></li>
+<li><a href="/2022/01/23/版本管理">17.版本管理 (2,676字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/安全">13.安全 (6篇)</a><ul>
+<li><a href="/2021/03/04/XSRF和XSS">1.XSRF和XSS (770字)</a></li>
+<li><a href="/2020/04/21/浏览器跨域">2.浏览器跨域 (855字)</a></li>
+<li><a href="/2021/03/19/非对称密码的私钥包含了公钥信息">3.非对称密码的私钥包含了公钥信息 (449字)</a></li>
+<li><a href="/2021/03/22/RSA与Padding模式">4.RSA与Padding模式 (310字)</a></li>
+<li><a href="/2021/04/06/ssh-keygen生成PEM格式密钥">5.ssh-keygen生成PEM格式密钥 (541字)</a></li>
+<li><a href="/2021/12/15/cacert证书查看和导入">6.cacert证书查看和导入 (756字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/容器">14.容器 (1篇)</a><ul>
+<li><a href="/2021/12/15/Nginx架构翻译">1.Nginx架构翻译 (3,350字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/学习">15.学习 (11篇)</a><ul>
+<li><a href="/categories/学习/读书笔记">1.读书笔记 (6篇)</a><ul>
+<li><a href="/2025/10/10/心理">心理 (5,470字)</a></li>
+<li><a href="/2025/09/24/其他">其他 (199字)</a></li>
+<li><a href="/2025/11/17/传记">传记 (5,358字)</a></li>
+<li><a href="/2025/12/31/思考">思考 (15,468字)</a></li>
+<li><a href="/2025/12/31/学习">学习 (20,775字)</a></li>
+<li><a href="/2025/10/10/工作">工作 (11,674字)</a></li>
+</ul>
+</li>
+<li><a href="/2020/01/09/工作和学习">2.工作和学习 (1,648字)</a></li>
+<li><a href="/2024/11/01/央行的基础货币怎么流入市场">3.央行的基础货币怎么流入市场 (282字)</a></li>
+<li><a href="/2024/11/20/习惯复盘">4.习惯复盘 (1,254字)</a></li>
+<li><a href="/2025/07/17/原则">5.原则 (876字)</a></li>
+<li><a href="/2025/12/31/随笔">6.随笔 (2,498字)</a></li>
+</ul>
+</li>
+<li><a href="/categories/工作">16.工作 (12篇)</a><ul>
+<li><a href="/2025/12/30/关于会议">1.关于会议 (2,681字)</a></li>
+<li><a href="/2023/10/21/关于信息同步">2.关于信息同步 (1,394字)</a></li>
+<li><a href="/2023/10/21/关于规划">3.关于规划 (1,286字)</a></li>
+<li><a href="/2023/11/18/关于项目目标">4.关于项目目标 (413字)</a></li>
+<li><a href="/2024/10/01/架构治理的若干思考">5.架构治理的若干思考 (6,093字)</a></li>
+<li><a href="/2024/10/11/一般的分析问题">6.一般的分析问题 (2,842字)</a></li>
+<li><a href="/2024/11/19/小数决策和审查数据">7.小数决策和审查数据 (6,181字)</a></li>
+<li><a href="/2025/06/27/抽象假设和验证假设">8.抽象假设和验证假设 (1,461字)</a></li>
+<li><a href="/2025/01/13/架构度量项目复盘">9.架构度量项目复盘 (1,180字)</a></li>
+<li><a href="/2025/06/27/代码治理及研发心理">10.代码治理及研发心理 (1,577字)</a></li>
+<li><a href="/2025/09/12/LLM与架构治理">11.LLM与架构治理 (2,037字)</a></li>
+<li><a href="/2025/12/17/架构治理事故复盘">12.架构治理事故复盘 (1,718字)</a></li>
+</ul>
+</li>
+</ul>
+</div><!--!--></article></div><!--!--><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/about/avatar.jpg" alt="Kivi"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Kivi</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">260</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">35</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">0</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/kivihub" target="_blank" rel="me noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Git/"><span class="level-start"><span class="level-item">Git</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/Golang/"><span class="level-start"><span class="level-item">Golang</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">88</span></span></a><ul><li><a class="level is-mobile" href="/categories/Java/Dubbo/"><span class="level-start"><span class="level-item">Dubbo</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/JavaSE/"><span class="level-start"><span class="level-item">JavaSE</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/Java%E5%B9%B6%E5%8F%91/"><span class="level-start"><span class="level-item">Java并发</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"><span class="level-start"><span class="level-item">Java虚拟机</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/Maven/"><span class="level-start"><span class="level-item">Maven</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/Netty/"><span class="level-start"><span class="level-item">Netty</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/categories/Java/%E6%BA%90%E7%A0%81/"><span class="level-start"><span class="level-item">源码</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/Mysql/"><span class="level-start"><span class="level-item">Mysql</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/categories/TroubleShooting/"><span class="level-start"><span class="level-item">TroubleShooting</span></span><span class="level-end"><span class="level-item tag">43</span></span></a><ul><li><a class="level is-mobile" href="/categories/TroubleShooting/Debug/"><span class="level-start"><span class="level-item">Debug</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/TroubleShooting/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"><span class="level-start"><span class="level-item">单元测试</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/TroubleShooting/%E6%80%9D%E7%BB%B4%E5%AE%9A%E5%8A%BF/"><span class="level-start"><span class="level-item">思维定势</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/TroubleShooting/%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/"><span class="level-start"><span class="level-item">流程分析</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li><li><a class="level is-mobile" href="/categories/TroubleShooting/%E8%A7%82%E5%AF%9F%E6%97%A5%E5%BF%97/"><span class="level-start"><span class="level-item">观察日志</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84/"><span class="level-start"><span class="level-item">代码架构</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">分布式中间件</span></span><span class="level-end"><span class="level-item tag">19</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch/"><span class="level-start"><span class="level-item">Elasticsearch</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/Kafka/"><span class="level-start"><span class="level-item">Kafka</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/"><span class="level-start"><span class="level-item">Redis</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/Zookeeper/"><span class="level-start"><span class="level-item">Zookeeper</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%85%B1%E8%AF%86%E5%8D%8F%E8%AE%AE/"><span class="level-start"><span class="level-item">共识协议</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">学习</span></span><span class="level-end"><span class="level-item tag">11</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E5%AD%A6%E4%B9%A0/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">读书笔记</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E5%AE%89%E5%85%A8/"><span class="level-start"><span class="level-item">安全</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%AE%B9%E5%99%A8/"><span class="level-start"><span class="level-item">容器</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B7%A5%E4%BD%9C/"><span class="level-start"><span class="level-item">工作</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">工具</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/"><span class="level-start"><span class="level-item">工程实践</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">算法</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/12/"><span class="level-start"><span class="level-item">十二月 2025</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/11/"><span class="level-start"><span class="level-item">十一月 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/10/"><span class="level-start"><span class="level-item">十月 2025</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/09/"><span class="level-start"><span class="level-item">九月 2025</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/07/"><span class="level-start"><span class="level-item">七月 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/06/"><span class="level-start"><span class="level-item">六月 2025</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">一月 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">十二月 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">十一月 2024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">十月 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/11/"><span class="level-start"><span class="level-item">十一月 2023</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/10/"><span class="level-start"><span class="level-item">十月 2023</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/11/"><span class="level-start"><span class="level-item">十一月 2022</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/09/"><span class="level-start"><span class="level-item">九月 2022</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/06/"><span class="level-start"><span class="level-item">六月 2022</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/01/"><span class="level-start"><span class="level-item">一月 2022</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/10/"><span class="level-start"><span class="level-item">十月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/09/"><span class="level-start"><span class="level-item">九月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/07/"><span class="level-start"><span class="level-item">七月 2020</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/05/"><span class="level-start"><span class="level-item">五月 2020</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/04/"><span class="level-start"><span class="level-item">四月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/03/"><span class="level-start"><span class="level-item">三月 2020</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/02/"><span class="level-start"><span class="level-item">二月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/01/"><span class="level-start"><span class="level-item">一月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/12/"><span class="level-start"><span class="level-item">十二月 2019</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">十一月 2019</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">十月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/09/"><span class="level-start"><span class="level-item">九月 2019</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">八月 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">五月 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">七月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">三月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/02/"><span class="level-start"><span class="level-item">二月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/01/"><span class="level-start"><span class="level-item">一月 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
