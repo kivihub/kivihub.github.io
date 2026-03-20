@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>Kivi's Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Kivi&#039;s Blog"><meta name="msapplication-TileImage" content="/about/github.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kivi&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、背景 write at: 2026&amp;#x2F;03&amp;#x2F;20  近期，使用AI协作进行了一个CI耗时优化的技术调研。AI在一些关键环节有明显提效，下面梳理下整个过程，作为以后优化AI协作的参考。"><meta property="og:type" content="blog"><meta property="og:title" content="AI提效之写调研方案"><meta property="og:url" content="https://kivihub.github.io/2026/03/20/AI%E6%8F%90%E6%95%88%E4%B9%8B%E5%86%99%E8%B0%83%E7%A0%94%E6%96%B9%E6%A1%88/"><meta property="og:site_name" content="Kivi&#039;s Blog"><meta property="og:description" content="一、背景 write at: 2026&amp;#x2F;03&amp;#x2F;20  近期，使用AI协作进行了一个CI耗时优化的技术调研。AI在一些关键环节有明显提效，下面梳理下整个过程，作为以后优化AI协作的参考。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kivihub.github.io/img/og_image.png"><meta property="article:published_time" content="2026-03-20T09:42:44.000Z"><meta property="article:modified_time" content="2026-03-20T09:43:30.720Z"><meta property="article:author" content="Kivi"><meta property="article:tag" content="Blog"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://kivihub.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://kivihub.github.io/2026/03/20/AI%E6%8F%90%E6%95%88%E4%B9%8B%E5%86%99%E8%B0%83%E7%A0%94%E6%96%B9%E6%A1%88/"},"headline":"AI提效之写调研方案","image":["https://kivihub.github.io/img/og_image.png"],"datePublished":"2026-03-20T09:42:44.000Z","dateModified":"2026-03-20T09:43:30.720Z","author":{"@type":"Person","name":"Kivi"},"publisher":{"@type":"Organization","name":"Kivi's Blog","logo":{"@type":"ImageObject"}},"description":"一、背景 write at: 2026&#x2F;03&#x2F;20  近期，使用AI协作进行了一个CI耗时优化的技术调研。AI在一些关键环节有明显提效，下面梳理下整个过程，作为以后优化AI协作的参考。"}</script><link rel="canonical" href="https://kivihub.github.io/2026/03/20/AI%E6%8F%90%E6%95%88%E4%B9%8B%E5%86%99%E8%B0%83%E7%A0%94%E6%96%B9%E6%A1%88/"><link rel="icon" href="/about/github.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><script>var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?18875f49bd2f905d572a26a7796c193b";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();</script><script src="https://www.googletagmanager.com/gtag/js?id=G-H16FQ6QJL5" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-H16FQ6QJL5');</script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">Kivi&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/catalog">目录</a><a class="navbar-item" href="/about">留言板</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-03-20T09:42:44.000Z" title="3/20/2026, 5:42:44 PM">2026-03-20</time>发表</span><span class="level-item"><a class="link-muted" href="/categories/%E5%B7%A5%E4%BD%9C/">工作</a></span><span class="level-item">3 分钟读完 (大约413个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">AI提效之写调研方案</h1><div class="content"><h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><blockquote>
+<p>write at: 2026&#x2F;03&#x2F;20</p>
+</blockquote>
+<p>近期，使用AI协作进行了一个CI耗时优化的技术调研。AI在一些关键环节有明显提效，下面梳理下整个过程，作为以后优化AI协作的参考。</p>
+<span id="more"></span>
+
+<h3 id="二、调研过程"><a href="#二、调研过程" class="headerlink" title="二、调研过程"></a>二、调研过程</h3><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Human Work</th>
+<th>AI Contribute</th>
+<th>AI提效</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>梳理整体分析思路</td>
+<td>决策本次使用的分析思路，例如本次使用全链路分析法。</td>
+<td>1）验证&#x2F;补全分析思路<br/>2）收集信息</td>
+<td>中<br/>20%+</td>
+</tr>
+<tr>
+<td>拆解&amp;逐次分析</td>
+<td>1）按整体分析思路，逐步对涉及点进行分析（例如依次分析全链路中的每个节点）<br/>2）通过分析及AI协助，筛选疑似问题点，进行深入分析验证<br/>3）阅读关键代码逻辑，了解代码逻辑<br/>4）找人沟通补充细节信息</td>
+<td>1) 帮助快速阅读和理解代码<br/>2）帮助快速理解涉及的知识点<br/>3）快速收集相关资料<br/>4）帮助快速生成验证代码<br/>5）知识丰富，给与优化建议和验证猜想。</td>
+<td>高<br/>50%+</td>
+</tr>
+<tr>
+<td>文档输出</td>
+<td>按分析过程整理文章大纲及补充内容</td>
+<td>文章润色</td>
+<td>中<br/>20%+</td>
+</tr>
+</tbody></table>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>AI提效是确定性事实，可总结为以下三点：</p>
+<ul>
+<li>提高工作效率<ul>
+<li>使用AI协作耗时：3天（2026&#x2F;03&#x2F;16-2026&#x2F;03&#x2F;19）</li>
+<li>若不使用，保守估计5天+</li>
+</ul>
+</li>
+<li>分担体力工作<ul>
+<li>编写&#x2F;理解代码</li>
+<li>信息收集和理解</li>
+<li>文章润色</li>
+</ul>
+</li>
+<li>提高决策完整和准确性<ul>
+<li>帮忙check分析思路、解决思路、解决方案</li>
+</ul>
+</li>
+</ul>
+</div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/02/26/%E9%9A%8F%E7%AC%94/"><span class="level-item">随笔</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><script src="https://giscus.app/client.js" repo="kivihub/kivihub-blog" data-repo="kivihub/kivihub-blog" data-repo-id="MDEwOlJlcG9zaXRvcnkzMjk3MjM2NDk=" data-category-id="DIC_kwDOE6cvAc4CmtLD" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="top" data-theme="noborder_light" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#一、背景"><span class="level-left"><span class="level-item">一、背景</span></span></a></li><li><a class="level is-mobile" href="#二、调研过程"><span class="level-left"><span class="level-item">二、调研过程</span></span></a></li><li><a class="level is-mobile" href="#三、总结"><span class="level-left"><span class="level-item">三、总结</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">Kivi&#039;s Blog</a><p class="is-size-7"><span>&copy; 2026 Kivi</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">非学无以广才，非志无以成学</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="GitHub" href="https://github.com/kivihub/kivihub-blog"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
